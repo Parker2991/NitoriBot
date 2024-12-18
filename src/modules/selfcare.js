@@ -75,7 +75,7 @@ module.exports = {
         positionCount--
         if (positionCount > 4) {
           bot.core.run('sudo * icu stop');
-        } if (permissionLevel < 2 || gameMode !== 1) {
+        } if (permission < 2 || gameMode !== 1) {
           bot._client.end('anti icu :3');
         }
       }, 1000)
