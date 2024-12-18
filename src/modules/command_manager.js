@@ -14,7 +14,7 @@ module.exports = {
       commands: {},
       commandlist: [],
       execute (commandName, args) {
-        const command = bot.commandManager.getCommand(commandName)//.toLowerCase()
+        const command = bot.commandManager.getCommand(commandName?.toLowerCase())
 
         try {
           if (!command || !command.execute) console.error('unknown command');

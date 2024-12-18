@@ -25,7 +25,6 @@ module.exports = {
 
     let timer;
     bot.on('packet.login', (data) => {
-      console.log(data.gameMode);
       entityId = data.entityId;
       gameMode = data.gameMode;
       timer = setInterval(() => {
