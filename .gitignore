@@ -1,0 +1,9 @@
+# you know the usual stuff that needs to be ignored when committing
+
+node_modules
+
+config.yml
+
+src/modules/exploits.js
+
+.git

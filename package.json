@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "js-yaml": "^4.1.0",
+    "minecraft-protocol": "^1.51.0",
+    "prismarine-chat": "^1.10.1",
+    "prismarine-nbt": "^2.7.0",
+    "prismarine-registry": "^1.10.0"
+  }
+}

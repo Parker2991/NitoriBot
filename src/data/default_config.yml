@@ -1,0 +1,30 @@
+bots:
+  chomens:
+    prefix: "*"
+    keys:
+      trusted: ""
+      admin: ""
+
+  fnfboyfriendbot:
+    prefix: "~"
+    keys:
+      trusted: ""
+      admin: ""
+      owner: ""
+
+  qbot:
+    prefix: "]"
+    key: ""
+
+  sbot:
+    prefix: ":"
+    key: ""
+
+  testbot:
+    prefix: "-"
+    token: ""
+
+server:
+  host: ""
+  port: ""
+  username: ""
