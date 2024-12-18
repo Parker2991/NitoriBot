@@ -36,6 +36,17 @@ core:
   itemName: { text: "https://doin-your.mom", color: "dark_red" }
   name: { text: "https://doin-your.mom", color: "dark_red" }
 
+selfcare:
+  vanish: true
+  mute: true
+  cspy: true
+  gamemode: true
+  op: true
+  icu: true
+  god: true
+  nick: true
+  username: true
+  prefix: true
 
 server:
   host: "localhost"
