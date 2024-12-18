@@ -5,10 +5,9 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const CommandSource = require('../util/command_source');
-
 module.exports = {
   data: {
+    description: "logs chat to console",
     enabled: true,
     name: "console",
     type: "logging"
@@ -16,33 +15,57 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
+
     rl.on('line', (args) => {
       if (args.startsWith(config.console.prefix)) {
         return bot.commandManager.executeString(args.substring(config.console.prefix.length));
       } else if (args.startsWith('')) {
-        bot.commandManager.executeString(`echo ${args.substring(0)}`);
+        if (bot.customChat.enabled) {
+          if (args.startsWith('/')) {
+            bot.chat(`/${args.substring(1)}`);
+            return;
+          }
+          bot.customChat.chat(args.substring(0));
+        } else {
+          bot.commandManager.executeString(`echo ${args.substring(0)}`);
+        }
       }
     });
 
-    log = function (...args) {
+    refreshLine = function (...args) {
       rl.output.write("\x1b[2K\r");
       console.log(args.toString());
       rl._refreshLine();
     }
 
+    bot.console = {
+      log (message) {
+        refreshLine(`${fromNotch("§8[§6logs§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+      },
+      command (message) {
+        refreshLine(`${fromNotch("§8[§ecommand§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+      },
+      disconnect (reason) {
+        refreshLine(`${fromNotch("§8[§bdisconnect§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+      },
+      warn (error) {
+        refreshLine(`${fromNotch("§8[§cwarn§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+      },
+      error (error) {
+        refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+      }
+    }
+
     bot.on('playerChat', (message) => {
-      const ansi = fromNotch(message)?.toAnsi();
-      log(ansi);
+      bot.console.log(message);
     });
 
     bot.on('profilelessChat', (message) => {
-      const ansi = fromNotch(message)?.toAnsi();
-      log(ansi);
+      bot.console.log(message);
     });
 
     bot.on('systemChat', (message) => {
-      const ansi = fromNotch(message)?.toAnsi();
-      log(ansi);
+      bot.console.log(message);
     });
   }
 }

@@ -1,5 +1,6 @@
 module.exports = {
   data: {
+    description: "where the bot is at",
     enabled: true,
     name: "position",
     type: "client"

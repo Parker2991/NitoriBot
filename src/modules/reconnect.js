@@ -2,6 +2,7 @@ const mc = require('minecraft-protocol');
 
 module.exports = {
   data: {
+    description: "reconnects the players to the server",
     enabled: true,
     name: "reconnect",
     type: "client"

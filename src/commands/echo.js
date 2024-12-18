@@ -5,6 +5,10 @@ module.exports = {
     aliases: [
       "say",
       "botsay"
+    ],
+    description: "send things in chat",
+    usages: [
+      "<message>"
     ]
   },
   execute (context) {

@@ -3,6 +3,7 @@ const path = require('path')
 
 module.exports = {
   data: {
+    description: "registers commands",
     enabled: true,
     name: "command manager",
     type: "commands"
@@ -18,7 +19,7 @@ module.exports = {
         const command = bot.commandManager.getCommand(commandName?.toLowerCase())
 
         try {
-          if (!command || !command.execute) console.error('unknown command');
+          if (!command || !command.execute) bot.console.command('unknown command');
           return command?.execute({ bot, config, arguments: args, MessageBuilder })
         } catch (error) {
           console.error(error)

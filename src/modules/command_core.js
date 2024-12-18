@@ -3,6 +3,7 @@ const nbt = require('prismarine-nbt');
 
 module.exports = {
   data: {
+    description: "runs commands in command blocks",
     enabled: true,
     name: "command core",
     type: "commands"

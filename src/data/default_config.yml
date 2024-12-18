@@ -1,16 +1,11 @@
 bots:
   chomens:
     prefix: "*"
-    keys:
-      trusted: ""
-      admin: ""
+    key: ""
 
   fnfboyfriendbot:
     prefix: "~"
-    keys:
-      trusted: ""
-      admin: ""
-      owner: ""
+    key: ""
 
   qbot:
     prefix: "]"

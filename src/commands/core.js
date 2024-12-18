@@ -5,6 +5,10 @@ module.exports = {
     aliases: [
       "cb",
       "corerun"
+    ],
+    description: "run commands in core",
+    usages: [
+      "<command>"
     ]
   },
   execute (context) {

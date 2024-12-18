@@ -10,6 +10,22 @@ if (!fs.existsSync(path.join(__dirname, "../config.yml"))) {
   )
 }
 
+if (!fs.existsSync(path.join(__dirname, "./modules/custom_chat.js"))) {
+  console.warn("custom chat format not found recreating from default custom chat format");
+  fs.copyFileSync(
+    path.join(__dirname, "./data/default_custom_chat.js"),
+    path.join(__dirname, "./modules/custom_chat.js")
+  )
+}
+
+if (!fs.existsSync(path.join(__dirname, "./modules/exploits.js"))) {
+  console.warn("exploits module not found recreating from default exploits");
+  fs.copyFileSync(
+    path.join(__dirname, "./data/default_exploits.js"),
+    path.join(__dirname, "./modules/exploits.js")
+  )
+}
+
 try {
   config = load(fs.readFileSync(path.join(__dirname, '../', 'config.yml')));
 } catch (e) {
