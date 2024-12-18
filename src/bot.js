@@ -14,6 +14,7 @@ function createBot(context) {
   };
 
   bot.server = config.server;
+  const { fromNotch } = require('prismarine-chat')(bot.server.version);
   // Create our client object, put it on the bot, and register some events
   bot.on('init_client', client => {
     client.on('packet', (data, meta) => {
@@ -28,15 +29,18 @@ function createBot(context) {
 
     client.on('disconnect', data => {
       bot.emit("disconnect", data);
+      console.warn(data);
     })
 
     client.on('end', reason => {
       bot.emit('end', reason);
+      if (reason === "socketClosed") return;
+      console.warn(reason);
     })
 
     client.on('error', error => {
-      endCount++
       bot.emit('error', error);
+      console.warn(error.toString());
     })
 
     client.on("keep_alive", ({ keepAliveId }) => {
@@ -44,7 +48,8 @@ function createBot(context) {
     })
 
     client.on('kick_disconnect', (data) => {
-      bot.emit("kick_disconnect", data.reason)
+      bot.emit("kick_disconnect", data);
+      console.warn(fromNotch(data.reason)?.toAnsi());
     })
 
     process.on("uncaughtException", (e) => {

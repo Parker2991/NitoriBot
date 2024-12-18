@@ -52,8 +52,12 @@ module.exports = {
     for (const filename of fs.readdirSync(path.join(__dirname, '../commands'))) {
       try {
         const command = require(path.join(__dirname, '../commands', filename))
-        bot.commandManager.register(command);
-        bot.commandManager.commandlist.push(command);
+        if (command.data.enabled === false) {
+
+        } else {
+          bot.commandManager.register(command);
+          bot.commandManager.commandlist.push(command);
+        }
       } catch (error) {
         console.error('Failed to load command', filename, ':', error)
       }

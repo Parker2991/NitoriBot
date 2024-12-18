@@ -59,9 +59,14 @@ module.exports = {
 
     bot.on('packet.game_state_change', (data) => {
       if (data.reason !== 3) return; // Reason 3 = Change Game Mode
-      if (data.reason !== 4) return;
+//      if (data.reason !== 4) return;
       gameMode = data.gameMode;
     });
+
+    bot.on('packet.game_state_change', (data) => {
+      if (data.reason !== 4) return;
+      clientLock = data.gameMode;
+    })
 
     bot.on("packet.position", (packet, position) => {
       if (!config.selfcare.icu) return;
