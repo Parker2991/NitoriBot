@@ -10,6 +10,7 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
+    const { MessageBuilder } = require('prismarine-chat')(bot.server.version);
     bot.commandManager = {
       commands: {},
       commandlist: [],
@@ -18,7 +19,7 @@ module.exports = {
 
         try {
           if (!command || !command.execute) console.error('unknown command');
-          return command?.execute({ bot, config, arguments: args })
+          return command?.execute({ bot, config, arguments: args, MessageBuilder })
         } catch (error) {
           console.error(error)
         }

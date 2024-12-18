@@ -24,7 +24,27 @@ bots:
     prefix: "-"
     token: ""
 
+console:
+  prefix: "."
+
+core:
+  itemRefill: false
+  area:
+    start:
+      x: 0
+      y: 0
+      z: 0
+    end:
+      x: 15
+      y: 0
+      z: 15
+  itemName: { text: "https://doin-your.mom", color: "dark_red" }
+  name: { text: "https://doin-your.mom", color: "dark_red" }
+
+
 server:
-  host: ""
-  port: ""
-  username: ""
+  host: "localhost"
+#  port: ""
+  username: "player"
+  version: "1.20.2"
+  reconnectDelay: 3000

@@ -270,5 +270,9 @@ module.exports = {
         acknowledged: bitset
       })
     }
+
+    bot.tellraw = (selector, message) => {
+      bot.core.run(`minecraft:tellraw ${selector} ${JSON.stringify(message)}`);
+    }
   }
 }
