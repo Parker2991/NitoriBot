@@ -5,6 +5,7 @@
     "minecraft-protocol": "^1.51.0",
     "prismarine-chat": "^1.10.1",
     "prismarine-nbt": "^2.7.0",
-    "prismarine-registry": "^1.10.0"
+    "prismarine-registry": "^1.10.0",
+    "undici": "^7.2.0"
   }
 }
