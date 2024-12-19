@@ -15,7 +15,6 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
-
     rl.on('line', (args) => {
       if (args.startsWith(config.console.prefix)) {
         return bot.commandManager.executeString(args.substring(config.console.prefix.length));
@@ -40,19 +39,19 @@ module.exports = {
 
     bot.console = {
       log (message) {
-        refreshLine(`${fromNotch("§8[§6logs§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        refreshLine(`${fromNotch("§8[§6logs§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(bot.registry?.language)}`)
       },
       command (message) {
-        refreshLine(`${fromNotch("§8[§ecommand§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        refreshLine(`${fromNotch("§8[§ecommand§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(bot.registry?.language)}`)
       },
       disconnect (reason) {
-        refreshLine(`${fromNotch("§8[§bdisconnect§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        refreshLine(`${fromNotch("§8[§bdisconnect§8]§r")?.toAnsi()} ${fromNotch(reason)?.toAnsi(bot.registry?.language)}`)
       },
       warn (error) {
-        refreshLine(`${fromNotch("§8[§cwarn§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        refreshLine(`${fromNotch("§8[§cwarn§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(bot.registry?.language)}`)
       },
       error (error) {
-        refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(bot.registry?.language)}`)
       }
     }
 

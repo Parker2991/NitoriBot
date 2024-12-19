@@ -1,6 +1,8 @@
 const fs = require('fs');
 const { load } = require('js-yaml');
 const path = require('path');
+const { WebhookClient } = require('discord.js');
+
 
 if (!fs.existsSync(path.join(__dirname, "../config.yml"))) {
   console.warn("Config not found creating config from the default config");
@@ -33,6 +35,9 @@ try {
   console.error(e.stack);
 }
 
+const webhook = new WebhookClient({ id: config.bots.testbot.id, token: config.bots.testbot.token });
+webhook.send({ content: "amogus" });
+
 let bot = require('./bot.js')({ config });
 
-require('./util/loadModules')(bot, config);
+require('./util/loadModules')(bot, config, webhook);

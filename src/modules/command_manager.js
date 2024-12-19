@@ -11,6 +11,7 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
+    const webhook = context.webhook;
     const { MessageBuilder } = require('prismarine-chat')(bot.server.version);
     bot.commandManager = {
       commands: {},
@@ -20,7 +21,7 @@ module.exports = {
 
         try {
           if (!command || !command.execute) bot.console.command('unknown command');
-          return command?.execute({ bot, config, arguments: args, MessageBuilder })
+          return command?.execute({ bot, config, arguments: args, MessageBuilder, webhook })
         } catch (error) {
           console.error(error)
         }

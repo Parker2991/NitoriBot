@@ -50,10 +50,23 @@ module.exports = {
         }
       break;
       case "sbot":
+        const md = crypto.createHash('MD5');
+        const command = args.slice(1).join(' ');
+        const timee = Math.floor(+new Date() / 20000);
+        const raw = config.bots.sbot.prefix+`${command.replace(/&[0-9a-fklmnor]/g, '')};${bot.server.username};${timee};${config.bots.sbot.key}`;
+        md.update(raw);
+        hash = md.digest();
+        const big_int = hash.slice(0, 4).readUInt32BE();
+        bot.chat(`${config.bots.sbot.prefix}${command} ${big_int.toString(36)}`);
 
       break;
       case "testbot":
-
+        context.webhook.send(`${bot.server.username}`);
+        if (bot.customChat.enabled) {
+          bot.customChat.chat(`${config.bots.testbot.prefix}${args.slice(1).join(' ')}`);
+        } else {
+          bot.chat(`${config.bots.testbot.prefix}${args.slice(1).join(' ')}`);
+        }
       break;
       default:
         console.warn('unknown argument');

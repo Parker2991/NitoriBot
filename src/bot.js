@@ -27,20 +27,20 @@ function createBot(context) {
       bot.username = client.username
     })
 
-    client.on('disconnect', data => {
+   client.on('disconnect', data => {
       bot.emit("disconnect", data);
-      console.warn(data);
+      bot?.console?.disconnect(data.reason);
     })
 
     client.on('end', reason => {
       bot.emit('end', reason);
       if (reason === "socketClosed") return;
-      console.warn(reason);
+      bot?.console?.disconnect(reason);
     })
 
     client.on('error', error => {
       bot.emit('error', error);
-      console.warn(error.toString());
+      bot?.console?.disconnect(error.toString());
     })
 
     client.on("keep_alive", ({ keepAliveId }) => {
@@ -49,8 +49,16 @@ function createBot(context) {
 
     client.on('kick_disconnect', (data) => {
       bot.emit("kick_disconnect", data);
-      console.warn(fromNotch(data.reason)?.toAnsi());
+      bot?.console?.disconnect(data.reason);
     })
+
+    client.on('success', (data) => {
+      bot?.console?.log(`Successfully logged into ${bot.server.host}:${bot.server.port}`)
+    });
+
+    client.on('server_data', (data) => {
+      bot?.console?.log(data.motd)
+    });
 
     process.on("uncaughtException", (e) => {
 //      console?.warn(e.stack)
@@ -60,7 +68,6 @@ function createBot(context) {
   const client = mc.createClient(bot.server)
   bot._client = client
   bot.emit('init_client', client)
-//  bot.bots = options.bots ?? [bot]
   return bot;
 }
 module.exports = createBot;

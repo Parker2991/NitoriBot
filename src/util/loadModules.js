@@ -1,12 +1,12 @@
 const fs = require("fs");
 const path = require("path");
-async function loadModules (bot, config) {
+async function loadModules (bot, config, webhook) {
   for (const filename of fs.readdirSync(path.join(__dirname, '../', 'modules'))) {
     try {
       if (filename.endsWith(".js")) {
         const module = require(path.join(__dirname, '../modules', filename));
         if (module.data.enabled === false) return;
-        module.inject({ bot, config });
+        module.inject({ bot, config, webhook });
         bot.emit('modules', module.data);
       }
     } catch (error) {
