@@ -1,5 +1,5 @@
 const CommandError = require('./command_error');
-module.exports = (bot, command, args, source) => {
+module.exports = (bot, command, args, source, config) => {
   const event = bot.discord.message;
   const roles = event?.member?.roles?.cache;
   switch (command?.data?.trustLevel) {

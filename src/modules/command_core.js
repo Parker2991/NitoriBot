@@ -50,11 +50,11 @@ function inject (context) {
           present: true,
           itemId: bot.registry.itemsByName.repeating_command_block.id,
           itemCount: 1,
-          nbtData: nbt.comp({
+/*          nbtData: nbt.comp({
             BlockEntityTag: nbt.comp({
               CustomName: nbt.string(JSON.stringify(config.core.itemName))
             })
-          })
+          })*/
         }
       });
 
@@ -185,11 +185,11 @@ function inject (context) {
           present: true,
           itemId: bot.registry.itemsByName.repeating_command_block.id,
           itemCount: 1,
-          nbtData: nbt.comp({
+/*          nbtData: nbt.comp({
             BlockEntityTag: nbt.comp({
               CustomName: nbt.string(JSON.stringify(config.core.itemName))
             })
-          })
+          })*/
         }
       });
 

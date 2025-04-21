@@ -83,7 +83,7 @@ function inject (context) {
       return
     }
 
-    if (message.translate === "advMode.notAllowed" || message?.translate?.startsWith("قيادة المجموعة")) return;
+    if (message.translate === "advMode.notAllowed") return;
 
     bot.emit('message', message);
 

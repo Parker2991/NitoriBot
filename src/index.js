@@ -34,28 +34,7 @@ for (const options of config.bots) {
   bots.push(bot);
   bot.bots = bots;
   require('./util/loadModules')(bot, options, config, discordClient);
-
-  let disconnectCount = 0;
   bot.console.readlineInterface(rl);
-
-  bot.on('clientDisconnect', (data) => {
-    try {
-      disconnectCount++
-
-      if (disconnectCount === 10) {
-        bot.console.info('stopped logging disconnect messages for now...');
-        bot?.discord?.channel?.send('stopped logging disconnect messages for now...');
-        return;
-      } else if (disconnectCount > 10) {
-        return;
-      } else {
-        bot.console.warn(bot.getMessageAsPrismarine(`§8[§bClient Reconnect§8]§r ${data}`)?.toAnsi())
-        bot?.discord?.channel?.send(data.toString());
-      }
-    } catch (e) {
-      console.log(e.stack);
-    }
-  });
 }
 
 discordClient.on('messageCreate', (message) => {

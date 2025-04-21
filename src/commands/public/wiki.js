@@ -44,6 +44,7 @@ module.exports = {
     const bot = context.bot;
     const args = context.arguments;
     const fixansi = context.fixansi;
+    const config = context.config;
 
     let component = [];
 
@@ -59,7 +60,7 @@ module.exports = {
       if (e.toString() === "pageError: TypeError: Cannot read properties of undefined (reading 'pages')") {
         bot?.discord?.message?.reply('Article not found!');
       } else {
-        bot?.discord?.message?.reply(`${e.toString()}`);
+        bot?.discord?.message?.reply(`${e.stack}`);
       }
     }
   }

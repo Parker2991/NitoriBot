@@ -6,12 +6,15 @@ function inject (context) {
   const config = context.config;
   const discordClient = context.discordClient;
   const options = context.options;
-  if (!options?.channelId) {
+  if (!options.channelId) {
     bot.discord = {
-      invite: config.discord?.invite
+      invite: config.discord?.invite,
+      client: discordClient,
+      prefix: config.discord.prefix
     }
     return
   }
+  
   bot.discord = {
     client: discordClient,
     channel: undefined,

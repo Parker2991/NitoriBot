@@ -20,6 +20,8 @@ module.exports = {
     const bot = context.bot
     const args = context.arguments;
     const source = context.source;
+    const config = context.config;
+
     if (!args && !args[0] && !args[1] && !args[2] && !args[3]) return;
     switch (args[0]?.toLowerCase()) {
       case "server":

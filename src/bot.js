@@ -1,6 +1,8 @@
 const mc = require('minecraft-protocol');
 const { EventEmitter } = require('events');
-EventEmitter.defaultMaxListeners = 200;
+const ChatMessage = require("prismarine-chat");
+EventEmitter.defaultMaxListeners = Infinity;
+let disconnectCount = 0;
 
 function createBot(options = {}, config) {
   const bot = new EventEmitter();
@@ -23,27 +25,44 @@ function createBot(options = {}, config) {
       bot.username = client.username;
     })
 
-    client.on('disconnect', data => {
-      bot.emit("clientDisconnect", data.reason);
-    })
+    client.on("disconnect", (data) => {
+      bot.console.warn(`${ChatMessage(bot._client.version).fromNotch("§8[§bClient Reconnect§8]§r")?.toAnsi()} ${ChatMessage(bot._client.version).fromNotch(data.reason)?.toAnsi()}`);
+      bot?.discord?.channel?.send(ChatMessage(bot._client.version).fromNotch(data.reason)?.toString());
+    });
 
-    client.on('end', reason => {
-      bot.emit('end', reason);
-    })
+    client.on("end", (reason) => {
+      bot.emit("end", reason);
+      disconnectCount++;
+    });
 
-    client.on('error', error => {
-      bot.emit('clientDisconnect', error.toString());
-    })
+    client.on("error", (error) => {
+      try {
+        if (disconnectCount === 10) {
+          bot.console.info("stopped logging disconnect messages for now...");
+          bot?.discord?.channel?.send("stopped logging disconnect messages for now...");
+          return;
+        } else if (disconnectCount > 10) {
+          return;
+        } else {
+          bot.console.warn(ChatMessage(bot._client.version).fromNotch(`§8[§bClient Reconnect§8]§r ${error.toString()}`)?.toAnsi());
+          bot?.discord?.channel?.send(error.toString());
+        }
+      } catch (e) {
+        console.log(e.stack);
+      }
+    });
 
-    client.on("keep_alive", ({ keepAliveId }) => {
-    })
-
-    client.on('kick_disconnect', (data) => {
-      bot.emit("clientDisconnect", data.reason)
-    })
+    client.on("kick_disconnect", (data) => {
+      bot.console.warn(`${ChatMessage(bot._client.version).fromNotch("§8[§bClient Reconnect§8]§r")?.toAnsi()} ${ChatMessage(bot._client.version).fromNotch(data.reason)?.toAnsi()}`);
+      bot?.discord?.channel?.send(ChatMessage(bot._client.version).fromNotch(data.reason)?.toString());
+    });
 
     process.on("uncaughtException", (e) => {
+      bot.console.warn(`${e.toString()}`);
+    });
 
+    client.on("success", () => {
+      disconnectCount = 0;
     });
   })
 

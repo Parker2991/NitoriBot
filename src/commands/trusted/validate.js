@@ -30,6 +30,8 @@ module.exports = {
     const event = bot?.discord?.message
     const roles = event?.member?.roles?.cache
     const source = context.source;
+    const config = context.config;
+
     if (roles?.some(role => role.name === `${config.discord.roles.trusted}`)) {
       bot.discord.message.reply('Valid trusted user')
       bot.chat.message(`Valid trusted user [${bot.discord.message.member.user.username}]`)

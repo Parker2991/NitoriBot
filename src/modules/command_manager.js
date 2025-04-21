@@ -44,7 +44,7 @@ async function inject (context) {
           }
         }
 
-        cmdMgrUtil(bot, command, args, source);
+        cmdMgrUtil(bot, command, args, source, config);
 
         return command?.execute({ bot, source, arguments: args, config, discordClient });
       } catch (error) {
@@ -82,7 +82,7 @@ async function inject (context) {
           throw new CommandError(`Unknown Command: ${commandName}`);
         }
 
-        cmdMgrUtil(bot, command, args, source);
+        cmdMgrUtil(bot, command, args, source, config);
 
         if (!command?.discordExecute) {
           throw new CommandError(`${command.data.name} command is not supported in discord!`);
@@ -93,7 +93,7 @@ async function inject (context) {
         if (error instanceof CommandError) {
           bot?.discord?.message?.reply(`${bot.getMessageAsPrismarine(error._message)}`);
         } else {
-          bot?.discord?.message?.reply(`\`\`\`${error}\`\`\``);
+          bot?.discord?.message?.reply(`\`\`\`${error.stack}\`\`\``);
           bot?.console?.warn(error.stack);
         }
       }

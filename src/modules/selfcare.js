@@ -88,9 +88,7 @@ function inject (context) {
     setTimeout(() => {
       positionCount--
       if (positionCount > 4) {
-        bot.core.run('sudo * icu stop');
-      } if (permissionLevel < 2 || gameMode !== 1) {
-        bot._client.end('anti icu :3');
+        bot._client.end('anti icu')
       }
     }, 1000)
   })
@@ -116,7 +114,7 @@ function inject (context) {
         if (permissionLevel < 2) bot.chat.command('op @s[type=player]');
         else if (gameMode !== 1) bot.chat.command('minecraft:gamemode creative');
         else if (username) bot.chat.command(`username ${bot._client.username}`)
-        else if (nickname) bot.chat.command(`nick off`)
+//        else if (nickname) bot.chat.command(`nick off`)
         else if (!prefix) bot.chat.command(`prefix &8[&bPrefix&8: &3${config.prefixes[0]}&8]`);
         else if (!vanished && bot.vanished) bot.core.run(`essentials:vanish ${bot._client.username} on`);
         else if (!commandSpy) bot.core.run(`commandspy ${bot.uuid} on`);
