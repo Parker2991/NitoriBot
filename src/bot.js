@@ -58,7 +58,6 @@ function createBot(options = {}, config) {
     });
 
     process.on("uncaughtException", (e) => {
-      bot.console.warn(`${e.toString()}`);
     });
 
     client.on("success", () => {
