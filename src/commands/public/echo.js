@@ -1,28 +1,18 @@
-module.exports = {
-  data: {
-    name: 'echo',
-    trustLevel: 0,
-    aliases: [
-      "say",
-      "botsay",
-    ],
-    description: 'Make me say something',
-    usages: [
-      "<message>"
-    ],
-  },
-  execute (context) {
+const CommandContext = require("../../command_util/command_context");
+
+class EchoCommand extends CommandContext {
+  constructor() {
+    super("echo", ["say", "botsay"], "make me say something!", 0, [
+      "<message>",
+    ]);
+  }
+
+  execute(context) {
     const bot = context.bot;
     const args = context.arguments;
-    bot.chat.send(args.join(' '));
-  },
-  discordExecute (context) {
-    const bot = context.bot;
-    const args = context.arguments;
-    if (args.includes("@everyone") || args.includes("@here")) {
-      bot.discord.message.reply("go fuck yourself");
-    } else {
-      bot.discord.message.channel.send(args.join(' '));
-    }
+
+    bot.chat.send(`${args.join(" ")}`);
   }
 }
+
+module.exports = EchoCommand;

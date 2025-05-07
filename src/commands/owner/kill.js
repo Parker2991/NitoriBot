@@ -1,23 +1,12 @@
-module.exports = {
-  data: {
-    name: 'kill',
-    trustLevel: 4,
-    aliases: [
-      "suicide",
-      "quit",
-    ],
-    description: 'kill the bots process',
-    usages: [
-      ""
-    ],
-  },
-  execute (context) {
+const CommandContext = require("../../command_util/command_context");
+
+class KillCommand extends CommandContext {
+  constructor() {
+    super("kill", ["suicide", "quit"], "kill the bots process", 3, [""]);
+  }
+  execute(context) {
     const bot = context.bot;
     process.exit(1);
-  },
-
-  discordExecute (context) {
-    const bot = context.bot;
-    process.exit(1)
   }
 }
+module.exports = KillCommand;

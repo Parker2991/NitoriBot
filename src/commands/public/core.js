@@ -1,35 +1,34 @@
-module.exports = {
-  data: {
-    name: "core",
-    aliases: [
-      "cb",
-      "cbrun",
-      "corerun"
-    ],
-    trustLevel: 0,
-    description: "run commands in core",
-    usages: [
-      "<message>"
-    ]
-  },
-  execute (context) {
+const sleep = require("../../util/sleep");
+const CommandContext = require("../../command_util/command_context");
+
+class CoreCommand extends CommandContext {
+  constructor() {
+    super("core", ["cb", "cbrun", "corerun"], "run commands in core", 0, [
+      "$username <message>",
+      "$uuid <message>",
+      "<message>",
+    ]);
+  }
+  execute(context) {
     const bot = context.bot;
     const args = context.arguments;
 
-    if (bot.options.mode === "savageFriends") {
-      bot.core.run(args.join(' '));
-    } else if (bot.options.mode === "kaboom") {
-      bot.core.runTracked(args.join(' '));
-    }
-  },
-  discordExecute (context) {
-    const bot = context.bot;
-    const args = context.arguments;
-
-    if (bot.options.mode === "savageFriends") {
-      bot.core.run(args.join(' '));
-    } else if (bot.options.mode === "kaboom") {
-      bot.core.runTracked(args.join(' '));
+    if (args.includes("$username") || args.includes("$uuid")) {
+      bot.players.forEach((eachPlayer) => {
+        bot.core.runTracked(
+          args
+            .join(" ")
+            .replaceAll("$username", eachPlayer.profile.name)
+            .replaceAll("$uuid", eachPlayer.uuid),
+        );
+        //        await sleep(1000)
+      });
+    } else if (bot.options.mode === "savageFriends") {
+      bot.core.run(args.join(" "));
+    } else {
+      bot.core.runTracked(args.join(" "));
     }
   }
 }
+
+module.exports = CoreCommand;

@@ -1,22 +1,17 @@
-const CommandError = require('../../util/command_error');
+const CommandError = require("../../command_util/command_error");
+const CommandContext = require("../../command_util/command_context");
 
-module.exports = {
-  data: {
-    name: "list",
-    aliases: [
-      "pl",
-      "playerlist"
-    ],
-    description: "check whos online on the server",
-    trustLevel: 0,
-    usages: [
-      ""
-    ]
-  },
-  execute (context) {
+class ListCommand extends CommandContext {
+  constructor() {
+    super("list", ["pl", "playerlist"], "check whos online on the server", 0, [
+      "",
+    ]);
+  }
+  execute(context) {
     const bot = context.bot;
     const args = context.arguments;
     const config = context.config;
+    const source = context.source;
 
     let component = [];
     let infoComponent = [];
@@ -28,7 +23,7 @@ module.exports = {
       with: [
         { text: "Players", color: config.colors.commands.primary },
         { text: `${bot.players.length}`, color: config.colors.integer },
-      ]
+      ],
     });
 
     component.push(playerCount);
@@ -41,49 +36,19 @@ module.exports = {
           player.displayName ?? player.profile.name,
           { text: `${player.uuid}`, color: config.colors.commands.primary },
           { text: "Latency", color: config.colors.commands.primary },
-          { text: `${player.latency}`, color: config.colors.integer }
-        ]
+          { text: `${player.latency}`, color: config.colors.integer },
+        ],
       });
       component.push("\n");
     }
     component.pop();
-    bot.tellraw("@a", component);
-  },
-  discordExecute (context) {
-    const bot = context.bot;
-    const config = context.config;
-    const fixansi = context.fixansi;
 
-    let component = [];
-    let playerCount = [];
-
-    playerCount.push({
-      translate: "%s: (%s)\n",
-      color: config.colors.commands.tertiary,
-      with: [
-        { text: "Players", color: config.colors.commands.primary },
-        { text: `${bot.players.length}`, color: config.colors.integer },
-      ]
-    });
-
-    component.push(playerCount);
-
-    for (const player of bot.players) {
-      component.push({
-        translate: "%s \u203a %s [%s: %s]",
-        color: config.colors.commands.tertiary,
-        with: [
-          player.displayName ?? player.profile.name,
-          { text: `${player.uuid}`, color: config.colors.commands.primary },
-          { text: "Latency", color: config.colors.commands.primary },
-          { text: `${player.latency}`, color: config.colors.integer }
-        ]
-      });
-      component.push("\n");
-    };
-
-    component.pop();
-
-    bot?.discord?.message?.reply(`\`\`\`ansi\n${fixansi(bot.getMessageAsPrismarine(component)?.toAnsi())}\`\`\``);
+    if (source.sources.console) {
+      bot.console.info(bot.getMessageAsPrismarine(component)?.toAnsi());
+    } else {
+      bot.tellraw("@a", component);
+    }
   }
 }
+
+module.exports = ListCommand;

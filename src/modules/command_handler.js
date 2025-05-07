@@ -1,39 +1,47 @@
-const CommandSource = require('../util/command_source');
+const CommandSource = require("../command_util/command_source");
 
-function inject (context) {
-  let ratelimit = 0;
-  const bot = context.bot;
-  const config = context.config;
-  const options = context.options;
+class CommandHandlerModule {
+  constructor(context) {
+    let ratelimit = 0;
+    const bot = context.bot;
+    const config = context.config;
+    const options = context.options;
 
-  bot.on("parsed_message", (data) => {
-    if (data.type !== "minecraft:chat") return;
-    const prefixes = config.prefixes;
-    prefixes.map((prefix) => {
-      const plainMessage = bot.getMessageAsPrismarine(data.contents)?.toString();
+    bot.on("parsed_message", (data) => {
+      try {
+        //    console.log(data.contents)
+        if (data.type !== "minecraft:chat") return;
+        const prefixes = config.prefixes;
+        prefixes.map((prefix) => {
+          const plainMessage = bot
+            .getMessageAsPrismarine(data.contents)
+            ?.toMotd();
 
-      if (!plainMessage.startsWith(prefix)) return
-      const command = plainMessage.substring(prefix.length)
-      const source = new CommandSource(data.sender, { discord: false, console: false }, true)
-      ratelimit++
-      setTimeout(() => {
-        ratelimit--
-      }, 1000)
-      if (ratelimit > 2) {
-        bot.tellraw('@a', { text: 'You are using commands too fast!', color: 'dark_red'})
-      } else if (command.split(" ")[0].length === 0) {
-      } else {
-        bot.commandManager.executeString(source, command)
+          if (!plainMessage?.startsWith(prefix)) return;
+          const command = plainMessage.substring(prefix.length);
+          const source = new CommandSource(
+            data.sender,
+            { discord: false, console: false },
+            true,
+          );
+          ratelimit++;
+          setTimeout(() => {
+            ratelimit--;
+          }, 1000);
+          if (ratelimit > config.ratelimit.commands) {
+            bot.tellraw("@a", {
+              text: "You are using commands too fast!",
+              color: "dark_red",
+            });
+          } else if (command.split(" ")[0].length === 0) {
+          } else {
+            bot.commandManager.executeString(source, command);
+          }
+        });
+      } catch (e) {
+        console.log(e.stack);
       }
-    })
-  })
+    });
+  }
 }
-
-module.exports = {
-  data: {
-    enabled: true,
-    name: "command handler",
-    type: "commands"
-  },
-  inject
-};
+module.exports = CommandHandlerModule;

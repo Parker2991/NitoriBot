@@ -1,7 +1,7 @@
-function between(min, max) {
-  return Math.floor(
-    Math.random() * (max - min) + min
-  )
+class Between {
+  constructor () {
+    this._Between = Math.floor(Math.random() * (max - min) + min);
+  }
 }
-module.exports = between;
+module.exports = Between;
 // ported from FNFBoyfriendBot v3

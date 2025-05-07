@@ -1,7 +1,5 @@
 module.exports = {
-  prefixes: [
-    "!",
-  ],
+  prefixes: ["!"],
 
   discord: {
     token: "discord token here",
@@ -10,15 +8,15 @@ module.exports = {
     enabled: true,
     presence: {
       name: "amogus",
-      status: "dnd"
+      status: "dnd",
     },
 
     roles: {
       trusted: "trusted",
       admin: "admin",
       fullAccess: "full access",
-      owner: "FNFBoyfriendBot Owner"
-    }
+      owner: "FNFBoyfriendBot Owner",
+    },
   },
 
   core: {
@@ -37,33 +35,33 @@ module.exports = {
         x: 15,
         y: 0,
         z: 15,
-      }
-    }
+      },
+    },
   },
 
   weatherApiKey: "weather api token here",
 
   debug: {
-    commandSetMessage: false
+    commandSetMessage: false,
   },
 
   keys: {
     trusted: "trusted key here",
     admin: "admin key here",
-    owner: "owner key here"
+    owner: "owner key here",
   },
 
   colors: {
     integer: "gold",
     discord: {
       embed: "#000000",
-      error: "#FF0000"
+      error: "#FF0000",
     },
 
     commands: {
       primary: "blue",
       secondary: "aqua",
-      tertiary: "gray"
+      tertiary: "gray",
     },
 
     help: {
@@ -71,12 +69,12 @@ module.exports = {
       trusted: "dark_aqua",
       admin: "aqua",
       owner: "light_purple",
-      console: "dark_purple"
-    }
+      console: "dark_purple",
+    },
   },
 
   console: {
-    prefix: "c."
+    prefix: "c.",
   },
 
   logsFolder: {
@@ -106,9 +104,7 @@ module.exports = {
       channelId: "discord channel ip here",
       logging: true,
       mode: "kaboom",
-      selfcareInterval: 300
-    }
-  ]
-}
-
-
+      selfcareInterval: 300,
+    },
+  ],
+};

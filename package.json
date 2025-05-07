@@ -8,9 +8,13 @@
     "minecraft-data": "^3.83.1",
     "minecraft-protocol": "^1.54.0",
     "prismarine-chat": "^1.10.1",
+    "prismarine-item": "^1.16.0",
     "prismarine-registry": "^1.11.0",
     "request": "^2.88.2",
     "undici": "^7.3.0",
     "wikipedia": "^2.1.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
   }
 }

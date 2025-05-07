@@ -1,3 +1,0 @@
-voiding interger will return a number
-public static void functionName() {} has the funcion return nothing
-
