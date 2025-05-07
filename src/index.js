@@ -2,7 +2,7 @@ const createBot = require("./bot.js");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
-const LoadModules = require("./util/loadModules")
+const loadModules = require("./util/loadModules")
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const { MessageContent, GuildMessages, Guilds, DirectMessages } = GatewayIntentBits;
 const discordClient = new Client({
@@ -37,7 +37,7 @@ for (const options of config.bots) {
   bot = new createBot(options, config);
   bots.push(bot);
   bot.bots = bots;
-  new LoadModules(bot, options, config, discordClient);
+  loadModules(bot, options, config, discordClient);
   bot.console.readlineInterface(rl);
 }
 

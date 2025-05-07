@@ -57,7 +57,7 @@ class DiscordModule {
         .replaceAll("```\u001b[9```" + "```\u001b[3```")
         .replaceAll("https://discord", "https:\rdiscord");
       try {
-        sendDiscordMessage(new fixansi(ansi?.replaceAll("`", "`\u200b")).ansi);
+        sendDiscordMessage(fixansi(ansi?.replaceAll("`", "`\u200b")));
       } catch (e) {
         bot.console.warn(`Error sending a message to Discord: ${e.message}`);
         sendDiscordMessage(e.message);

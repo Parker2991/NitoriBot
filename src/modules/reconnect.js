@@ -14,7 +14,7 @@ class ReconnectModule {
         if (options.usernameGen) {
           client =
             options.client ??
-            mc.createClient(options, (options.username = new usernameGen().username()));
+            mc.createClient(options, (options.username = usernameGen()));
         } else {
           client = options.client ?? mc.createClient(options);
         }

@@ -592,7 +592,7 @@ class InfoCommand extends CommandContext {
       bot.console.info(bot.getMessageAsPrismarine(component)?.toAnsi());
     } else if (source.sources.discord) {
       bot.discord.message.reply(
-        `\`\`\`ansi\n${new fixansi(bot.getMessageAsPrismarine(component)?.toAnsi()).ansi}\`\`\``,
+        `\`\`\`ansi\n${fixansi(bot.getMessageAsPrismarine(component)?.toAnsi())}\`\`\``,
       );
     } else {
       bot.tellraw("@a", component);

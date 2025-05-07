@@ -235,6 +235,7 @@ class ChatModule {
         message = tryParse(packet.content);
       }
 
+      
       if (
         message.translate === "advMode.setCommand.success" &&
         config?.debug?.commandSetMessage === false

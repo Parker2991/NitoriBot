@@ -5,7 +5,7 @@ let disconnectCount = 0;
 
 EventEmitter.defaultMaxListeners = Infinity;
 
-class CreateBot {
+class Bot extends EventEmitter {
   constructor (options = {}, config) {
     const bot = new EventEmitter();
     bot.options = {
@@ -95,5 +95,5 @@ class CreateBot {
     return bot;
   }
 }
-module.exports = CreateBot;
+module.exports = Bot;
 
