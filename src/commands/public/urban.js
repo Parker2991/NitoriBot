@@ -36,7 +36,7 @@ class UrbanCommand extends CommandContext {
       bot.tellraw("@a", { text: "No results found", color: "dark_red" });
     }
 
-    for (definitions of list) {
+    for (const definitions of list) {
       component.push(prefix, [
         {
           text: `${definitions.definition.replaceAll("\r", "").replaceAll("[", "\xa71\xa7n\xa7o").replaceAll("]", "\xa7r\xa77")}\n`,

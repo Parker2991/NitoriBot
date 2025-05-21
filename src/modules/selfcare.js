@@ -20,6 +20,7 @@ class SelfcareModule {
     let login = false;
     let register = false;
     let positionCount = 0;
+    let loggedin = false
     bot.vanished = true;
     bot.on("message", (data) => {
       try {
@@ -191,19 +192,22 @@ class SelfcareModule {
 
       timer = setInterval(() => {
         if (bot.options.mode === "savageFriends") {
-          if (login) bot.chat.command("login amogusissus");
-          else if (register)
+          if (login) {
+            bot.chat.command("login amogusissus");
+            loggedin = true
+          }
+          else if (register) {
             bot.chat.command("register amogusissus amogusissus");
-          else if (gameMode !== 1)
+            loggedin = true
+          }
+          else if (gameMode !== 1 && loggedin)
             bot.chat.command("minecraft:gamemode creative");
-          else if (permissionLevel < 2)
+          else if (permissionLevel < 2 && loggedin)
             bot.chat.command(`minecraft:op ${bot.options.username}`);
-          //        else if (!prefix)
-          //          bot.chat.command(
-          //            `rank ${bot.options.username} &8[&bPrefix&8: &3${config.prefixes[0]}&8]`,
-          //          );
-          else if (nickname) bot.chat.command("nick off");
-          else if (!vanished && bot.vanished)
+          else if (!prefix && loggedin)
+            bot.chat.command(`rank ${bot.options.username} &8[&bPrefix&8: &3${config.prefixes[0]}&8]`);
+          else if (nickname && loggedin) bot.chat.command("nick off");
+          else if (!vanished && bot.vanished && loggedin)
             bot.chat.command("essentials:vanish on");
           else if (clientLock !== 4)
             bot._client.write("client_command", { actionId: 0 });
@@ -244,6 +248,7 @@ class SelfcareModule {
       god = false;
       unmuted = false;
       username = false;
+      loggedin = false
     });
   }
 }

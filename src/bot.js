@@ -5,7 +5,7 @@ let disconnectCount = 0;
 
 EventEmitter.defaultMaxListeners = Infinity;
 
-class Bot extends EventEmitter {
+class Bot {
   constructor (options = {}, config) {
     const bot = new EventEmitter();
     bot.options = {
@@ -79,7 +79,7 @@ class Bot extends EventEmitter {
       });
 
       process.on("uncaughtException", (e) => {
-        bot.console.warn(`${e.stack}`);
+        bot.console.warn(`${e.toString()}`);
       });
 
       client.on("success", () => {

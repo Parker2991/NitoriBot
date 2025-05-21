@@ -1,4 +1,5 @@
 const CommandContext = require("../../command_util/command_context");
+const CommandError = require('../../command_util/command_error')
 
 class ConsoleCommand extends CommandContext {
   constructor() {

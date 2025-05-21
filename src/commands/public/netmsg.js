@@ -6,7 +6,7 @@ class NetmsgCommand extends CommandContext {
       "netmsg",
       ["networkmessage", "netmessage"],
       "send a message to other servers",
-      1,
+      0,
       ["<message>"],
     );
   }

@@ -34,7 +34,9 @@ class WikiCommand extends CommandContext {
         e.toString() ===
         "pageError: TypeError: Cannot read properties of undefined (reading 'pages')"
       ) {
-        bot.chat.message("&cArticle not found!");
+        bot.tellraw("@a",
+          { text: "no article found!", color: "red" }
+        )
       } else {
         bot.tellraw(`@a`, `${e.toString()}`);
       }

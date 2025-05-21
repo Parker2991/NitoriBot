@@ -14,9 +14,15 @@ class CloopCommand extends CommandContext {
   execute(context) {
     const bot = context.bot;
     const config = context.config;
-    const args = context.arguments;
     const source = context.source;
+    let args
     let component = [];
+
+    if (!source.sources.console && !source.sources.discord) {
+      args = context.arguments.slice(16)
+    } else {
+      args = context.arguments
+    }
 
     if (
       !args &&
@@ -29,12 +35,12 @@ class CloopCommand extends CommandContext {
     )
       return;
 
-    switch (args[1]?.toLowerCase()) {
+    switch (args[0]?.toLowerCase()) {
       case "add":
-        if (isNaN(args[2])) throw new CommandError("invalid interval");
+        if (isNaN(args[1])) throw new CommandError("invalid interval");
 
-        const interval = parseInt(args[2]);
-        const command = args.slice(3).join(" ");
+        const interval = parseInt(args[1]);
+        const command = args.slice(2).join(" ");
         bot.cloop.add(command, interval);
 
         component.push(
@@ -46,10 +52,10 @@ class CloopCommand extends CommandContext {
         component.push("cleared the cloops");
         break;
       case "remove":
-        if (isNaN(args[2]))
+        if (isNaN(args[1]))
           throw new CommandError("argument must be an integer!");
 
-        const index = parseInt(args[2]);
+        const index = parseInt(args[1]);
         bot.cloop.remove(index);
 
         component.push(`removed ${index} from cloops`);
@@ -89,7 +95,14 @@ class CloopCommand extends CommandContext {
       default:
         throw new CommandError("invalid argument");
     }
-    bot.tellraw("@a", component);
+
+    if (source.sources.discord) {
+
+    } else if (source.sources.console) {
+      bot.console.info(component)
+    } else {
+      bot.tellraw("@a", component);
+    }
   }
 }
 

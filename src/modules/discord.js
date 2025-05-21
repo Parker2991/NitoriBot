@@ -53,7 +53,7 @@ class DiscordModule {
     function sendComponent(message) {
       const ansi = bot
         .getMessageAsPrismarine(message)
-        ?.toAnsi(bot.registry.language)
+        ?.toAnsi(bot?.registry?.language)
         .replaceAll("```\u001b[9```" + "```\u001b[3```")
         .replaceAll("https://discord", "https:\rdiscord");
       try {

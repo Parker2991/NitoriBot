@@ -1,6 +1,7 @@
 const nbt = require("prismarine-nbt");
 const sleep = require("../util/sleep");
 const convertNbtComponentToJson = require("../util/nbt_parser");
+const fixansi = require("../util/ansi")
 
 class CommandCoreModule {
   constructor(context) {
@@ -47,12 +48,6 @@ class CommandCoreModule {
                 0,
               ),
             ),
-            /*          item: {
-            present: true,
-//            itemId: 492,
-            itemId: Item.toNotch(new Item(bot.registry.itemsByName.repeating_command_block.id, 1, 0)),
-            itemCount: 1,
-          },*/
           });
 
           bot._client.write("block_dig", {
@@ -74,12 +69,7 @@ class CommandCoreModule {
           if (bot.core.usePlacedCommandBlock) {
             return;
           } else {
-            bot._client.write("update_command_block", {
-              location: itemPosition,
-              command,
-              flags: 5,
-              mode: 1,
-            });
+            bot.core.commandBlock(command, itemPosition, 1, 5)
           }
         } else {
           bot.chat.command(`${command}`);
@@ -136,6 +126,15 @@ class CommandCoreModule {
         }
       },
 
+      commandBlock (command, location, mode, flags) {
+        bot._client.write("update_command_block", {
+          command: command.substring(0, 32767),
+          location: location,
+          mode: mode,
+          flags: flags,
+        });
+      },
+
       run(command) {
         const location = bot.core.currentBlock();
         const itemPosition = bot.core.itemPosition;
@@ -144,47 +143,25 @@ class CommandCoreModule {
         if (bot.options.mode === "creayun") {
           return;
         } else if (bot.options.mode === "savageFriends") {
-          bot._client.write("update_command_block", {
-            command: command.substring(0, 32767),
-            location: location,
-            mode: 2,
-            flags: 0b101,
-          });
+          bot.core.commandBlock(command, location, 2, 0b101)
 
           bot.core.incrementCurrentBlock();
         } else {
           if (bot.core.usePlacedCommandBlock) {
-            bot._client.write("update_command_block", {
-              command: command.substring(0, 32767),
-              location: itemPosition,
-              mode: 1,
-              flags: 5,
-            });
-
+            bot.core.commandBlock(command, itemPosition, 1, 5)
             bot.core.incrementCurrentBlock();
           } else {
-            bot._client.write("update_command_block", {
-              command: command.substring(0, 32767),
-              location,
-              mode: 1,
-              flags: 5,
-            });
-
+            bot.core.commandBlock(command, location, 1, 5)
             bot.core.incrementCurrentBlock();
           }
         }
       },
 
-      async runTracked(command, selector) {
+      async runTracked(command, source, selector) {
         const location = bot.core.currentBlock();
         let transactionId = Math.floor(Math.random() * 10000);
 
-        bot._client.write("update_command_block", {
-          command: command.substring(0, 32767),
-          location,
-          flags: 0b101,
-          mode: 1,
-        });
+        bot.core.commandBlock(command, location, 1, 0b101)
 
         bot.core.incrementCurrentBlock();
 
@@ -192,14 +169,20 @@ class CommandCoreModule {
 
         bot._client.write("query_block_nbt", { location, transactionId });
 
-        bot.on("packet.nbt_query_response", (data) => {
+        bot.on("packet.nbt_query_response", async (data) => {
           try {
             if (data.transactionId == transactionId) {
               if (data?.nbt?.value?.LastOutput) {
-                bot.tellraw(
-                  "@a",
-                  JSON.parse(data.nbt.value.LastOutput.value).extra,
-                );
+                const output = JSON.parse(data.nbt.value.LastOutput.value).extra
+
+                if (source.sources.console) {
+
+                } else {
+                  bot.tellraw(
+                    "@a",
+                    output,
+                  );
+                }
               }
             }
           } catch (e) {

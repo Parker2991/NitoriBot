@@ -38,12 +38,14 @@ class McserverCommand extends CommandContext {
         ],
       });
 
+
       if (source.sources.console) {
         bot.console.info(bot.getMessageAsPrismarine(component)?.toAnsi());
       } else {
         bot.tellraw("@a", component);
       }
     } catch (e) {
+      console.log(e.stack)
       bot.chat.message(`${e.toString()}`);
     }
   }
