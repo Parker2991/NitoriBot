@@ -11,6 +11,7 @@ function createBot(context) {
     host: config.server.host ??= 'localhost',
     username: config.server.username ??= 'Player',
     hideErrors: config.server.hideErrors ??= true, // HACK: Hide errors by default as a lazy fix to console being spammed with them
+    auth: config.server.auth
   };
 
   bot.server = config.server;
@@ -34,13 +35,13 @@ function createBot(context) {
 
     client.on('end', reason => {
       bot.emit('end', reason);
-      if (reason === "socketClosed") return;
+      if (reason === "socketClosed") return
       bot?.console?.disconnect(reason);
     })
 
     client.on('error', error => {
       bot.emit('error', error);
-      bot?.console?.disconnect(error.toString());
+      bot?.console?.disconnect(error);
     })
 
     client.on("keep_alive", ({ keepAliveId }) => {
@@ -57,7 +58,8 @@ function createBot(context) {
     });
 
     client.on('server_data', (data) => {
-      bot?.console?.log(data.motd)
+      bot.console.log(require('./util/nbt_parser')(null, data.motd))
+//      bot?.console?.log(data.motd)
     });
 
     process.on("uncaughtException", (e) => {

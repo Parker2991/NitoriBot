@@ -20,11 +20,14 @@ module.exports = {
     const args = context.arguments;
     const config = context.config;
     let hash;
+
+    if (!args && !args[0] && !args[1] && !args[2] && !args[3]) return;
+
     switch (args[0]) {
       case "chomens":
         const time = Math.floor(Date.now() / 5_000)
 
-        const value = bot.uuid + args.slice(1) + time + config.bots.chomens.key
+        const value = bot.uuid + args[1] + time + config.bots.chomens.key
 
         hash = crypto.createHash('sha256').update(value).digest('hex').substring(0, 16)
         if (bot.customChat.enabled) {
@@ -34,11 +37,11 @@ module.exports = {
         }
       break;
       case "fnfboyfriendbot":
-        hash = crypto.createHash('sha256').update(Math.floor(Date.now() / 1000) + config.bots.fnfboyfriendbot.key).digest("hex").substring(0, 16);
+        hash = crypto.createHash('sha256').update(Math.floor(Date.now() / 2000) + config.bots.fnfboyfriendbot.key).digest("hex").substring(0, 16);
         if (bot.customChat.enabled) {
-          bot.customChat.chat(`${config.bots.fnfboyfriendbot.prefix}${args.slice(1).shift()} ${hash} ${args.slice(2).join(' ')}`)
+          bot.customChat.chat(`${config.bots.fnfboyfriendbot.prefix}${args.slice(1).shift()} ${crypto.createHash('sha256').update(Math.floor(Date.now() / 2000) + config.bots.fnfboyfriendbot.key).digest('hex').substring(0, 16)} ${args.slice(2).join(' ')}`)
         } else {
-          bot.chat(`${config.bots.fnfboyfriendbot.prefix}${args.slice(1).shift()} ${hash} ${args.slice(2).join(' ')}`);
+          bot.chat(`${config.bots.fnfboyfriendbot.prefix}${args.slice(1).shift()} ${crypto.createHash('sha256').update(Math.floor(Date.now() / 2000) + config.bots.fnfboyfriendbot.key).digest('hex').substring(0, 16)} ${args.slice(2).join(' ')}`);
         }
       break;
       case "qbot":

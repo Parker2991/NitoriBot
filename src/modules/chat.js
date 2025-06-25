@@ -1,3 +1,4 @@
+const convertNbtComponentToJson = require('../util/nbt_parser')
 
 module.exports = {
   data: {
@@ -11,58 +12,9 @@ module.exports = {
     const config = context.config;
 
     bot.on('packet.player_chat', (data) => {
-      const unsigned = data.unsignedChatContent;
+      const unsigned = convertNbtComponentToJson(null, data.unsignedChatContent)
       try {
-      switch (data.type) {
-        case 1:
-
-        break;
-        case 3:
-          bot.emit('playerChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Player Chat', color: 'dark_purple' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: data.type, color: 'gold' },
-              ],
-            },
-            { translate: "commands.message.display.outgoing",
-              with: [
-                JSON.parse(data.networkName).insertion,
-                data.plainMessage
-              ],
-              color: "gray",
-              italic: true
-            }
-          ])
-      break
-      case 2:
-        bot.emit('playerChat', [
-          {
-            translate: "[%s %s %s%s %s] ",
-            color: "dark_gray",
-            with: [
-              { text: 'Player Chat', color: 'dark_purple' },
-              { text: '|' },
-              { text: 'Packet Type', color: "aqua" },
-              { text: ':' },
-              { text: data.type, color: 'gold' },
-            ],
-          },
-          { translate: "commands.message.display.incoming",
-             with: [
-               JSON.parse(data.networkName).insertion,
-               data.plainMessage
-             ],
-             color: "gray",
-             italic: true
-          }
-        ])
-      break
+      switch (data.type.registryIndex) {
         case 4:
           bot.emit('playerChat', [
             {
@@ -73,12 +25,42 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: data.type, color: 'gold' },
+                { text: data.type.registryIndex, color: 'gold' },
               ],
             },
-            JSON.parse(unsigned)
+            { translate: "commands.message.display.outgoing",
+              with: [
+                data.networkName.insertion,
+                data.plainMessage
+              ],
+              color: "gray",
+              italic: true
+            }
           ])
-        break;
+      break
+      case 3:
+        bot.emit('playerChat', [
+          {
+            translate: "[%s %s %s%s %s] ",
+            color: "dark_gray",
+            with: [
+              { text: 'Player Chat', color: 'dark_purple' },
+              { text: '|' },
+              { text: 'Packet Type', color: "aqua" },
+              { text: ':' },
+              { text: data.type.registryIndex, color: 'gold' },
+            ],
+          },
+          { translate: "commands.message.display.incoming",
+             with: [
+               data.networkName.insertion,
+               data.plainMessage
+             ],
+             color: "gray",
+             italic: true
+          }
+        ])
+      break
         case 5:
           bot.emit('playerChat', [
             {
@@ -89,12 +71,28 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: data.type, color: 'gold' },
+                { text: data.type.registryIndex, color: 'gold' },
+              ],
+            },
+            unsigned
+          ])
+        break;
+        case 6:
+          bot.emit('playerChat', [
+            {
+              translate: "[%s %s %s%s %s] ",
+              color: "dark_gray",
+              with: [
+                { text: 'Player Chat', color: 'dark_purple' },
+                { text: '|' },
+                { text: 'Packet Type', color: "aqua" },
+                { text: ':' },
+                { text: data.type.registryIndex, color: 'gold' },
               ],
             },
             { translate: "chat.type.announcement",
               with: [
-                JSON.parse(data.networkName).insertion,
+                data.networkName.insertion,
                 data.plainMessage
               ]
             }
@@ -109,10 +107,11 @@ module.exports = {
     })
 
     bot.on('packet.profileless_chat', (packet) => {
-      const message = JSON.parse(packet.message)
-      const sender = JSON.parse(packet.name)
-      switch (packet.type) {
-        case 1:
+      const message = convertNbtComponentToJson(null, packet.message)
+      const sender = convertNbtComponentToJson(null, packet.name)
+      try {
+      switch (packet.type.registryIndex) {
+        case 2:
           bot?.emit('profilelessChat', [
             {
               translate: "[%s %s %s%s %s] ",
@@ -122,7 +121,7 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: packet.type, color: 'gold' },
+                { text: packet.type.registryIndex, color: 'gold' },
               ],
             },
             { translate: "chat.type.emote",
@@ -130,29 +129,6 @@ module.exports = {
                  sender,
                  message
                ]
-            }
-          ])
-        break
-        case 2:
-          bot.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type, color: 'gold' },
-              ],
-            },
-            { translate: "commands.message.display.incoming",
-              with: [
-                sender,
-                message
-              ],
-              color: "gray",
-              italic: true
             }
           ])
         break
@@ -166,10 +142,10 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: packet.type, color: 'gold' },
+                { text: packet.type.registryIndex, color: 'gold' },
               ],
             },
-            { translate: "commands.message.display.outgoing",
+            { translate: "commands.message.display.incoming",
               with: [
                 sender,
                 message
@@ -189,10 +165,17 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: packet.type, color: 'gold' },
+                { text: packet.type.registryIndex, color: 'gold' },
               ],
             },
-            message
+            { translate: "commands.message.display.outgoing",
+              with: [
+                sender,
+                message
+              ],
+              color: "gray",
+              italic: true
+            }
           ])
         break
         case 5:
@@ -205,7 +188,23 @@ module.exports = {
                 { text: '|' },
                 { text: 'Packet Type', color: "aqua" },
                 { text: ':' },
-                { text: packet.type, color: 'gold' },
+                { text: packet.type.registryIndex, color: 'gold' },
+              ],
+            },
+            message
+          ])
+        break
+        case 6:
+          bot.emit('profilelessChat', [
+            {
+              translate: "[%s %s %s%s %s] ",
+              color: "dark_gray",
+              with: [
+                { text: 'Profileless Chat', color: 'dark_aqua' },
+                { text: '|' },
+                { text: 'Packet Type', color: "aqua" },
+                { text: ':' },
+                { text: packet.type.registryIndex, color: 'gold' },
               ],
             },
             { translate: 'chat.type.announcement',
@@ -217,10 +216,15 @@ module.exports = {
           ])
         break
       }
+    } catch (e) {
+      console.log(e.stack)
+    }
     });
 
     bot.on('packet.system_chat', packet => {
-      const message = JSON.parse(packet.content)
+      try {
+//      console.log(packet)
+      const message = convertNbtComponentToJson(null, packet.content)
 
       if (message.translate === 'advMode.setCommand.success') return // Ignores command set message
 
@@ -244,6 +248,9 @@ module.exports = {
       ]);
 
       bot.emit('system_chat_selfcare', message); // this is for selfcare
+    } catch (e) {
+      console.log(e.stack)
+    }
     });
 
     bot.chat = (args) => {

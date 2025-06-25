@@ -14,6 +14,6 @@ module.exports = {
   execute (context) {
     const bot = context.bot;
     const args = context.arguments;
-    bot.chat(args.join(' '));
+    bot._client.chat(args.join(' '));
   }
 }

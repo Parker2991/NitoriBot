@@ -22,6 +22,9 @@ module.exports = {
         bot.exploits.kicks.item(args.slice(1).join(' '));
         bot.console.command(`Kicking ${args.slice(1).join(' ')}`);
       break;
+      case "te":
+        bot.exploits.kicks.translateEntity(args.slice(1).join(' '))
+      break;
       default:
         bot.console.command("invalid argument");
     }

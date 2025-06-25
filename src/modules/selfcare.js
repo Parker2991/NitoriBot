@@ -24,6 +24,7 @@ module.exports = {
 
 
     bot.on("system_chat_selfcare", (message) => {
+      try {
       const parsedMessage = fromNotch(message)?.toMotd();
       if (parsedMessage?.startsWith("§6You have been muted")) mute = true;
       else if (parsedMessage?.startsWith("§6You have been unmuted")) mute = false;
@@ -50,6 +51,9 @@ module.exports = {
       else if (parsedMessage === `Successfully set your username to "${bot.server.username}"`) username = false;
       else if (parsedMessage === `You already have the username "${bot.server.username}"`) username = false;
 
+      } catch (e) {
+        console.log(e.stack)
+      }
     });
 
     bot.on('packet.entity_status', (data) => {
@@ -68,8 +72,8 @@ module.exports = {
       clientLock = data.gameMode;
     })
 
-    bot.on("packet.position", (packet, position) => {
-      if (!config.selfcare.icu) return;
+/*    bot.on("packet.position", (packet, position) => {
+      if (!config.selfcare.icu || bot.server.mode === "savageFriends") return;
       positionCount++
       setTimeout(() => {
         positionCount--
@@ -79,13 +83,35 @@ module.exports = {
           bot._client.end('anti icu :3');
         }
       }, 1000)
-    })
+    })*/
 
     let timer;
     bot.on('packet.login', (data) => {
       entityId = data.entityId;
-      gameMode = data.gameMode;
+      switch (data.worldState.gamemode) {
+        case 'survival':
+          gameMode = 0
+          break
+        case 'creative':
+          gameMode = 1
+          break
+        case 'adventure':
+          gameMode = 2
+          break
+        case 'spectator':
+          gameMode = 3
+          break
+        default:
+          gameMode = 0
+          break
+      }
+
+//      if (bot.server.mode === "savageFriends") return;
       timer = setInterval(() => {
+        if (bot.server.mode === "savageFriends") {
+          if (gameMode !== 1 && config.selfcare.game) bot.chat("/minecraft:gamemode creative")
+          else if (permission < 2 && config.selfcare.op) bot.chat(`/minecraft:op ${bot._client.username}`)
+        } else {
         if (permission < 2 && config.selfcare.op) bot.chat("/minecraft:op @s[type=player]");
         else if (gameMode !== 1 && config.selfcare.gamemode) bot.chat("/minecraft:gamemode creative");
         else if (!commandSpy && config.selfcare.cspy) bot.chat('/cspy on');
@@ -98,7 +124,8 @@ module.exports = {
         else if (nick && config.selfcare.nick) bot.core.run(`nick ${bot.server.username} off`);
 
         else if (gameMode !== 4) bot._client.write("client_command", { actionId: 0 });
-      }, 1000);
+        }
+      }, 300);
     });
 
     bot.on('end', () => {

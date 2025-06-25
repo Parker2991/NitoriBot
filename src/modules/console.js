@@ -7,10 +7,10 @@ const rl = readline.createInterface({
 
 module.exports = {
   data: {
-    description: "logs chat to console",
+    description: "console functions",
     enabled: true,
     name: "console",
-    type: "logging"
+    type: "console"
   },
   inject (context) {
     const bot = context.bot;
@@ -39,23 +39,27 @@ module.exports = {
 
     bot.console = {
       log (message) {
-        refreshLine(`${fromNotch("§8[§6logs§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(bot.registry?.language)}`)
+        if (fromNotch(message)?.toString().includes("https://www.innersloth.com/games/among-us/ › amogus")) {
+
+        } else {
+          refreshLine(`${fromNotch("§8[§6logs§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
+        }
       },
       command (message) {
-        refreshLine(`${fromNotch("§8[§ecommand§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(bot.registry?.language)}`)
+        refreshLine(`${fromNotch("§8[§ecommand§8]§r")?.toAnsi()} ${fromNotch(message)?.toAnsi(require('../data/language.json'))}`)
       },
       disconnect (reason) {
-        refreshLine(`${fromNotch("§8[§bdisconnect§8]§r")?.toAnsi()} ${fromNotch(reason)?.toAnsi(bot.registry?.language)}`)
+        refreshLine(`${fromNotch("§8[§bdisconnect§8]§r")?.toAnsi()} ${fromNotch(reason)?.toAnsi(require('../data/language.json'))}`)
       },
       warn (error) {
-        refreshLine(`${fromNotch("§8[§cwarn§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(bot.registry?.language)}`)
+        refreshLine(`${fromNotch("§8[§cwarn§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(require('../data/language.json'))}`)
       },
       error (error) {
-        refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(bot.registry?.language)}`)
+        refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(require('../data/language.json'))}`)
       }
     }
 
-    bot.on('playerChat', (message) => {
+/*    bot.on('playerChat', (message) => {
       bot.console.log(message);
     });
 
@@ -65,6 +69,6 @@ module.exports = {
 
     bot.on('systemChat', (message) => {
       bot.console.log(message);
-    });
+    });*/
   }
 }

@@ -30,7 +30,7 @@ module.exports = {
         const { start, end } = bot.core.area
 
         if (!pos) return
-        const command = `/minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} repeating_command_block{CustomName:'${JSON.stringify(config.core.name)}'} destroy`
+        const command = `/minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} repeating_command_block{CustomName:'${JSON.stringify(config.core.name)}'}`
         bot.chat(`${command}`)
       },
 
@@ -139,7 +139,7 @@ module.exports = {
         const location = bot.core.currentBlock();
         const itemPosition = bot.core.itemPosition;
 
-        if (!location) return;
+        if (!location || bot.server.mode === "savageFriends") return;
         if (bot.core.usePlacedCommandBlock) {
           bot._client.write('update_command_block', {
             command: command.substring(0, 32767),
@@ -163,6 +163,7 @@ module.exports = {
     }
 
     bot.on('move', () => {
+      if (bot.server.mode === "savageFriends") return;
       bot.core.move(bot.position)
     })
 

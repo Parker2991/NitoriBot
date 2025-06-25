@@ -11,7 +11,11 @@ module.exports = {
       list: [],
       add (command, interval) {
         let timer;
-        timer = ({ timer: setInterval(() => bot.core.run(command), interval), command, interval })
+        if (bot.server.mode === "savageFriends") {
+          timer = ({ timer: setInterval(() => bot.chat(`${command}`), interval), command, interval })
+        } else {
+          timer = ({ timer: setInterval(() => bot.core.run(command), interval), command, interval })
+        }
         this.list.push(timer)
 
         bot.on('end', () => {

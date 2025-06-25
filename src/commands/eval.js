@@ -16,7 +16,7 @@ module.exports = {
     const bot = context.bot;
     const args = context.arguments;
     try {
-      bot.console.command({ text: util.inspect(eval(args.join(' ')), { stylize })});
+      bot.console.command(util.inspect(eval(args.join(' ')), { stylize }));
     } catch (e) {
       bot.console.command(e.toString());
     }
