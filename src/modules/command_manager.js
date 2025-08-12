@@ -5,7 +5,7 @@ const CommandSource = require("../command_util/command_source");
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
-class CommandManagerModule {
+class command_manager {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -49,6 +49,8 @@ class CommandManagerModule {
 
           const event = bot.discord.message;
           const roles = event?.member?.roles?.cache;
+
+          console.log(command)
           switch (command?.data?.trustLevel) {
             case 0:
               // do nothing since trust level 0 is public
@@ -148,6 +150,9 @@ class CommandManagerModule {
                 });
               }
               break;
+            case 5:
+              throw new CommandError({ text: 'This Command has been disabled!', color: 'red' })
+            break
           }
 
           if (source.sources.discord) {
@@ -251,4 +256,4 @@ class CommandManagerModule {
     }
   }
 }
-module.exports = CommandManagerModule;
+module.exports = command_manager;

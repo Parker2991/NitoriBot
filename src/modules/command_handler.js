@@ -1,6 +1,6 @@
 const CommandSource = require("../command_util/command_source");
 
-class CommandHandlerModule {
+class command_handler {
   constructor(context) {
     let ratelimit = 0;
     const bot = context.bot;
@@ -9,7 +9,6 @@ class CommandHandlerModule {
 
     bot.on("parsed_message", (data) => {
       try {
-        //    console.log(data.contents)
         if (data.type !== "minecraft:chat") return;
         const prefixes = config.prefixes;
         prefixes.map((prefix) => {
@@ -44,4 +43,4 @@ class CommandHandlerModule {
     });
   }
 }
-module.exports = CommandHandlerModule;
+module.exports = command_handler;

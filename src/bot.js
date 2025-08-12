@@ -79,7 +79,7 @@ class Bot {
       });
 
       process.on("uncaughtException", (e) => {
-        bot.console.warn(`${e.toString()}`);
+        bot.console.warn(`${e.stack}`);
       });
 
       client.on("success", () => {

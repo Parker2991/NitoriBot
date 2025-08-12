@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-class ValidationModule {
+class validation {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -25,4 +25,4 @@ class ValidationModule {
     }, 100);
   }
 }
-module.exports = ValidationModule;
+module.exports = validation 

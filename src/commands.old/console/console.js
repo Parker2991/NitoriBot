@@ -1,7 +1,7 @@
 const CommandContext = require("../../command_util/command_context");
 const CommandError = require('../../command_util/command_error')
 
-class console extends CommandContext {
+class ConsoleCommand extends CommandContext {
   constructor() {
     super("console", ["c"], "runs commands made for the bots console", 4, [
       "server/srv <all/servername>",
@@ -115,4 +115,4 @@ class console extends CommandContext {
   }
 }
 
-module.exports = console;
+module.exports = ConsoleCommand;

@@ -1,8 +1,10 @@
 const CommandContext = require("../../command_util/command_context");
+const CommandTrustLevel = require('../../command_util/command_trust_level')
+const trustLevel = new CommandTrustLevel()
 
-class EchoCommand extends CommandContext {
+class echo extends CommandContext {
   constructor() {
-    super("echo", ["say", "botsay"], "make me say something!", 0, [
+    super("echo", ["say", "botsay"], "make me say something!", trustLevel.public, [
       "<message>",
     ]);
   }
@@ -15,4 +17,4 @@ class EchoCommand extends CommandContext {
   }
 }
 
-module.exports = EchoCommand;
+module.exports = echo;

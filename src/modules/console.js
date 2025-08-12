@@ -1,7 +1,7 @@
 const CommandSource = require("../command_util/command_source");
 const prismarineChat = require("prismarine-chat")("1.20.2");
 
-class ConsoleModule {
+class Console { // named it Console so that it doesnt override the console variable
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -116,4 +116,4 @@ class ConsoleModule {
     });
   }
 }
-module.exports = ConsoleModule;
+module.exports = Console;

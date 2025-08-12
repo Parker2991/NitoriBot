@@ -1,6 +1,6 @@
 const CommandContext = require("../../command_util/command_context");
 
-class validate extends CommandContext {
+class ValidateCommand extends CommandContext {
   constructor() {
     super("validate", ["val"], "validate through the bot", 1, [""]);
   }
@@ -21,4 +21,4 @@ class validate extends CommandContext {
   }
 }
 
-module.exports = validate
+module.exports = ValidateCommand;

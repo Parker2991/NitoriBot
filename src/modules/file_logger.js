@@ -4,7 +4,7 @@ const { createGzip } = require("zlib");
 const readline = require("readline");
 const { Console } = require("console");
 
-class FileloggerModule {
+class file_logger {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -71,4 +71,4 @@ class FileloggerModule {
     };
   }
 }
-module.exports = FileloggerModule;
+module.exports = file_logger;

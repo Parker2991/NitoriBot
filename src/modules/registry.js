@@ -1,6 +1,6 @@
 const createRegistry = require("prismarine-registry");
 
-class RegistryModule {
+class registry {
   constructor(context) {
     const bot = context.bot;
     bot.on("packet.login", (packet) => {
@@ -10,4 +10,4 @@ class RegistryModule {
     });
   }
 }
-module.exports = RegistryModule;
+module.exports = registry;

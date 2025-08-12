@@ -1,15 +1,13 @@
 const fixansi = require("../../util/ansi");
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
 
-class help extends CommandContext {
+class HelpCommand extends CommandContext {
   constructor() {
     super(
       "help",
       ["heko", "?", "cmds", "commands", "hell"],
       "see a list of commands",
-      trustLevel.public,
+      0,
       ["<command>"],
     );
   }
@@ -335,9 +333,9 @@ class help extends CommandContext {
           });
           break;
         default:
-/*          bot.chat.message(
+          bot.chat.message(
             `fuck you ${commands.data.name} has a invalid trust level`,
-          );*/
+          );
       }
 
       if (
@@ -445,4 +443,4 @@ class help extends CommandContext {
   }
 }
 
-module.exports = help;
+module.exports = HelpCommand;

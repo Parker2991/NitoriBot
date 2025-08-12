@@ -3,7 +3,7 @@ const sleep = require("../util/sleep");
 const convertNbtComponentToJson = require("../util/nbt_parser");
 const fixansi = require("../util/ansi")
 
-class CommandCoreModule {
+class command_core {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -259,4 +259,4 @@ class CommandCoreModule {
     });
   }
 }
-module.exports = CommandCoreModule;
+module.exports = command_core;

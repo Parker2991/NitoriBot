@@ -1,7 +1,7 @@
 const CommandError = require("../../command_util/command_error");
 const CommandContext = require("../../command_util/command_context");
 
-class kick extends CommandContext {
+class KickCommand extends CommandContext {
   constructor() {
     super("kick", [], "kick a player from the server", 2, [
       "invalidstring",
@@ -34,4 +34,4 @@ class kick extends CommandContext {
   }
 }
 
-module.exports = kick;
+module.exports = KickCommand;

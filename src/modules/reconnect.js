@@ -1,6 +1,6 @@
 const mc = require("minecraft-protocol");
 const usernameGen = require("../util/usernameGen");
-class ReconnectModule {
+class reconnect {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -24,4 +24,4 @@ class ReconnectModule {
     });
   }
 }
-module.exports = ReconnectModule;
+module.exports = reconnect;

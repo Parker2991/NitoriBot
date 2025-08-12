@@ -5,8 +5,6 @@ const botInfo = require("../../data/info.json");
 const fixansi = require("../../util/ansi.js");
 const { execSync } = require("child_process");
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
 
 function format(seconds) {
   function pad(s) {
@@ -24,9 +22,9 @@ function format(seconds) {
   );
 }
 
-class info extends CommandContext {
+class InfoCommand extends CommandContext {
   constructor() {
-    super("info", ["information"], "check the bots info", trustLevel.public, [
+    super("info", ["information"], "check the bots info", 0, [
       "about",
       "config <client, discord, options, all>",
       "contributors/credits",
@@ -604,4 +602,4 @@ class info extends CommandContext {
   }
 }
 
-module.exports = info;
+module.exports = InfoCommand;

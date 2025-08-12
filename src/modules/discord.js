@@ -1,7 +1,7 @@
 const fixansi = require("../util/ansi");
 const CommandSource = require("../command_util/command_source");
 
-class DiscordModule {
+class discord {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -199,4 +199,4 @@ class DiscordModule {
     discordClient.on("messageCreate", messageCreate);
   }
 }
-module.exports = DiscordModule;
+module.exports = discord;

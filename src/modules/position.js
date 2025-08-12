@@ -1,4 +1,4 @@
-class PositionModule {
+class position {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -21,4 +21,4 @@ class PositionModule {
     });
   }
 }
-module.exports = PositionModule;
+module.exports = position;

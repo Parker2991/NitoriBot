@@ -1,6 +1,6 @@
 const loadPrismarineChat = require("prismarine-chat");
-const KaboomChatParser = require("../chatparsers/kaboom");
-const CreayunChatParser = require("../chatparsers/creayun");
+const KaboomChatParser = require("../chat_parsers/kaboom");
+const CreayunChatParser = require("../chat_parsers/creayun");
 const convertNbtComponentToJson = require("../util/nbt_parser");
 
 function tryParse(json) {
@@ -11,7 +11,7 @@ function tryParse(json) {
   }
 }
 
-class ChatModule {
+class chat {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -322,4 +322,4 @@ class ChatModule {
     };
   }
 }
-module.exports = ChatModule;
+module.exports = chat;

@@ -1,6 +1,6 @@
 const CommandContext = require("../../command_util/command_context");
 
-class kill extends CommandContext {
+class KillCommand extends CommandContext {
   constructor() {
     super("kill", ["suicide", "quit"], "kill the bots process", 3, [""]);
   }
@@ -9,4 +9,4 @@ class kill extends CommandContext {
     process.exit(1);
   }
 }
-module.exports = kill;
+module.exports = KillCommand;

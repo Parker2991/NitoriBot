@@ -1,4 +1,4 @@
-class CommandLoopModule {
+class command_loop {
   constructor(context) {
     const bot = context.bot;
     bot.cloop = {
@@ -39,4 +39,4 @@ class CommandLoopModule {
     };
   }
 }
-module.exports = CommandLoopModule;
+module.exports = command_loop;
