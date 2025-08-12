@@ -18,11 +18,23 @@ class command_handler {
 
           if (!plainMessage?.startsWith(prefix)) return;
           const command = plainMessage.substring(prefix.length);
+
           const source = new CommandSource(
             data.sender,
             { discord: false, console: false },
-            true,
+            null
           );
+
+          source.sendFeedback = (message) => {
+            if (source.sources.console) bot.console.command(message);
+            else if (source.sources.discord) {
+            // i dont know what to do for discord yet
+            } else bot.tellraw(`@a[name="${source.player.profile.name}"]`, message);
+          }
+
+          if (command.split(' ')[1] === bot.validation.trusted) source.player.hash = "trusted";
+          else if (command.split(' ')[1] === bot.validation.admin) source.player.hash = "admin";
+          else if (command.split(' ')[1] === bot.validation.owner) source.player.hash = "owner";
           ratelimit++;
           setTimeout(() => {
             ratelimit--;

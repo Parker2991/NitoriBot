@@ -2,7 +2,7 @@ class CommandSource {
   constructor(player, sources, hash) {
     this.player = player;
     this.sources = sources;
-    this.hash = hash;
+    this.player.hash = hash;
   }
 }
 module.exports = CommandSource;

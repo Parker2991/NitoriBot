@@ -97,6 +97,15 @@ class Console { // named it Console so that it doesnt override the console varia
             ?.toAnsi() + message,
         );
       },
+      command (message) {
+        console.log(
+          prismarineChat
+            .fromNotch(
+              `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §6command§8] §8[${serverName}§8] `,
+            )
+            ?.toAnsi() + prismarineChat.fromNotch(message)?.toAnsi(bot.registry.language),
+        );
+      }
     };
     setInterval(() => (ratelimit = 0), 1000 * 2);
 

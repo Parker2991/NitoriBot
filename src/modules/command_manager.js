@@ -5,52 +5,51 @@ const CommandSource = require("../command_util/command_source");
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
+function unknownCommand (MessageBuilder, commandName, bot) {
+  return new MessageBuilder()
+    .setTranslate("%s%s%s %s")
+    .setColor("red")
+    .addWith(
+      new MessageBuilder()
+        .setTranslate("command.unknown.command")
+          .setColor('red'),
+      new MessageBuilder()
+        .setText('\n'),
+      new MessageBuilder()
+        .setText(`${commandName}`)
+          .setColor("gray"),
+      new MessageBuilder()
+        .setTranslate("command.context.here")
+        .setColor("red")
+    )
+}
+
 class command_manager {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
     const discordClient = context.discordClient;
     const options = context.options;
+    const { MessageBuilder } = require('prismarine-chat')(bot._client.version)
+
+
     bot.commandManager = {
       commands: {},
       commandlist: [],
       execute(source, commandName, args) {
         const command = this.getCommand(commandName.toLowerCase());
+
         try {
           if (!command) {
-            if (source?.sources?.console) {
-              bot.console.warn(
-                bot
-                  .getMessageAsPrismarine({
-                    translate: "%s%s%s %s",
-                    color: "dark_gray",
-                    with: [
-                      { translate: "command.unknown.command", color: "red" },
-                      { text: "\n" },
-                      { text: `${commandName}` },
-                      { translate: "command.context.here", color: "red" },
-                    ],
-                  })
-                  ?.toAnsi(),
-              );
-            } else {
-              throw new CommandError({
-                translate: "%s%s%s %s",
-                color: "dark_gray",
-                with: [
-                  { translate: "command.unknown.command", color: "red" },
-                  { text: "\n" },
-                  { text: `${commandName}` },
-                  { translate: "command.context.here", color: "red" },
-                ],
-              });
-            }
+            if (source?.sources?.console) bot.console.command(
+              unknownCommand(MessageBuilder, commandName, bot)
+            )
+            else source.sendFeedback(unknownCommand(MessageBuilder, commandName, bot))
           }
 
           const event = bot.discord.message;
           const roles = event?.member?.roles?.cache;
 
-          console.log(command)
           switch (command?.data?.trustLevel) {
             case 0:
               // do nothing since trust level 0 is public
@@ -64,29 +63,27 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}` ||
                     role.name === `${config.discord.roles.owner}`,
                 );
-                if (!hasRole)
-                  throw new CommandError({
-                    translate:
-                      "You dont have the trusted, admin, or owner role!",
-                    color: "dark_red",
-                  });
+                if (!hasRole) throw new CommandError(
+                  new MessageBuilder()
+                    .setText("You dont have the trusted, admin, or owner roles!")
+                    .setColor("red")
+                )
               } else if (!source?.sources.console) {
-                if (args.length === 0)
-                  throw new CommandError({
-                    text: "Please provide a trusted, admin or owner hash",
-                    color: "dark_red",
-                  });
+                if (args.length === 0) throw new CommandError(
+                  new MessageBuilder()
+                    .setText("Please provide a trusted, admin, or owner hash")
+                    .setColor("red")
+                )
                 if (
                   args[0] !== bot.validation.trusted &&
                   args[0] !== bot.validation.admin &&
                   args[0] !== bot.validation.owner
+                ) throw new CommandError(
+                  new MessageBuilder()
+                    .setText("Invalid Hash")
+                    .setColor("red")
                 )
-                  throw new CommandError({
-                    translate: "Invalid trusted, admin or owner hash",
-                    color: "dark_red",
-                  });
               }
-
               break;
             case 2:
               if (source?.sources?.discord) {
@@ -96,25 +93,26 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}` ||
                     role.name === `${config.discord.roles.owner}`,
                 );
-                if (!hasRole)
-                  throw new CommandError({
-                    translate: "You dont have the admin, or owner role!",
-                    color: "dark_red",
-                  });
+                if (!hasRole) throw new CommandError(
+                  new MessageBuilder()
+                    .setText("You dont have the admin, or owner roles!")
+                    .setColor("red")
+                )
               } else if (!source?.sources?.console) {
                 if (args.length === 0)
-                  throw new CommandError({
-                    text: "Please provide an admin or owner hash",
-                    color: "dark_red",
-                  });
+                  throw new CommandError(
+                    new MessageBuilder()
+                      .setText('Please provide a hash')
+                      .setColor('red')
+                  );
                 if (
                   args[0] !== bot.validation.admin &&
                   args[0] !== bot.validation.owner
                 )
-                  throw new CommandError({
-                    translate: "Invalid admin or owner hash",
-                    color: "dark_red",
-                  });
+                  throw new CommandError(
+                    new MessageBuilder()
+                      .setText('Invalid Hash')
+                  );
               }
               break;
             case 3:
@@ -125,33 +123,43 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}`,
                 );
                 if (!hasRole)
-                  throw new CommandError({
-                    translate: "You do not have the owner role!",
-                    color: "dark_red",
-                  });
+                  throw new CommandError(
+                  new MessageBuilder()
+                    .setText("You dont have the owner role!")
+                    .setColor("red")
+                )
               } else if (!source?.sources?.console) {
                 if (args.length === 0 && bot.validation.owner)
-                  throw new CommandError({
-                    text: "Please provide an owner hash",
-                    color: "dark_red",
-                  });
+                  throw new CommandError(
+                    new MessageBuilder()
+                      .setText("Please provide a hash")
+                      .setColor('red')
+                  );
+
                 if (args[0] !== bot.validation.owner)
-                  throw new CommandError({
-                    translate: "Invalid owner hash",
-                    color: "dark_red",
-                  });
+                  throw new CommandError(
+                    new MessageBuilder()
+                      .setText('Invalid Hash')
+                      .setColor('red')
+                  );
               }
               break;
             case 4:
               if (!source?.sources?.console) {
-                throw new CommandError({
-                  text: "This command can only be ran via console",
-                  color: "dark_red",
-                });
+
+                throw new CommandError(
+                  new MessageBuilder()
+                    .setText("This Command can only be ran via console")
+                    .setColor('red')
+                );
               }
               break;
             case 5:
-              throw new CommandError({ text: 'This Command has been disabled!', color: 'red' })
+              throw new CommandError(
+                new MessageBuilder()
+                  .setText("This Command has been disabled!")
+                  .setColor('red')
+              )
             break
           }
 
@@ -159,13 +167,13 @@ class command_manager {
             discordClient.channels.cache
               .get("1361739286113685534")
               .send(
-                `User: ${source.player.profile.name}, Command: ${command.data.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Discord`,
+                `User: ${source.player.profile.name}, Command: ${command?.data?.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Discord`,
               );
           } else if (!source.sources.console) {
             discordClient.channels.cache
               .get("1361739286113685534")
               .send(
-                `User: ${source.player.profile.name}, Command: ${command.data.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Minecraft, Server: ${bot.options.host}:${bot.options.port}`,
+                `User: ${source.player.profile.name}, Command: ${command?.data?.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Minecraft, Server: ${bot.options.host}:${bot.options.port}`,
               );
           }
 
@@ -231,8 +239,8 @@ class command_manager {
     };
 
     /*
-   command loader ported from my discord bot SkiBot
-  */
+      command loader ported from my discord bot SkiBot
+    */
     let commandlist = [];
     const foldersPath = path.join(__dirname, "../commands");
     const commandFolders = fs.readdirSync(foldersPath);
