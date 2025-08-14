@@ -1,8 +1,9 @@
 class CommandSource {
-  constructor(player, sources, hash) {
+  constructor(player, sources, ChatType) {
     this.player = player;
     this.sources = sources;
-    this.player.hash = hash;
+    this.ChatType = ChatType
+    this.player.hash = null;
   }
 }
 module.exports = CommandSource;

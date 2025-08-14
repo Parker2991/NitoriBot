@@ -12,7 +12,7 @@ class command_loop {
         };
         this.list.push(timer);
 
-        bot.on("end", () => {
+/*        bot.on("end", () => {
           this.clear();
         });
 
@@ -24,7 +24,7 @@ class command_loop {
             interval,
           };
           this.list.push(timer);
-        });
+        });*/
       },
 
       remove(index) {

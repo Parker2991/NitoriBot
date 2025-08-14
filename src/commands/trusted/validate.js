@@ -4,7 +4,7 @@ const trustLevel = new CommandTrustLevel()
 
 class validate extends CommandContext {
   constructor() {
-    super("validate", ["val"], "validate through the bot", trustLevel.trusted, [""]);
+    super("validate", ["val"], "validate through the bot", trustLevel.trusted, [""], false);
   }
   execute(context) {
     const bot = context.bot;

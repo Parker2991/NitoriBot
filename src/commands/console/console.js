@@ -11,7 +11,9 @@ class console extends CommandContext {
       "say <message>",
       "validate/validation/val <owner/o/admin/a/trusted/t>",
       "logging/togglelogging/logtoconsole <on/true/enable/off/false/disable>",
-    ]);
+    ],
+    false
+  );
   }
   execute(context) {
     const bot = context.bot;

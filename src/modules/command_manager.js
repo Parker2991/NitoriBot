@@ -32,7 +32,6 @@ class command_manager {
     const options = context.options;
     const { MessageBuilder } = require('prismarine-chat')(bot._client.version)
 
-
     bot.commandManager = {
       commands: {},
       commandlist: [],
@@ -46,9 +45,11 @@ class command_manager {
             )
             else source.sendFeedback(unknownCommand(MessageBuilder, commandName, bot))
           }
-
+          
           const event = bot.discord.message;
           const roles = event?.member?.roles?.cache;
+//          console.log(command)
+//          console.log(source)
 
           switch (command?.data?.trustLevel) {
             case 0:
@@ -163,7 +164,7 @@ class command_manager {
             break
           }
 
-          if (source.sources.discord) {
+/*          if (source.sources.discord) {
             discordClient.channels.cache
               .get("1361739286113685534")
               .send(
@@ -175,8 +176,11 @@ class command_manager {
               .send(
                 `User: ${source.player.profile.name}, Command: ${command?.data?.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Minecraft, Server: ${bot.options.host}:${bot.options.port}`,
               );
-          }
+          }*/
 
+          
+//          if (command.playerOnly === true && source.ChatType.find((e) => e)) return;
+           
           return command?.execute({
             bot,
             source,

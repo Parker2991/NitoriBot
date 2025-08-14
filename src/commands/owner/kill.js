@@ -4,7 +4,7 @@ const trustLevel = new CommandTrustLevel()
 
 class kill extends CommandContext {
   constructor() {
-    super("kill", ["suicide", "quit"], "kill the bots process", trustLevel.owner, [""]);
+    super("kill", ["suicide", "quit"], "kill the bots process", trustLevel.owner, [""], false);
   }
   execute(context) {
     const bot = context.bot;

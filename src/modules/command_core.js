@@ -25,7 +25,7 @@ class command_core {
 
       usePlacedCommandBlock: false,
 
-      refill() {
+      chatRefill() {
         const pos = bot.core.position;
         const { start, end } = bot.core.area;
         const itemPosition = bot.core.itemPosition;
@@ -35,10 +35,18 @@ class command_core {
         if (bot.options.mode === "savageFriends") {
           command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block`;
         } else {
-          command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:'${JSON.stringify(config.core.name)}'}`;
+          command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:${JSON.stringify(config.core.name)}}`;
         }
+        bot.chat.command(command)
+      },
 
-        if (config.core.itemRefill && bot.options.mode !== "savageFriends") {
+      itemRefill () {
+        const pos = bot.core.position;
+        const { start, end } = bot.core.area;
+        const itemPosition = bot.core.itemPosition;
+        
+        command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:${JSON.stringify(config.core.name)}}`;
+        if (bot.options.mode !== "savageFriends") {
           bot._client.write("set_creative_slot", {
             slot: 36,
             item: Item.toNotch(
@@ -71,8 +79,6 @@ class command_core {
           } else {
             bot.core.commandBlock(command, itemPosition, 1, 5)
           }
-        } else {
-          bot.chat.command(`${command}`);
         }
       },
 
@@ -89,7 +95,11 @@ class command_core {
           z: Math.floor(pos.z),
         };
 
-        bot.core.refill();
+        if (bot.options.itemRefill) {
+          bot.core.itemRefill();
+        } else {
+          bot.core.chatRefill()
+        }
       },
 
       currentBlock() {
@@ -127,8 +137,9 @@ class command_core {
       },
 
       commandBlock (command, location, mode, flags) {
+        if (!bot.loggedIn) return;
         bot._client.write("update_command_block", {
-          command: command.substring(0, 32767),
+          command: command?.substring(0, 32767),
           location: location,
           mode: mode,
           flags: flags,
@@ -136,6 +147,7 @@ class command_core {
       },
 
       run(command) {
+        if (!bot.loggedIn) return;
         const location = bot.core.currentBlock();
         const itemPosition = bot.core.itemPosition;
 

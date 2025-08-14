@@ -17,7 +17,8 @@ class core extends CommandContext {
         "$username <message>",
         "$uuid <message>",
         "<message>",
-      ]
+      ],
+      false
     );
   }
   execute(context) {

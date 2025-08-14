@@ -6,19 +6,37 @@ class selfcare {
     const bot = context.bot
     const config = context.config
     const options = context.options
-    let messageSelfcare
-    let loadMessageSelfcare
 
     bot.selfcare = {
       permissionLevel: 2,
       entityId: undefined,
       gameMode: undefined,
-      commandSpy: undefined
+      commandSpy: undefined,
+      prefix: undefined,
+      vanished: undefined,
+      mute: undefined,
+      username: undefined,
+      nickname: undefined,
+      god: undefined,
+      position_count: 0,
+
     }
 
-    for (const file of fs.readdirSync(path.join(__dirname, '../selfcare/message'))) {
+    let selfcare = [];
+
+    for (const file of fs.readdirSync(path.join(__dirname, '../selfcare/extras'))) {
       try {
-        loadMessageSelfcare = require(path.join(__dirname, '../selfcare/message', file))
+        const extrasSelfcare = require(path.join(__dirname, '../selfcare/extras', file))
+        selfcare.push(extrasSelfcare)
+      } catch (e) {
+        console.error(e.stack)
+      }
+    }
+
+    for (const file of fs.readdirSync(path.join(__dirname, '../selfcare/essentials'))) {
+      try {
+        const essentialsSelfcare = require(path.join(__dirname, '../selfcare/essentials', file))
+        selfcare.push(essentialsSelfcare)
       } catch (e) {
         console.error(e.stack)
       }
@@ -27,50 +45,52 @@ class selfcare {
     for (const file of fs.readdirSync(path.join(__dirname, '../selfcare/entity'))) {
       try {
         const loadEntitySelfcare = require(path.join(__dirname, '../selfcare/entity', file))
-        const entitySelfcare = new loadEntitySelfcare({ bot, config, options })
+
+        new loadEntitySelfcare({ bot, config, options })
       } catch (e) {
         console.error(e.stack)
       }
-    } // how the fuck do i want to implement this...
+    }
 
-    bot.on('message', (message) => {
+    bot.on('system_chat', (message) => {
       const stringMessage = bot.getMessageAsPrismarine(message)?.toString()
-      //new loadMessageSelfcare({ bot, options, config, stringMessage })
+      
+      for (const file of selfcare) new file({ bot, config, options, stringMessage })
+
     })
     let timer;
     bot.on('packet.login', (data) => {
       bot.selfcare.entityId = data.entityId;
-      if (bot.options.version === "1.21" || bot.options.version === "1.21.1") {
-        switch (data.worldState.gamemode) {
-          case "survival":
-            bot.selfcare.gameMode = 0;
-            break;
-          case "creative":
-            gameMode = 1;
-            break;
-          case "adventure":
-            bot.selfcare.gameMode = 2;
-            break;
-          case "spectator":
-            bot.selfcare.gameMode = 3;
-            break;
-          default:
-            bot.selfcare.gameMode = 0;
-            break;
-        }
-      } else {
-        bot.selfcare.gameMode = data.gameMode;
-      }
+      bot.selfcare.gameMode = data.gameMode;
+      
       timer = setInterval(() => {
-        if (bot.selfcare.permissionLevel < 2) bot.chat.command('minecraft:op @s[type=player]')
-        else if (bot.selfcare.gameMode !== 1) bot.chat.command('minecraft:gamemode creative')
-        //else if (!bot.selfcare.commandSpy) bot.core.run(`commandspy ${bot.uuid} on`)
+        if (bot.options.mode === "savageFriends") {
+
+        } else {
+          if (!bot.selfcare.prefix) bot.chat.command(`extras:prefix &8[&bPrefix&8: &3${config.prefixes[0]}&8]`);
+          else if (bot.selfcare.permissionLevel < 2) bot.chat.command('minecraft:op @s[type=player]')
+          else if (bot.selfcare.username) bot.chat.command(`extras:username ${bot._client.username}`)
+          else if (bot.selfcare.gameMode !== 1) bot.chat.command('minecraft:gamemode creative')
+          else if (!bot.selfcare.commandSpy) bot.core.run(`commandspy ${bot.uuid} on`)
+          else if (!bot.selfcare.vanished) bot.core.run(`essentials:vanish ${bot._client.username} on`)
+          else if (!bot.selfcare.god) bot.core.run(`essentials:god ${bot._client.username} on`)
+          else if (bot.selfcare.mute) bot.core.run(`essentials:mute ${bot._client.uuid}`)
+          else if (bot.selfcare.nickname) bot.core.run(`essentials:nickname ${bot._client.username} off`)
+          
+        }
       }, options.selfcareInterval)
     })
 
     bot.on('end', () => {
       if (timer) clearInterval(timer)
       bot.selfcare.commandSpy = false
+      bot.selfcare.prefix = false
+      bot.selfcare.vanished = false
+      bot.selfcare.mute = false
+      bot.selfcare.username = false
+      bot.selfcare.nickname = false
+      bot.selfcare.god = false
+
     })
   }
 }

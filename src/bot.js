@@ -25,6 +25,7 @@ class Bot {
       client.on("login", (data) => {
         bot.uuid = client.uuid;
         bot.username = client.username;
+        bot.loggedIn = true;
       });
 
       client.on("disconnect", (data) => {
@@ -43,6 +44,7 @@ class Bot {
 
       client.on("end", (reason) => {
         bot.emit("end", reason);
+        bot.loggedIn = false;
         disconnectCount++;
       });
 

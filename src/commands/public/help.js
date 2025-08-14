@@ -11,6 +11,7 @@ class help extends CommandContext {
       "see a list of commands",
       trustLevel.public,
       ["<command>"],
+      false
     );
   }
 

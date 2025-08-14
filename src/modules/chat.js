@@ -1,6 +1,8 @@
 const loadPrismarineChat = require("prismarine-chat");
 const KaboomChatParser = require("../chat_parsers/kaboom");
 const CreayunChatParser = require("../chat_parsers/creayun");
+const ChipmunkModChatParser = require("../chat_parsers/chipmunkmod")
+const VanilaChatParser = require("../chat_parsers/vanilla")
 const convertNbtComponentToJson = require("../util/nbt_parser");
 
 function tryParse(json) {
@@ -23,224 +25,125 @@ class chat {
     if (options.mode === "savageFriends") {
       bot.chatParsers = [CreayunChatParser];
     } else {
-      bot.chatParsers = [KaboomChatParser];
+      bot.chatParsers = [KaboomChatParser, ChipmunkModChatParser, VanilaChatParser];
     }
+    
     bot.on("packet.profileless_chat", (packet) => {
       let message
       let sender
-      if (bot._client.version === "1.21" || bot.options.version === "1.21.1") {
-        message = convertNbtComponentToJson(null, packet.message);
-        sender = convertNbtComponentToJson(null, packet.name);
-      } else {
-        message = tryParse(packet.message);
-        sender = tryParse(packet.name);
-      }
+      message = tryParse(packet.message);
+      sender = tryParse(packet.name);
 
-      if (bot.options.version === "1.21" || bot._client.version === "1.21.1") {
-        switch (packet.type.registryIndex) {
-          case 6:
-            bot.emit("message", {
-              translate: "chat.type.announcement",
-              with: [sender, message],
-            });
-            break;
-          case 5:
-            bot.emit("message", message);
-            break;
-          case 4:
-            bot.emit("message", {
+      switch (packet.type) {
+        case 1:
+          bot.emit("message", {
+            translate: "chat.type.emote",
+            with: [sender, message],
+          });
+          break;
+        case 2:
+          bot.emit("message", {
+            translate: "commands.message.display.incoming",
+            with: [sender, message],
+            color: "gray",
+            italic: true,
+          });
+          break;
+        case 3:
+          bot.emit("message", [
+            {
               translate: "commands.message.display.outgoing",
               with: [sender, message],
               color: "gray",
               italic: true,
-            });
-            break;
-          case 3:
-            bot.emit("message", {
-              translate: "commands.message.display.incoming",
-              with: [sender, message],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 2:
-            bot.emit("message", {
-              translate: "chat.type.emote",
-              with: [sender, message],
-            });
-            break;
-        }
-      } else {
-        switch (packet.type) {
-          case 1:
-            bot.emit("message", {
-              translate: "chat.type.emote",
-              with: [sender, message],
-            });
-            break;
-          case 2:
-            bot.emit("message", {
-              translate: "commands.message.display.incoming",
-              with: [sender, message],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 3:
-            bot.emit("message", [
-              {
-                translate: "commands.message.display.outgoing",
-                with: [sender, message],
-                color: "gray",
-                italic: true,
-              },
-            ]);
-            break;
-          case 4:
-            bot.emit("message", [message]);
-            break;
-          case 5:
-            bot.emit("message", [
-              { translate: "chat.type.announcement", with: [sender, message] },
-            ]);
-            break;
-        }
+            },
+          ]);
+          break;
+        case 4:
+          bot.emit("message", [message]);
+          break;
+        case 5:
+          bot.emit("message", [
+            { translate: "chat.type.announcement", with: [sender, message] },
+          ]);
+          break;
       }
+      tryParsingMessage(message, { senderName: sender, players: bot.players, chatType: "profileless", getMessageAsPrismarine: bot.getMessageAsPrismarine })
     });
 
     bot.on("packet.player_chat", (packet, data) => {
       let unsigned;
 
-      if (bot.options.version === "1.21" || bot.options.version === "1.21.1") {
-        unsigned = convertNbtComponentToJson(null, packet.unsignedChatContent);
-      } else {
-        unsigned = tryParse(packet.unsignedChatContent);
-      }
+      unsigned = tryParse(packet.unsignedChatContent);
 
-      if (bot.options.version === "1.21" || bot.options.version === "1.21.1") {
-        switch (packet.type.registryIndex) {
-          case 6:
-            bot.emit("message", {
-              translate: "chat.type.announcement",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
+      switch (packet.type) {
+        case 5:
+          bot.emit("message", {
+            translate: "chat.type.announcement",
+            with: [
+              bot.players.find((player) => player.uuid === packet.senderUuid)
+                .profile.name,
+              packet.plainMessage,
+            ],
+          });
+          break;
+        case 4:
+          bot.emit("message", unsigned);
+          break;
+        case 3:
+          bot.emit("message", {
+            translate: "commands.message.display.outgoing",
+            with: [
+              bot.players.find((player) => player.uuid === packet.senderUuid)
+                .profile.name,
+              packet.plainMessage,
+            ],
+            color: "gray",
+            italic: true,
+          });
+          break;
+        case 2:
+          bot.emit("message", {
+            translate: "commands.message.display.incoming",
+            with: [
+              bot.players.find((player) => player.uuid === packet.senderUuid)
+                .profile.name,
                 packet.plainMessage,
-              ],
-            });
-            break;
-          case 5:
-            bot.emit("message", unsigned);
-            break;
-          case 4:
-            bot.emit("message", {
-              translate: "commands.message.display.outgoing",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 3:
-            bot.emit("message", {
-              translate: "commands.message.display.incoming",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 2:
-            bot.emit("message", {
-              translate: "chat.type.emote",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-            });
-            break;
-        }
-      } else {
-        switch (packet.type) {
-          case 5:
-            bot.emit("message", {
-              translate: "chat.type.announcement",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-            });
-            break;
-          case 4:
-            bot.emit("message", unsigned);
-            break;
-          case 3:
-            bot.emit("message", {
-              translate: "commands.message.display.outgoing",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 2:
-            bot.emit("message", {
-              translate: "commands.message.display.incoming",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            });
-            break;
-          case 1:
-            bot.emit("message", {
-              translate: "chat.type.emote",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-            });
-            break;
-        }
+            ],
+            color: "gray",
+            italic: true,
+          });
+          break;
+        case 1:
+          bot.emit("message", {
+            translate: "chat.type.emote",
+            with: [
+              bot.players.find((player) => player.uuid === packet.senderUuid)
+                .profile.name,
+              packet.plainMessage,
+            ],
+          });
+          break;
       }
-
       tryParsingMessage(unsigned, {
         senderUuid: packet.senderUuid,
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
+        chatType: "player"
       });
     });
 
     bot.on("packet.system_chat", (packet) => {
       let message;
 
-      if (bot.options.version === "1.21" || bot.options.version === "1.21.1") {
-        message = convertNbtComponentToJson(null, packet.content);
-      } else {
-        message = tryParse(packet.content);
-      }
+      message = tryParse(packet.content);
 
       
       if (
         message.translate === "advMode.setCommand.success" &&
         config?.debug?.commandSetMessage === false
       )
-        return;
+      return;
       if (message.translate === "multiplayer.message_not_delivered") return;
 
       if (packet.isActionBar) {
@@ -250,14 +153,17 @@ class chat {
       if (message.translate === "advMode.notAllowed") return;
 
       bot.emit("message", message);
-
+      bot.emit("system_chat", message)
+      
       tryParsingMessage(message, {
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
+        chatType: "system"
       });
     });
 
     function tryParsingMessage(message, data) {
+      try {
       let parsed;
 
       for (const parser of bot.chatParsers) {
@@ -267,6 +173,9 @@ class chat {
 
       if (!parsed) return;
       bot.emit("parsed_message", parsed);
+    } catch (e) {
+      console.log(e.stack)
+    }
     }
 
     bot.getMessageAsPrismarine = (message) => {

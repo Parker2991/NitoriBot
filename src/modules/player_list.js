@@ -9,12 +9,12 @@ class player_list {
 
     bot.on("packet.player_info", async (packet) => {
       const actions = [];
-      if (packet.action & 0b000001) actions.push(addPlayer);
-      if (packet.action & 0b000010) actions.push(initializeChat);
-      if (packet.action & 0b000100) actions.push(updateGamemode);
-      if (packet.action & 0b001000) actions.push(updateListed);
-      if (packet.action & 0b010000) actions.push(updateLatency);
-      if (packet.action & 0b100000) actions.push(updateDisplayName);
+      if (packet.action._value & 0b000001) actions.push(addPlayer);
+      if (packet.action._value & 0b000010) actions.push(initializeChat);
+      if (packet.action._value & 0b000100) actions.push(updateGamemode);
+      if (packet.action._value & 0b001000) actions.push(updateListed);
+      if (packet.action._value & 0b010000) actions.push(updateLatency);
+      if (packet.action._value & 0b100000) actions.push(updateDisplayName);
 
       for (const entry of packet.data) {
         for (const action of actions) {
@@ -44,6 +44,7 @@ class player_list {
     });
 
     function addPlayer(entry) {
+      console.log
       bot.players = bot.players.filter((_entry) => _entry.uuid !== entry.uuid);
       bot.players.push({
         uuid: entry.uuid,
@@ -59,7 +60,6 @@ class player_list {
         displayName: undefined,
         vanished: false,
       });
-      //    console.log(entry)
     }
 
     function initializeChat(entry) {}
@@ -90,17 +90,7 @@ class player_list {
       if (!target) return;
 
       try {
-        if (
-          bot.options.version === "1.21" ||
-          bot.options.version === "1.21.1"
-        ) {
-          target.displayName = convertNbtComponentToJson(
-            null,
-            entry.displayName,
-          );
-        } else {
-          target.displayName = JSON.parse(entry.displayName);
-        }
+        target.displayName = JSON.parse(entry.displayName);
       } catch {
         // do nothing
       }

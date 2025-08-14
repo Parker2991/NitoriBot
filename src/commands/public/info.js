@@ -36,7 +36,9 @@ class info extends CommandContext {
       "uptimes/uptime <bot, server, all>",
       "server",
       "version/ver",
-    ]);
+    ],
+    false
+    );
   }
 
   execute(context) {

@@ -9,7 +9,9 @@ class kick extends CommandContext {
       "invalidstring",
       "item",
       "te",
-    ]);
+    ],
+    false
+  );
   }
   execute(context) {
     const bot = context.bot;

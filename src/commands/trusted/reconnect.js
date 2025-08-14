@@ -2,21 +2,18 @@ const CommandContext = require("../../command_util/command_context");
 const CommandTrustLevel = require('../../command_util/command_trust_level')
 const trustLevel = new CommandTrustLevel()
 
-class echo extends CommandContext {
+class reconnect extends CommandContext {
   constructor() {
-    super("echo", ["say", "botsay"], "make me say something!", trustLevel.public, [
-      '',
-    ],
-    true
-    );
+    super("reconnect", ["end"], "reconnect the bot", trustLevel.trusted, [""], false);
   }
-
   execute(context) {
     const bot = context.bot;
     const args = context.arguments;
-
-    bot.chat.send(`${args.join(" ")}`);
+    const source = context.source;
+    const config = context.config;
+    
+    bot._client.end()
   }
 }
 
-module.exports = echo;
+module.exports = reconnect

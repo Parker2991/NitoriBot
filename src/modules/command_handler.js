@@ -14,7 +14,7 @@ class command_handler {
         prefixes.map((prefix) => {
           const plainMessage = bot
             .getMessageAsPrismarine(data.contents)
-            ?.toMotd();
+            ?.toString();
 
           if (!plainMessage?.startsWith(prefix)) return;
           const command = plainMessage.substring(prefix.length);
@@ -22,6 +22,7 @@ class command_handler {
           const source = new CommandSource(
             data.sender,
             { discord: false, console: false },
+            data.chatType,
             null
           );
 

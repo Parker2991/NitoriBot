@@ -1,17 +1,17 @@
 {
   "dependencies": {
     "@tonejs/midi": "^2.0.28",
-    "axios": "^1.8.2",
-    "discord.js": "^14.17.3",
+    "axios": "^1.11.0",
+    "discord.js": "^14.21.0",
     "js-yaml": "^4.1.0",
     "matrix-js-sdk": "^36.2.0",
-    "minecraft-data": "^3.83.1",
-    "minecraft-protocol": "^1.54.0",
-    "prismarine-chat": "^1.10.1",
-    "prismarine-item": "^1.16.0",
+    "minecraft-data": "^3.95.1",
+    "minecraft-protocol": "^1.60.1",
+    "prismarine-chat": "^1.11.0",
+    "prismarine-item": "^1.17.0",
     "prismarine-registry": "^1.11.0",
     "request": "^2.88.2",
-    "undici": "^7.3.0",
+    "undici": "^7.13.0",
     "wikipedia": "^2.1.2"
   },
   "devDependencies": {

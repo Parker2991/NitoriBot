@@ -10,17 +10,9 @@ function parseMessage(messageobj, data) {
     const playerWithoutPrefix = /^(\S*?) » (.*?)$/;
     if (playerWithPrefix.test(message)) {
       match = message.match(playerWithPrefix);
-      //    console.log(match[2])
-      //    console.log(data.players.find(player => player.profile.name.toString().replaceAll('§','') === match[2]))
-      //    console.log(data.players)
-      //    console.log(match[0])
-      //    console.log(match[2])
-      //    console.log(data.players.find(player => player.profile.name === match[2]))
+
       sender = data.players.find((player) => player.profile.name === match[2]);
-      //    sender = data.players.find(player => util.isDeepStrictEqual(player.displayName, playerListDisplayName))
-      //    if (!sender) return;
-      //    console.log(sender)
-      return { sender, contents: match[3], type: "minecraft:chat" };
+      return { sender, contents: match[3], chatType: "player", type: "minecraft:chat" };
     }
   } catch (e) {
     console.log(e.stack);

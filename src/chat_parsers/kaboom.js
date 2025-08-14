@@ -4,7 +4,7 @@ function kaboom (message, data) {
   if (message === null || typeof message !== 'object') return
 
   if (message.text !== '' || !Array.isArray(message.extra) || message.extra.length < 3) return
-
+  
   const children = message.extra
 
   const prefix = children[0]
@@ -22,16 +22,18 @@ function kaboom (message, data) {
 
   const playerListDisplayName = { extra: [prefix, displayName], text: '' }
   let sender
+
   if (data.uuid) {
     sender = data.players.find(player => player.uuid === data.senderUuid)
   } else {
     const playerListDisplayName = { extra: [prefix, displayName], text: '' }
+
     sender = data.players.find(player => util.isDeepStrictEqual(player.displayName, playerListDisplayName))
   }
-
+  
   if (!sender) return undefined
-
-  return { sender, contents, type: 'minecraft:chat', displayName }
+  
+  return { sender, contents, type: 'minecraft:chat', chatType: ["player", "profileless"], displayName }
 }
 
 function isSeparatorAt (children, start) {
