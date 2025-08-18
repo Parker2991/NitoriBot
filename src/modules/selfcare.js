@@ -23,7 +23,6 @@ class selfcare {
     }
 
     let selfcare = [];
-
     for (const file of fs.readdirSync(path.join(__dirname, '../selfcare/extras'))) {
       try {
         const extrasSelfcare = require(path.join(__dirname, '../selfcare/extras', file))
@@ -52,6 +51,7 @@ class selfcare {
       }
     }
 
+
     bot.on('system_chat', (message) => {
       const stringMessage = bot.getMessageAsPrismarine(message)?.toString()
       
@@ -69,7 +69,7 @@ class selfcare {
         } else {
           if (!bot.selfcare.prefix) bot.chat.command(`extras:prefix &8[&bPrefix&8: &3${config.prefixes[0]}&8]`);
           else if (bot.selfcare.permissionLevel < 2) bot.chat.command('minecraft:op @s[type=player]')
-          else if (bot.selfcare.username) bot.chat.command(`extras:username ${bot._client.username}`)
+      //    else if (bot.selfcare.username) bot.chat.command(`extras:username ${bot._client.username}`)
           else if (bot.selfcare.gameMode !== 1) bot.chat.command('minecraft:gamemode creative')
           else if (!bot.selfcare.commandSpy) bot.core.run(`commandspy ${bot.uuid} on`)
           else if (!bot.selfcare.vanished) bot.core.run(`essentials:vanish ${bot._client.username} on`)

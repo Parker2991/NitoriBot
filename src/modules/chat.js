@@ -22,6 +22,7 @@ class chat {
     bot.on("registry_ready", (registry) => {
       ChatMessage = loadPrismarineChat(registry);
     });
+    
     if (options.mode === "savageFriends") {
       bot.chatParsers = [CreayunChatParser];
     } else {
@@ -68,12 +69,10 @@ class chat {
           ]);
           break;
       }
-      tryParsingMessage(message, { senderName: sender, players: bot.players, chatType: "profileless", getMessageAsPrismarine: bot.getMessageAsPrismarine })
     });
 
     bot.on("packet.player_chat", (packet, data) => {
       let unsigned;
-
       unsigned = tryParse(packet.unsignedChatContent);
 
       switch (packet.type) {
@@ -138,7 +137,11 @@ class chat {
 
       message = tryParse(packet.content);
 
-      
+//      console.log(packet.content)
+      /*
+{"translate":"%s","with":[{"color":"red",
+"translate":"chomens_bot.command_handler.invalid_hash","fallback":"Invalid %s hash","with":["TRUSTED"]},"chomens_bot_command_output"]}
+      */
       if (
         message.translate === "advMode.setCommand.success" &&
         config?.debug?.commandSetMessage === false
@@ -155,6 +158,7 @@ class chat {
       bot.emit("message", message);
       bot.emit("system_chat", message)
       
+      if (bot.options.mode !== "savageFriends") return
       tryParsingMessage(message, {
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,

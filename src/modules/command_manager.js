@@ -6,6 +6,7 @@ const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
 function unknownCommand (MessageBuilder, commandName, bot) {
+
   return new MessageBuilder()
     .setTranslate("%s%s%s %s")
     .setColor("red")
@@ -31,13 +32,12 @@ class command_manager {
     const discordClient = context.discordClient;
     const options = context.options;
     const { MessageBuilder } = require('prismarine-chat')(bot._client.version)
-
     bot.commandManager = {
       commands: {},
       commandlist: [],
       execute(source, commandName, args) {
         const command = this.getCommand(commandName.toLowerCase());
-
+        const authed = bot.auth.list
         try {
           if (!command) {
             if (source?.sources?.console) bot.console.command(
@@ -48,8 +48,6 @@ class command_manager {
           
           const event = bot.discord.message;
           const roles = event?.member?.roles?.cache;
-//          console.log(command)
-//          console.log(source)
 
           switch (command?.data?.trustLevel) {
             case 0:
@@ -70,20 +68,40 @@ class command_manager {
                     .setColor("red")
                 )
               } else if (!source?.sources.console) {
-                if (args.length === 0) throw new CommandError(
+
+                if (args.length === 0 && (
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "trusted"
+                    &&
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
+                    &&
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
+                )) throw new CommandError(
                   new MessageBuilder()
                     .setText("Please provide a trusted, admin, or owner hash")
                     .setColor("red")
                 )
                 if (
-                  args[0] !== bot.validation.trusted &&
+                  (args[0] !== bot.validation.trusted &&
                   args[0] !== bot.validation.admin &&
-                  args[0] !== bot.validation.owner
+                  args[0] !== bot.validation.owner)
+                  &&
+                  (
+                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "trusted"
+                    &&
+                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "admin"
+                    &&
+                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "owner"
+                  )
                 ) throw new CommandError(
                   new MessageBuilder()
                     .setText("Invalid Hash")
                     .setColor("red")
                 )
+                if (source.player.authed) {
+                  args = args
+                } else {
+                  args = args.slice(1)
+                }
               }
               break;
             case 2:
@@ -100,20 +118,39 @@ class command_manager {
                     .setColor("red")
                 )
               } else if (!source?.sources?.console) {
-                if (args.length === 0)
+                if (args.length === 0 && (
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
+                    &&
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
+                ))
                   throw new CommandError(
                     new MessageBuilder()
                       .setText('Please provide a hash')
                       .setColor('red')
                   );
                 if (
-                  args[0] !== bot.validation.admin &&
-                  args[0] !== bot.validation.owner
+                  (
+                    args[0] !== bot.validation.admin &&
+                    args[0] !== bot.validation.owner
+                  )
+                  &&
+                  (
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
+                    &&
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
+                  )
                 )
                   throw new CommandError(
                     new MessageBuilder()
                       .setText('Invalid Hash')
+                      .setColor("red")
                   );
+                
+                if (source.player.authed) {
+                  args = args
+                } else {
+                  args = args.slice(1)
+                }
               }
               break;
             case 3:
@@ -130,19 +167,27 @@ class command_manager {
                     .setColor("red")
                 )
               } else if (!source?.sources?.console) {
-                if (args.length === 0 && bot.validation.owner)
+                if (args.length === 0 && bot.validation.owner && authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner")
                   throw new CommandError(
                     new MessageBuilder()
                       .setText("Please provide a hash")
                       .setColor('red')
                   );
 
-                if (args[0] !== bot.validation.owner)
+                if (args[0] !== bot.validation.owner && (
+                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
+                ))
                   throw new CommandError(
                     new MessageBuilder()
                       .setText('Invalid Hash')
                       .setColor('red')
                   );
+                
+                if (source.player.authed) {
+                  args = args;
+                } else {
+                  args = args.slice(1)
+                }
               }
               break;
             case 4:

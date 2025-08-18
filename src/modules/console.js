@@ -44,7 +44,7 @@ class Console { // named it Console so that it doesnt override the console varia
           },
           uuid: bot._client.uuid,
         },
-        { console: true, discord: false },
+        { console: true, discord: false }, 
       ),
 
       refreshLine(...args) {
@@ -103,10 +103,14 @@ class Console { // named it Console so that it doesnt override the console varia
             .fromNotch(
               `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §6command§8] §8[${serverName}§8] `,
             )
-            ?.toAnsi() + prismarineChat.fromNotch(message)?.toAnsi(bot.registry.language),
+            ?.toAnsi() + bot.getMessageAsPrismarine(message)?.toAnsi(bot.registry.language),
         );
       }
     };
+
+    bot.console.source.sendFeedback = (message) => {
+      bot.console.command(message)
+    }
     setInterval(() => (ratelimit = 0), 1000 * 2);
 
     bot.on("message", (message) => {

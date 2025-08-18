@@ -20,6 +20,7 @@ class help extends CommandContext {
     const args = context.arguments;
     const config = context.config;
     const source = context.source;
+    const { MessageBuilder } = require('prismarine-chat')('1.20.2');
 
     let component = [];
     let infoComponent = [];
@@ -29,30 +30,126 @@ class help extends CommandContext {
     let admin = [];
     let owner = [];
     let Console = [];
+    let Commands = [];
 
-    let cat = {
-      translate: "(%s | %s | %s | %s)",
-      color: config.colors.commands.tertiary,
-      with: [
-        { text: "Public", color: config.colors.help.public },
-        { text: "Trusted", color: config.colors.help.trusted },
-        { text: "Admin", color: config.colors.help.admin },
-        { text: "Owner", color: config.colors.help.owner },
-      ],
-    };
+    function cat () {
+      return new MessageBuilder()
+        .setTranslate("(%s | %s | %s | %s)")
+        .setColor(config.colors.commands.tertiary)
+        .addWith(
+          new MessageBuilder()
+            .setText("Public")
+            .setColor(config.colors.help.public),
+          new MessageBuilder()
+            .setText("Trusted")
+            .setColor(config.colors.help.trusted),
+          new MessageBuilder()
+            .setText("Admin")
+            .setColor(config.colors.help.admin),
+          new MessageBuilder()
+            .setText("Owner")
+            .setColor(config.colors.help.owner)
+        )
+    }
 
-    component.push({
-      translate: "%s: (%s) %s \u203a\n",
-      color: config.colors.commands.tertiary,
-      with: [
-        { text: "Commands", color: config.colors.commands.secondary },
-        {
-          text: `${bot.commandManager.commandlist.length}`,
-          color: config.colors.integer,
-        },
-        cat,
-      ],
-    });
+    function command_count () {
+      return new MessageBuilder()
+        .setTranslate("%s: (%s) %s \u203a")
+        .setColor(config.colors.commands.tertiary)
+        .addWith(
+          new MessageBuilder()
+            .setText("Commands")
+            .setColor(config.colors.commands.secondary),
+          new MessageBuilder()
+            .setText(`${bot.commandManager.commandlist.length}`)
+            .setColor(config.colors.integer),
+          cat()
+        )
+    }
+
+//    component.push(command_count() + '\n');
+
+    for (const commands of bot.commandManager.commandlist) {
+      switch (commands.data.trustLevel) {
+        case 0:
+          Public.push(
+            new MessageBuilder()
+              .setText('')
+              .addExtra(
+                new MessageBuilder()
+                  .setText(commands.data.name + ' ')
+                  .setColor(config.colors.help.public),
+              )
+          )
+        break
+        case 1:
+          trusted.push(
+            new MessageBuilder()
+              .setText('')
+              .addExtra(
+                new MessageBuilder()
+                  .setText(commands.data.name + ' ')
+                  .setColor(config.colors.help.trusted),
+              )
+          )
+        break
+        case 2:
+          admin.push(
+            new MessageBuilder()
+              .setText('')
+              .addExtra(
+                new MessageBuilder()
+                  .setText(commands.data.name + ' ')
+                  .setColor(config.colors.help.admin),
+              )
+          )
+        break
+        case 3:
+          owner.push(
+            new MessageBuilder()
+              .setText('')
+              .addExtra(
+                new MessageBuilder()
+                  .setText(commands.data.name + ' ')
+                  .setColor(config.colors.help.owner),
+              )
+          )
+        break
+        case 4:
+          Console.push(
+            new MessageBuilder()
+              .setText('')
+              .addExtra(
+                new MessageBuilder()
+                  .setText(commands.data.name + ' ')
+                  .setColor(config.colors.help.console),
+              )
+          )
+        break
+      }
+
+      if (
+        args[0]?.toLowerCase() === commands.data.name?.toLowerCase() ||
+        commands.data.aliases.find(
+          (e) => e?.toLowerCase() === args[0]?.toLowerCase(),
+        )
+      ) {
+        
+/*        for (const usages of commands.data.usages) {
+
+        }*/
+      }
+    }
+    if (Public.length > 0) Commands.push(Public, '\n')
+    if (trusted.length > 0) Commands.push(trusted, '\n')
+    if (admin.length > 0) Commands.push(admin, '\n')
+    if (owner.length > 0) Commands.push(owner)
+    if (source.sources.console && Console.length > 0) Commands.push('\n', Console)
+
+    component.push([command_count(), '\n', Commands])
+    bot.tellraw("@a", component)
+/*
+
     for (const commands of bot.commandManager.commandlist) {
       switch (commands.data.trustLevel) {
         case 0:
@@ -336,9 +433,6 @@ class help extends CommandContext {
           });
           break;
         default:
-/*          bot.chat.message(
-            `fuck you ${commands.data.name} has a invalid trust level`,
-          );*/
       }
 
       if (
@@ -442,7 +536,7 @@ class help extends CommandContext {
       );
     } else {
       bot.tellraw("@a", component);
-    }
+    }*/
   }
 }
 

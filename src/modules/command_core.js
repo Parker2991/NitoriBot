@@ -144,6 +144,7 @@ class command_core {
           mode: mode,
           flags: flags,
         });
+        
       },
 
       run(command) {
@@ -169,7 +170,9 @@ class command_core {
         }
       },
 
-      async runTracked(command, source, selector) {
+      transaction_id: 0, // setting it 10 just in case the command block was already used so it doesnt send more than 1 message
+      
+      async runTracked(command, source) {
         const location = bot.core.currentBlock();
         let transactionId = Math.floor(Math.random() * 10000);
 
@@ -185,22 +188,17 @@ class command_core {
           try {
             if (data.transactionId == transactionId) {
               if (data?.nbt?.value?.LastOutput) {
-                const output = JSON.parse(data.nbt.value.LastOutput.value).extra
-
-                if (source.sources.console) {
-
-                } else {
-                  bot.tellraw(
-                    "@a",
-                    output,
-                  );
-                }
+                const output = convertNbtComponentToJson(null, (data.nbt.value.LastOutput.value).extra)
+                source.sendFeedback(output)
               }
             }
           } catch (e) {
             console.log(e.stack);
           }
         });
+        
+        await sleep(100)
+        this.transaction_id++
       },
     };
 

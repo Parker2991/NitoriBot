@@ -3,6 +3,7 @@ const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
 const loadModules = require("./util/loadModules")
+const loadPlugins = require("./util/loadPlugins")
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const { MessageContent, GuildMessages, Guilds, DirectMessages } = GatewayIntentBits;
 const discordClient = new Client({
@@ -31,16 +32,19 @@ const rl = readline.createInterface({
 if (config.discord.enabled) discordClient.login(config.discord.token);
 
 const bots = [];
+let options;
 let bot;
 
-for (const options of config.bots) {
+for (const botOptions of config.bots) {
+  options = botOptions
   bot = new createBot(options, config);
+
   bots.push(bot);
   bot.bots = bots;
   loadModules(bot, options, config, discordClient);
   bot.console.readlineInterface(rl);
 }
-
+loadPlugins(bot, options, config, discordClient)
 discordClient.on("messageCreate", (message) => {
   try {
     if (message.author.id === bot.discord.client.user.id) return;

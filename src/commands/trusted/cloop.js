@@ -17,14 +17,8 @@ class cloop extends CommandContext {
     const bot = context.bot;
     const config = context.config;
     const source = context.source;
-    let args
+    const args = context.arguments
     let component = [];
-
-    if (!source.sources.console && !source.sources.discord) {
-      args = context.arguments.slice(16)
-    } else {
-      args = context.arguments
-    }
 
     if (
       !args &&
@@ -37,7 +31,7 @@ class cloop extends CommandContext {
     )
       return;
 
-    switch (args[0]?.toLowerCase()) {
+    switch (args[0]) {
       case "add":
         if (isNaN(args[1])) throw new CommandError("invalid interval");
 
@@ -98,13 +92,7 @@ class cloop extends CommandContext {
         throw new CommandError("invalid argument");
     }
 
-    if (source.sources.discord) {
-
-    } else if (source.sources.console) {
-      bot.console.info(component)
-    } else {
-      bot.tellraw("@a", component);
-    }
+    source.sendFeedback(component)
   }
 }
 

@@ -27,10 +27,10 @@ class command_handler {
           );
 
           source.sendFeedback = (message) => {
-            if (source.sources.console) bot.console.command(message);
+            if (source.sources.console) bot.console.command();
             else if (source.sources.discord) {
-            // i dont know what to do for discord yet
-            } else bot.tellraw(`@a[name="${source.player.profile.name}"]`, message);
+              return message // lazy 
+            } else bot.tellraw(`@a[name="${source.player.profile.name}"]`, [message]);
           }
 
           if (command.split(' ')[1] === bot.validation.trusted) source.player.hash = "trusted";
@@ -41,10 +41,7 @@ class command_handler {
             ratelimit--;
           }, 1000);
           if (ratelimit > config.ratelimit.commands) {
-            bot.tellraw("@a", {
-              text: "You are using commands too fast!",
-              color: "dark_red",
-            });
+            return
           } else if (command.split(" ")[0].length === 0) {
           } else {
             bot.commandManager.executeString(source, command);
