@@ -1,5 +1,0 @@
-Commands (19) (Public | Trusted | Admin | Owner) \u203a
-~core ~echo ~help ~info ~list ~mcserver ~netmsg ~refillcore ~urban ~weather ~wiki 
-~cloop ~validate 
-~kick ~coresettings ~reconnect 
-~kill

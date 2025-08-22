@@ -1,23 +1,24 @@
 const CommandError = require("../../command_util/command_error");
 const fixAnsi = require("../../util/ansi");
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
 
 class cloop extends CommandContext {
   constructor() {
-    super("cloop", ["commandloop", "loop"], "loops commands", trustLevel.trusted, [
-      "add <interval> <command>",
-      "remove <index>",
-      "list",
-      "clear",
-    ]);
+    super(
+      "cloop",
+      ["commandloop", "loop"],
+      "loops commands",
+      trustLevel.trusted,
+      ["add <interval> <command>", "remove <index>", "list", "clear"],
+    );
   }
   execute(context) {
     const bot = context.bot;
     const config = context.config;
     const source = context.source;
-    const args = context.arguments
+    const args = context.arguments;
     let component = [];
 
     if (
@@ -92,8 +93,8 @@ class cloop extends CommandContext {
         throw new CommandError("invalid argument");
     }
 
-    source.sendFeedback(component)
+    source.sendFeedback(component);
   }
 }
 
-module.exports = cloop
+module.exports = cloop;

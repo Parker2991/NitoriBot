@@ -4,6 +4,7 @@
     "axios": "^1.11.0",
     "discord.js": "^14.21.0",
     "js-yaml": "^4.1.0",
+    "mariadb": "^3.4.5",
     "matrix-js-sdk": "^36.2.0",
     "minecraft-data": "^3.95.1",
     "minecraft-protocol": "^1.60.1",

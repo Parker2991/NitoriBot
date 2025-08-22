@@ -1,17 +1,18 @@
 const CommandError = require("../../command_util/command_error");
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
 
 class kick extends CommandContext {
   constructor() {
-    super("kick", [], "kick a player from the server", trustLevel.admin, [
-      "invalidstring",
-      "item",
-      "te",
-    ],
-    false
-  );
+    super(
+      "kick",
+      [],
+      "kick a player from the server",
+      trustLevel.admin,
+      ["invalidstring", "item", "te"],
+      false,
+    );
   }
   execute(context) {
     const bot = context.bot;

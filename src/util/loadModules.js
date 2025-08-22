@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 async function loadModules(bot, options, config, discordClient) {
   bot.modules = [];
-  for (const filename of fs.readdirSync(path.join(__dirname, "../", "modules"))) {
+  for (const filename of fs.readdirSync(
+    path.join(__dirname, "../", "modules"),
+  )) {
     try {
       if (filename.endsWith(".js")) {
         const module = require(path.join(__dirname, "../modules", filename));

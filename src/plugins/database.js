@@ -1,6 +1,4 @@
 class database {
-  constructor(context) {
-
-  }
+  constructor(context) {}
 }
-module.exports = database
+module.exports = database;

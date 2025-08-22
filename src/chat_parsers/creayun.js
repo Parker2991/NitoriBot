@@ -12,7 +12,12 @@ function parseMessage(messageobj, data) {
       match = message.match(playerWithPrefix);
 
       sender = data.players.find((player) => player.profile.name === match[2]);
-      return { sender, contents: match[3], chatType: "player", type: "minecraft:chat" };
+      return {
+        sender,
+        contents: match[3],
+        chatType: "player",
+        type: "minecraft:chat",
+      };
     }
   } catch (e) {
     console.log(e.stack);

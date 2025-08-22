@@ -5,24 +5,17 @@ const CommandSource = require("../command_util/command_source");
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
-function unknownCommand (MessageBuilder, commandName, bot) {
-
-  return new MessageBuilder()
-    .setTranslate("%s%s%s %s")
-    .setColor("red")
-    .addWith(
-      new MessageBuilder()
-        .setTranslate("command.unknown.command")
-          .setColor('red'),
-      new MessageBuilder()
-        .setText('\n'),
-      new MessageBuilder()
-        .setText(`${commandName}`)
-          .setColor("gray"),
-      new MessageBuilder()
-        .setTranslate("command.context.here")
-        .setColor("red")
-    )
+function unknownCommand(MessageBuilder, commandName, bot) {
+  return {
+    translate: "%s%s%s %s",
+    color: "red",
+    with: [
+      { translate: "command.unknown.command", color: "red" },
+      { text: "\n"},
+      { text: `${commandName}`, color: "gray" },
+      { translate: "command.context.here", color: "red" }
+    ]
+  } 
 }
 
 class command_manager {
@@ -31,21 +24,25 @@ class command_manager {
     const config = context.config;
     const discordClient = context.discordClient;
     const options = context.options;
-    const { MessageBuilder } = require('prismarine-chat')(bot._client.version)
+
     bot.commandManager = {
       commands: {},
       commandlist: [],
       execute(source, commandName, args) {
         const command = this.getCommand(commandName.toLowerCase());
-        const authed = bot.auth.list
+        const authed = bot.auth.list;
         try {
           if (!command) {
-            if (source?.sources?.console) bot.console.command(
-              unknownCommand(MessageBuilder, commandName, bot)
-            )
-            else source.sendFeedback(unknownCommand(MessageBuilder, commandName, bot))
+            if (source?.sources?.console)
+              bot.console.command(
+                unknownCommand(commandName, bot),
+              );
+            else
+              source.sendFeedback(
+                unknownCommand(commandName, bot),
+              );
           }
-          
+
           const event = bot.discord.message;
           const roles = event?.member?.roles?.cache;
 
@@ -62,45 +59,44 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}` ||
                     role.name === `${config.discord.roles.owner}`,
                 );
-                if (!hasRole) throw new CommandError(
-                  new MessageBuilder()
-                    .setText("You dont have the trusted, admin, or owner roles!")
-                    .setColor("red")
-                )
+                if (!hasRole)
+                  throw new CommandError({
+                    text: "You done have the trusted, admin, or owner roles!",
+                    color: "red"  
+                  });
               } else if (!source?.sources.console) {
-
-                if (args.length === 0 && (
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "trusted"
-                    &&
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
-                    &&
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
-                )) throw new CommandError(
-                  new MessageBuilder()
-                    .setText("Please provide a trusted, admin, or owner hash")
-                    .setColor("red")
-                )
                 if (
-                  (args[0] !== bot.validation.trusted &&
-                  args[0] !== bot.validation.admin &&
-                  args[0] !== bot.validation.owner)
-                  &&
-                  (
-                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "trusted"
-                    &&
-                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "admin"
-                    &&
-                    authed.find((e) => e.player === source.player.uuid)?.trustLevel !== "owner"
-                  )
-                ) throw new CommandError(
-                  new MessageBuilder()
-                    .setText("Invalid Hash")
-                    .setColor("red")
+                  args.length === 0 &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "trusted" &&
+                    authed.find((e) => e?.player === source.player.uuid)
+                      ?.trustLevel !== "admin" &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
                 )
+                  throw new CommandError({
+                    text: "Please provide a trusted, admin, or owner hash",
+                    color: "red"
+                  });
+                if (
+                  args[0] !== bot.validation.trusted &&
+                  args[0] !== bot.validation.admin &&
+                  args[0] !== bot.validation.owner &&
+                  authed.find((e) => e.player === source.player.uuid)
+                    ?.trustLevel !== "trusted" &&
+                    authed.find((e) => e.player === source.player.uuid)
+                      ?.trustLevel !== "admin" &&
+                  authed.find((e) => e.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
+                )
+                  throw new CommandError({
+                    text: "Invalid Hash",
+                    color: "red"
+                  });
                 if (source.player.authed) {
-                  args = args
+                  args = args;
                 } else {
-                  args = args.slice(1)
+                  args = args.slice(1);
                 }
               }
               break;
@@ -112,44 +108,40 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}` ||
                     role.name === `${config.discord.roles.owner}`,
                 );
-                if (!hasRole) throw new CommandError(
-                  new MessageBuilder()
-                    .setText("You dont have the admin, or owner roles!")
-                    .setColor("red")
-                )
+                if (!hasRole)
+                  throw new CommandError({
+                    text: "You dont have the admin, or owner roles!",
+                    color: "red"
+                  });
               } else if (!source?.sources?.console) {
-                if (args.length === 0 && (
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
-                    &&
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
-                ))
-                  throw new CommandError(
-                    new MessageBuilder()
-                      .setText('Please provide a hash')
-                      .setColor('red')
-                  );
                 if (
-                  (
-                    args[0] !== bot.validation.admin &&
-                    args[0] !== bot.validation.owner
-                  )
-                  &&
-                  (
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "admin"
-                    &&
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
-                  )
+                  args.length === 0 &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "admin" &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
                 )
-                  throw new CommandError(
-                    new MessageBuilder()
-                      .setText('Invalid Hash')
-                      .setColor("red")
-                  );
-                
+                  throw new CommandError({
+                    text: "Please provide a hash",
+                    color: "red"
+                  });
+                if (
+                  args[0] !== bot.validation.admin &&
+                  args[0] !== bot.validation.owner &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "admin" &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
+                )
+                  throw new CommandError({
+                    text: "Invalid hash",
+                    color: "red"
+                  });
+
                 if (source.player.authed) {
-                  args = args
+                  args = args;
                 } else {
-                  args = args.slice(1)
+                  args = args.slice(1);
                 }
               }
               break;
@@ -161,55 +153,56 @@ class command_manager {
                     role.name === `${config.discord.roles.fullAccess}`,
                 );
                 if (!hasRole)
-                  throw new CommandError(
-                  new MessageBuilder()
-                    .setText("You dont have the owner role!")
-                    .setColor("red")
-                )
+                  throw new CommandError({
+                    text: "You dont have the owner role!",
+                    color: "red"
+                  });
               } else if (!source?.sources?.console) {
-                if (args.length === 0 && bot.validation.owner && authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner")
-                  throw new CommandError(
-                    new MessageBuilder()
-                      .setText("Please provide a hash")
-                      .setColor('red')
-                  );
+                if (
+                  args.length === 0 &&
+                  bot.validation.owner &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
+                )
+                  throw new CommandError({
+                    text: "Please provide a hash",
+                    color: "red"
+                  });
 
-                if (args[0] !== bot.validation.owner && (
-                    authed.find((e) => e?.player === source.player.uuid)?.trustLevel !== "owner"
-                ))
-                  throw new CommandError(
-                    new MessageBuilder()
-                      .setText('Invalid Hash')
-                      .setColor('red')
-                  );
-                
+                if (
+                  args[0] !== bot.validation.owner &&
+                  authed.find((e) => e?.player === source.player.uuid)
+                    ?.trustLevel !== "owner"
+                )
+                  throw new CommandError({
+                    text: "Invalid hash",
+                    color: "red"
+                  });
+
                 if (source.player.authed) {
                   args = args;
                 } else {
-                  args = args.slice(1)
+                  args = args.slice(1);
                 }
               }
               break;
             case 4:
               if (!source?.sources?.console) {
-
-                throw new CommandError(
-                  new MessageBuilder()
-                    .setText("This Command can only be ran via console")
-                    .setColor('red')
-                );
+                throw new CommandError({
+                  text: "This Command can only be ran via console",
+                  color: "red"
+                });
               }
               break;
             case 5:
-              throw new CommandError(
-                new MessageBuilder()
-                  .setText("This Command has been disabled!")
-                  .setColor('red')
-              )
-            break
+              throw new CommandError({
+                text: "This Command has been disabled!",
+                color: "red"
+              });
+              break;
           }
 
-/*          if (source.sources.discord) {
+          /*          if (source.sources.discord) {
             discordClient.channels.cache
               .get("1361739286113685534")
               .send(
@@ -223,9 +216,8 @@ class command_manager {
               );
           }*/
 
-          
-//          if (command.playerOnly === true && source.ChatType.find((e) => e)) return;
-           
+          //          if (command.playerOnly === true && source.ChatType.find((e) => e)) return;
+
           return command?.execute({
             bot,
             source,
@@ -247,7 +239,7 @@ class command_manager {
           } else {
             if (source.sources.discord) {
               bot.discord.message.reply(
-                `\`\`\`ansi\n${new fixansi(bot.getMessageAsPrismarine({ text: error.stack, color: "red"})?.toAnsi()).ansi}\`\`\``,
+                `\`\`\`ansi\n${new fixansi(bot.getMessageAsPrismarine({ text: error.stack, color: "red" })?.toAnsi()).ansi}\`\`\``,
               );
             } else {
               bot.tellraw("@a", {

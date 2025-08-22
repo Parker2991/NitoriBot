@@ -2,13 +2,19 @@ const createBot = require("./bot.js");
 const readline = require("readline");
 const fs = require("fs");
 const path = require("path");
-const loadModules = require("./util/loadModules")
-const loadPlugins = require("./util/loadPlugins")
+const loadModules = require("./util/loadModules");
+const loadPlugins = require("./util/loadPlugins");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
-const { MessageContent, GuildMessages, Guilds, DirectMessages } = GatewayIntentBits;
+const { MessageContent, GuildMessages, Guilds, DirectMessages } =
+  GatewayIntentBits;
 const discordClient = new Client({
-  intents: [Guilds, GuildMessages, MessageContent, GatewayIntentBits.DirectMessages],
-  partials: [ Partials.Channel ]
+  intents: [
+    Guilds,
+    GuildMessages,
+    MessageContent,
+    GatewayIntentBits.DirectMessages,
+  ],
+  partials: [Partials.Channel],
 });
 const CommandSource = require("./command_util/command_source");
 
@@ -36,7 +42,7 @@ let options;
 let bot;
 
 for (const botOptions of config.bots) {
-  options = botOptions
+  options = botOptions;
   bot = new createBot(options, config);
 
   bots.push(bot);
@@ -44,7 +50,7 @@ for (const botOptions of config.bots) {
   loadModules(bot, options, config, discordClient);
   bot.console.readlineInterface(rl);
 }
-loadPlugins(bot, options, config, discordClient)
+loadPlugins(bot, options, config, discordClient);
 discordClient.on("messageCreate", (message) => {
   try {
     if (message.author.id === bot.discord.client.user.id) return;

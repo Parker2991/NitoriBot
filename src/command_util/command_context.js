@@ -6,7 +6,7 @@ class CommandContext {
     this.data.description = description;
     this.data.trustLevel = trustLevel;
     this.data.usages = usages;
-    this.data.playerOnly = playerOnly
+    this.data.playerOnly = playerOnly;
   }
 }
 module.exports = CommandContext;

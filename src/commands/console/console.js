@@ -1,19 +1,24 @@
 const CommandContext = require("../../command_util/command_context");
-const CommandError = require('../../command_util/command_error')
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandError = require("../../command_util/command_error");
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
 
 class console extends CommandContext {
   constructor() {
-    super("console", ["c"], "runs commands made for the bots console", trustLevel.console, [
-      "server/srv <all/servername>",
-      "customchat <on/true/enable/off/false/disable>",
-      "say <message>",
-      "validate/validation/val <owner/o/admin/a/trusted/t>",
-      "logging/togglelogging/logtoconsole <on/true/enable/off/false/disable>",
-    ],
-    false
-  );
+    super(
+      "console",
+      ["c"],
+      "runs commands made for the bots console",
+      trustLevel.console,
+      [
+        "server/srv <all/servername>",
+        "customchat <on/true/enable/off/false/disable>",
+        "say <message>",
+        "validate/validation/val <owner/o/admin/a/trusted/t>",
+        "logging/togglelogging/logtoconsole <on/true/enable/off/false/disable>",
+      ],
+      false,
+    );
   }
   execute(context) {
     const bot = context.bot;

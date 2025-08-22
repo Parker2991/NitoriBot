@@ -25,4 +25,4 @@ class validation {
     }, 100);
   }
 }
-module.exports = validation 
+module.exports = validation;

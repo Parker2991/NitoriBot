@@ -1,7 +1,8 @@
 const CommandSource = require("../command_util/command_source");
 const prismarineChat = require("prismarine-chat")("1.20.2");
 
-class Console { // named it Console so that it doesnt override the console variable
+class Console {
+  // named it Console so that it doesnt override the console variable
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -44,7 +45,7 @@ class Console { // named it Console so that it doesnt override the console varia
           },
           uuid: bot._client.uuid,
         },
-        { console: true, discord: false }, 
+        { console: true, discord: false },
       ),
 
       refreshLine(...args) {
@@ -97,29 +98,51 @@ class Console { // named it Console so that it doesnt override the console varia
             ?.toAnsi() + message,
         );
       },
-      command (message) {
+      command(message) {
         console.log(
           prismarineChat
             .fromNotch(
               `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §6command§8] §8[${serverName}§8] `,
             )
-            ?.toAnsi() + bot.getMessageAsPrismarine(message)?.toAnsi(bot.registry.language),
+            ?.toAnsi() +
+            bot.getMessageAsPrismarine(message)?.toAnsi(bot.registry.language),
         );
-      }
+      },
     };
 
     bot.console.source.sendFeedback = (message) => {
-      bot.console.command(message)
-    }
+      bot.console.command(message);
+    };
     setInterval(() => (ratelimit = 0), 1000 * 2);
 
     bot.on("message", (message) => {
+      if (message.type === "minecraft:player_chat")
+        message = [
+          {
+            text: "[P] ",
+          },
+          message.message,
+        ];
+      else if (message.type === "minecraft:disguised_chat") message = [
+        {
+          text: "[V] "
+        },
+        message.message
+      ]
+      else if (message.type === "minecraft:system_chat") message = [
+        {
+          text: "[S] "
+        },
+        message.message
+      ]
+
       if (options.logging.console) {
         if (ratelimit > config.ratelimit.console) return;
 
         bot.console.log(bot.getMessageAsPrismarine(message)?.toAnsi());
       }
-      if (options.logging.file) {
+
+      if (options.logging.file && bot.loggedIn) {
         bot.console.fileLogger(
           `[${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} ${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} logs] [${serverName}] ${bot.getMessageAsPrismarine(message)?.toString()}`,
         );

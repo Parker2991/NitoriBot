@@ -1,7 +1,7 @@
 const nbt = require("prismarine-nbt");
 const sleep = require("../util/sleep");
 const convertNbtComponentToJson = require("../util/nbt_parser");
-const fixansi = require("../util/ansi")
+const fixansi = require("../util/ansi");
 
 class command_core {
   constructor(context) {
@@ -37,14 +37,14 @@ class command_core {
         } else {
           command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:${JSON.stringify(config.core.name)}}`;
         }
-        bot.chat.command(command)
+        bot.chat.command(command);
       },
 
-      itemRefill () {
+      itemRefill() {
         const pos = bot.core.position;
         const { start, end } = bot.core.area;
         const itemPosition = bot.core.itemPosition;
-        
+
         command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:${JSON.stringify(config.core.name)}}`;
         if (bot.options.mode !== "savageFriends") {
           bot._client.write("set_creative_slot", {
@@ -77,7 +77,7 @@ class command_core {
           if (bot.core.usePlacedCommandBlock) {
             return;
           } else {
-            bot.core.commandBlock(command, itemPosition, 1, 5)
+            bot.core.commandBlock(command, itemPosition, 1, 5);
           }
         }
       },
@@ -95,10 +95,10 @@ class command_core {
           z: Math.floor(pos.z),
         };
 
-        if (bot.options.itemRefill) {
+        if (bot.options.itemRefill && bot.options.mode !== "savageFriends") {
           bot.core.itemRefill();
         } else {
-          bot.core.chatRefill()
+          bot.core.chatRefill();
         }
       },
 
@@ -136,7 +136,7 @@ class command_core {
         }
       },
 
-      commandBlock (command, location, mode, flags) {
+      commandBlock(command, location, mode, flags) {
         if (!bot.loggedIn) return;
         bot._client.write("update_command_block", {
           command: command?.substring(0, 32767),
@@ -144,7 +144,6 @@ class command_core {
           mode: mode,
           flags: flags,
         });
-        
       },
 
       run(command) {
@@ -156,27 +155,26 @@ class command_core {
         if (bot.options.mode === "creayun") {
           return;
         } else if (bot.options.mode === "savageFriends") {
-          bot.core.commandBlock(command, location, 2, 0b101)
+          bot.core.commandBlock(command, location, 2, 0b101);
 
           bot.core.incrementCurrentBlock();
         } else {
           if (bot.core.usePlacedCommandBlock) {
-            bot.core.commandBlock(command, itemPosition, 1, 5)
+            bot.core.commandBlock(command, itemPosition, 1, 5);
             bot.core.incrementCurrentBlock();
           } else {
-            bot.core.commandBlock(command, location, 1, 5)
+            bot.core.commandBlock(command, location, 1, 5);
             bot.core.incrementCurrentBlock();
           }
         }
       },
 
-      transaction_id: 0, // setting it 10 just in case the command block was already used so it doesnt send more than 1 message
-      
       async runTracked(command, source) {
         const location = bot.core.currentBlock();
-        let transactionId = Math.floor(Math.random() * 10000);
 
-        bot.core.commandBlock(command, location, 1, 0b101)
+        const transactionId = Math.floor(Math.random() * 10000);
+
+        bot.core.commandBlock(command, location, 1, 0b101);
 
         bot.core.incrementCurrentBlock();
 
@@ -188,17 +186,17 @@ class command_core {
           try {
             if (data.transactionId == transactionId) {
               if (data?.nbt?.value?.LastOutput) {
-                const output = convertNbtComponentToJson(null, (data.nbt.value.LastOutput.value).extra)
-                source.sendFeedback(output)
+                const output = convertNbtComponentToJson(
+                  null,
+                  data.nbt.value.LastOutput.value.extra,
+                );
+                source.sendFeedback(output);
               }
             }
           } catch (e) {
             console.log(e.stack);
           }
         });
-        
-        await sleep(100)
-        this.transaction_id++
       },
     };
 
@@ -243,7 +241,7 @@ class command_core {
       if (timer) clearInterval(timer);
     });
 
-    bot.on("packet.multi_block_change", (data) => {
+    /*    bot.on("packet.multi_block_change", (data) => {
       try {
         if (bot.options.mode !== "kaboom") return;
 
@@ -266,7 +264,7 @@ class command_core {
       } catch (e) {
         console.log(e.stack);
       }
-    });
+    });*/
   }
 }
 module.exports = command_core;

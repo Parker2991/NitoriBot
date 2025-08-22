@@ -23,7 +23,13 @@ function parseMessage(message, data, context) {
       );
     }
     if (!sender) return; //stringUsername
-    return { sender, contents, type: "minecraft:chat", chatType: ["player", "profileless"], senderComponent };
+    return {
+      sender,
+      contents,
+      type: "minecraft:chat",
+      chatType: ["player", "profileless"],
+      senderComponent,
+    };
   } catch (e) {
     console.error(`${e.stack}`);
   }

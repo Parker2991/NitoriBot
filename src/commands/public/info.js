@@ -5,8 +5,8 @@ const botInfo = require("../../data/info.json");
 const fixansi = require("../../util/ansi.js");
 const { execSync } = require("child_process");
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
 
 function format(seconds) {
   function pad(s) {
@@ -26,18 +26,23 @@ function format(seconds) {
 
 class info extends CommandContext {
   constructor() {
-    super("info", ["information"], "check the bots info", trustLevel.public, [
-      "about",
-      "config <client, discord, options, all>",
-      "contributors/credits",
-      "discord",
-      "loaded",
-      "usages <bot, server, all>",
-      "uptimes/uptime <bot, server, all>",
-      "server",
-      "version/ver",
-    ],
-    false
+    super(
+      "info",
+      ["information"],
+      "check the bots info",
+      trustLevel.public,
+      [
+        "about",
+        "config <client, discord, options, all>",
+        "contributors/credits",
+        "discord",
+        "loaded",
+        "usages <bot, server, all>",
+        "uptimes/uptime <bot, server, all>",
+        "server",
+        "version/ver",
+      ],
+      false,
     );
   }
 
@@ -325,7 +330,7 @@ class info extends CommandContext {
                   color: config.colors.commands.primary,
                 },
                 {
-                  text: `${(Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576))}`,
+                  text: `${Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576)}`,
                   color: config.colors.integer,
                 },
                 { text: "MB", color: config.colors.commands.secondary },
@@ -347,7 +352,7 @@ class info extends CommandContext {
                   color: config.colors.commands.primary,
                 },
                 {
-                  text: `${(Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576))}`,
+                  text: `${Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576)}`,
                   color: config.colors.integer,
                 },
                 { text: "MB", color: config.colors.commands.secondary },
@@ -484,7 +489,10 @@ class info extends CommandContext {
             { text: "CPU cores", color: config.colors.commands.primary },
             { text: `${os.cpus().length}`, color: config.colors.integer },
             { text: "Processes", color: config.colors.commands.primary },
-            { text: `${execSync("ps aux | wc -l").toString().replace('\n','')}`, color: config.colors.integer },
+            {
+              text: `${execSync("ps aux | wc -l").toString().replace("\n", "")}`,
+              color: config.colors.integer,
+            },
             { text: "Node Version", color: config.colors.commands.primary },
             {
               text: `${process.version}`,

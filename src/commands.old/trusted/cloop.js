@@ -15,13 +15,13 @@ class CloopCommand extends CommandContext {
     const bot = context.bot;
     const config = context.config;
     const source = context.source;
-    let args
+    let args;
     let component = [];
 
     if (!source.sources.console && !source.sources.discord) {
-      args = context.arguments.slice(16)
+      args = context.arguments.slice(16);
     } else {
-      args = context.arguments
+      args = context.arguments;
     }
 
     if (
@@ -97,9 +97,8 @@ class CloopCommand extends CommandContext {
     }
 
     if (source.sources.discord) {
-
     } else if (source.sources.console) {
-      bot.console.info(component)
+      bot.console.info(component);
     } else {
       bot.tellraw("@a", component);
     }

@@ -36,15 +36,15 @@ class player_list {
         );
         if (a.length >= 1) {
           player.vanished = true;
+          
         } else {
           bot.players = bot.players.filter((_) => _.uuid != player.uuid);
-          bot.emit("player_left", players);
-        }
+          bot.emit("player_left", player);
+        } if (player.vanished === true) bot.emit("player_left", players)
       });
     });
 
     function addPlayer(entry) {
-      console.log
       bot.players = bot.players.filter((_entry) => _entry.uuid !== entry.uuid);
       bot.players.push({
         uuid: entry.uuid,
@@ -60,6 +60,7 @@ class player_list {
         displayName: undefined,
         vanished: false,
       });
+      bot.emit('player_join', entry)
     }
 
     function initializeChat(entry) {}
@@ -74,7 +75,6 @@ class player_list {
     function updateListed(entry) {
       const target = bot.players.find((_entry) => _entry.uuid === entry.uuid);
       if (!target) return;
-
       target.listed = entry.listed;
     }
 

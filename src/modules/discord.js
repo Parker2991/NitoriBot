@@ -65,7 +65,7 @@ class discord {
     }
 
     bot.on("message", (message) => {
-      sendComponent(message);
+      sendComponent(message.message);
     });
 
     function messageCreate(message, source) {

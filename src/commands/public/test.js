@@ -1,0 +1,47 @@
+const CommandContext = require("../../command_util/command_context");
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
+
+class test extends CommandContext {
+  constructor() {
+    super(
+      "test",
+      [],
+      "",
+      trustLevel.public,
+      [""],
+      true,
+    );
+  }
+
+  execute(context) {
+    const bot = context.bot;
+    const args = context.arguments;
+    const source = context.source
+
+    if (
+      !args
+      &&
+      !args[0]
+      &&
+      !args[1]
+      &&
+      !args[2]
+    ) return;
+
+//    console.log(args[2])
+
+    switch (args[0]) {
+      case "send":
+        bot.extras.send(args[1], args.slice(2).join(" "))
+        source.sendFeedback(`sent ${args.slice(2).join(" ")} to channel ${args[1]}`)
+      break
+      case "register":
+        bot.extras.register(args[1])
+        source.sendFeedback(`registered ${args[1]} channel`)
+      break
+    }    
+  }
+}
+
+module.exports = test;

@@ -321,7 +321,7 @@ class InfoCommand extends CommandContext {
                   color: config.colors.commands.primary,
                 },
                 {
-                  text: `${(Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576))}`,
+                  text: `${Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576)}`,
                   color: config.colors.integer,
                 },
                 { text: "MB", color: config.colors.commands.secondary },
@@ -343,7 +343,7 @@ class InfoCommand extends CommandContext {
                   color: config.colors.commands.primary,
                 },
                 {
-                  text: `${(Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576))}`,
+                  text: `${Math.floor(os.totalmem() / 1048576) - Math.floor(os.freemem() / 1048576)}`,
                   color: config.colors.integer,
                 },
                 { text: "MB", color: config.colors.commands.secondary },
@@ -480,7 +480,10 @@ class InfoCommand extends CommandContext {
             { text: "CPU cores", color: config.colors.commands.primary },
             { text: `${os.cpus().length}`, color: config.colors.integer },
             { text: "Processes", color: config.colors.commands.primary },
-            { text: `${execSync("ps aux | wc -l").toString().replace('\n','')}`, color: config.colors.integer },
+            {
+              text: `${execSync("ps aux | wc -l").toString().replace("\n", "")}`,
+              color: config.colors.integer,
+            },
             { text: "Node Version", color: config.colors.commands.primary },
             {
               text: `${process.version}`,

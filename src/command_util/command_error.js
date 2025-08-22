@@ -14,5 +14,5 @@ class CommandError extends Error {
   get message() {
     return stringify(this._message);
   }
-};
-module.exports = CommandError
+}
+module.exports = CommandError;

@@ -12,7 +12,7 @@ class core extends CommandContext {
   execute(context) {
     const bot = context.bot;
     const args = context.arguments;
-    const source = context.source
+    const source = context.source;
 
     if (args.includes("$username") || args.includes("$uuid")) {
       bot.players.forEach((eachPlayer) => {
@@ -21,7 +21,7 @@ class core extends CommandContext {
             .join(" ")
             .replaceAll("$username", eachPlayer.profile.name)
             .replaceAll("$uuid", eachPlayer.uuid),
-            source
+          source,
         );
         //        await sleep(1000)
       });

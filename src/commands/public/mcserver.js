@@ -1,9 +1,12 @@
 const mc = require("minecraft-protocol");
 const util = require("util");
 const CommandContext = require("../../command_util/command_context");
-class McserverCommand extends CommandContext {
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
+
+class mcserver extends CommandContext {
   constructor() {
-    super("mcserver", ["pingserver"], "pings minecraft servers", 0, ["<ip>"]);
+    super("mcserver", ["pingserver"], "pings minecraft servers", trustLevel.public, ["<ip>"]);
   }
 
   async execute(context) {
@@ -38,15 +41,11 @@ class McserverCommand extends CommandContext {
         ],
       });
 
-      if (source.sources.console) {
-        bot.console.info(bot.getMessageAsPrismarine(component)?.toAnsi());
-      } else {
-        bot.tellraw("@a", component);
-      }
+      source.sendFeedback(component)
     } catch (e) {
       console.log(e.stack);
       bot.chat.message(`${e.toString()}`);
     }
   }
 }
-module.exports = McserverCommand;
+module.exports = mcserver;

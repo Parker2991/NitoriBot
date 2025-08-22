@@ -10,5 +10,5 @@ class RefillcoreCommand extends CommandContext {
     bot.core.move(bot.position);
     bot.tellraw("@a", "Refilling core,...");
   }
-};
-module.exports = RefillcoreCommand
+}
+module.exports = RefillcoreCommand;

@@ -18,4 +18,4 @@ class tab_complete {
     };
   }
 }
-module.exports = tab_complete
+module.exports = tab_complete;

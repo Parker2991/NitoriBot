@@ -5,7 +5,7 @@ class reconnect {
     const bot = context.bot;
     const config = context.config;
     const options = context.options;
-    let client
+    let client;
     bot.reconnectDelay = options.reconnectDelay;
 
     bot.on("end", () => {

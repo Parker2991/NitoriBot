@@ -61,5 +61,5 @@ class NetmsgCommand extends CommandContext {
       eachBot.tellraw("@a", component);
     }
   }
-};
-module.exports = NetmsgCommand
+}
+module.exports = NetmsgCommand;

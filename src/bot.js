@@ -6,7 +6,7 @@ let disconnectCount = 0;
 EventEmitter.defaultMaxListeners = Infinity;
 
 class Bot {
-  constructor (options = {}, config) {
+  constructor(options = {}, config) {
     const bot = new EventEmitter();
     bot.options = {
       // Set some default values in options
@@ -26,6 +26,8 @@ class Bot {
         bot.uuid = client.uuid;
         bot.username = client.username;
         bot.loggedIn = true;
+        disconnectCount = 0;
+        bot.reconnectDelay = options.reconnectDelay;
       });
 
       client.on("disconnect", (data) => {
@@ -83,11 +85,6 @@ class Bot {
       process.on("uncaughtException", (e) => {
         bot.console.warn(`${e.stack}`);
       });
-
-      client.on("success", () => {
-        disconnectCount = 0;
-        bot.reconnectDelay = options.reconnectDelay;
-      });
     });
 
     const client = options.client ?? new mc.createClient(bot.options);
@@ -98,4 +95,3 @@ class Bot {
   }
 }
 module.exports = Bot;
-

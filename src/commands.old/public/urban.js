@@ -2,9 +2,9 @@ const CommandError = require("../../command_util/command_error");
 const { request } = require("undici");
 const CommandContext = require("../../command_util/command_context");
 const fixansi = require("../../util/ansi");
-const fs = require('fs')
-const path = require('path')
-const { AttachmentBuilder } = require('discord.js')
+const fs = require("fs");
+const path = require("path");
+const { AttachmentBuilder } = require("discord.js");
 
 class UrbanCommand extends CommandContext {
   constructor() {
@@ -84,36 +84,38 @@ class UrbanCommand extends CommandContext {
     if (source.sources.console) {
       bot.console.info(bot.getMessageAsPrismarine(component)?.toAnsi());
     } else if (source.sources.discord) {
-
-      const discordOutput = fixansi(bot.getMessageAsPrismarine(component)?.toAnsi())
+      const discordOutput = fixansi(
+        bot.getMessageAsPrismarine(component)?.toAnsi(),
+      );
 
       if (discordOutput.length > 2000) {
-        const output = fs.writeFileSync(path.join(__dirname, '../../output.txt'), JSON.stringify(bot.getMessageAsPrismarine(component)?.toString()))
-
-        const file = new AttachmentBuilder(path.join(__dirname, '../../output.txt'))
-
-        bot.discord.message.reply('output', {
-          files: [file]
-        })
-//        bot.discord.message.reply('meow') //[{
-//          files: path.join(__dirname, '../../output.txt')
- //       }])
-
-
-
-//        fs.unlinkSync(path.join(__dirname, '../../output.txt'))
-      } else {
-        bot.discord.message.reply(
-          `\`\`\`ansi\n${discordOutput}\`\`\``,
+        const output = fs.writeFileSync(
+          path.join(__dirname, "../../output.txt"),
+          JSON.stringify(bot.getMessageAsPrismarine(component)?.toString()),
         );
+
+        const file = new AttachmentBuilder(
+          path.join(__dirname, "../../output.txt"),
+        );
+
+        bot.discord.message.reply("output", {
+          files: [file],
+        });
+        //        bot.discord.message.reply('meow') //[{
+        //          files: path.join(__dirname, '../../output.txt')
+        //       }])
+
+        //        fs.unlinkSync(path.join(__dirname, '../../output.txt'))
+      } else {
+        bot.discord.message.reply(`\`\`\`ansi\n${discordOutput}\`\`\``);
       }
-//      console.log(discordOutput.length)
+      //      console.log(discordOutput.length)
     } else if (bot.options.mode === "savageFriends") {
       bot.core.run(`minecraft:tellraw @a ${JSON.stringify(component)}`);
     } else {
       bot.tellraw(`@a`, component);
     }
   }
-};
+}
 
-module.exports = UrbanCommand
+module.exports = UrbanCommand;

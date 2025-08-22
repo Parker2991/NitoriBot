@@ -1,10 +1,17 @@
 const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandTrustLevel = require("../../command_util/command_trust_level");
+const trustLevel = new CommandTrustLevel();
 
 class kill extends CommandContext {
   constructor() {
-    super("kill", ["suicide", "quit"], "kill the bots process", trustLevel.owner, [""], false);
+    super(
+      "kill",
+      ["suicide", "quit"],
+      "kill the bots process",
+      trustLevel.owner,
+      [""],
+      false,
+    );
   }
   execute(context) {
     const bot = context.bot;

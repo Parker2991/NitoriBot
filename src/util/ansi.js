@@ -1,4 +1,4 @@
-function ansi (message) {
+function ansi(message) {
   const ansilist = {
     "\x1B[93m": "\x1B[33m", // Yellow
     "\x1B[96m": "\x1B[36m", // Blue
