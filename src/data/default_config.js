@@ -83,6 +83,14 @@ module.exports = {
     name: "fnfboyfriendbot-logs",
   },
 
+  skibot: {
+    password: "<password>",
+    player: "<username>",
+    channel: "fnfboyfriendbot",
+    enabled: false
+  },
+
+
   bots: [
     // usernameGen is for a random username
     // if private is set to true then the server ip for the server will be hidden
