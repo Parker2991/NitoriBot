@@ -34,6 +34,7 @@ class command_spy {
         console.log(e.stack);
       }
     });
+    
   }
 }
 

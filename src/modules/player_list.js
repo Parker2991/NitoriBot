@@ -39,8 +39,9 @@ class player_list {
           
         } else {
           bot.players = bot.players.filter((_) => _.uuid != player.uuid);
+          if (player.vanished === true)
           bot.emit("player_left", player);
-        } if (player.vanished === true) bot.emit("player_left", players)
+        }
       });
     });
 

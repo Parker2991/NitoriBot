@@ -2,18 +2,17 @@ const CommandContext = require("../../command_util/command_context");
 const CommandTrustLevel = require("../../command_util/command_trust_level");
 const trustLevel = new CommandTrustLevel();
 
-class test extends CommandContext {
+class extras extends CommandContext {
   constructor() {
     super(
-      "test",
+      "extras",
       [],
-      "",
+      "send messages via the extras channel",
       trustLevel.public,
-      [""],
+      ["send", "register", "unregister", "unregisterall"],
       true,
     );
   }
-
   execute(context) {
     const bot = context.bot;
     const args = context.arguments;
@@ -29,8 +28,6 @@ class test extends CommandContext {
       !args[2]
     ) return;
 
-//    console.log(args[2])
-
     switch (args[0]) {
       case "send":
         bot.extras.send(args[1], args.slice(2).join(" "))
@@ -40,8 +37,17 @@ class test extends CommandContext {
         bot.extras.register(args[1])
         source.sendFeedback(`registered ${args[1]} channel`)
       break
-    }    
+      case "unregister":
+        bot.extras.unregister(args[1])
+        source.sendFeedback(`unregistered from ${args[1]} channel`)
+        console.log(bot.extras.channels)
+      break
+      case "unregisterall":
+        bot.extras.unregisterAll();
+        source.sendFeedback("unregistered all channels")
+      break
+    }
   }
 }
 
-module.exports = test;
+module.exports = extras;

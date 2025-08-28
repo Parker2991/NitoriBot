@@ -5,7 +5,7 @@ const CommandSource = require("../command_util/command_source");
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
-function unknownCommand(MessageBuilder, commandName, bot) {
+function unknownCommand(commandName, bot) {
   return {
     translate: "%s%s%s %s",
     color: "red",
@@ -65,6 +65,11 @@ class command_manager {
                     color: "red"  
                   });
               } else if (!source?.sources.console) {
+                if (source.ChatType === "extras:message") 
+                  throw new CommandError({
+                    text: "Trusted Commands can not be ran from extras:message",
+                    color: "red"
+                  })
                 if (
                   args.length === 0 &&
                   authed.find((e) => e?.player === source.player.uuid)
@@ -114,6 +119,11 @@ class command_manager {
                     color: "red"
                   });
               } else if (!source?.sources?.console) {
+                if (source.ChatType === "extras:message") 
+                  throw new CommandError({
+                    text: "Admin Commands can not be ran from extras:message",
+                    color: "red"
+                  })
                 if (
                   args.length === 0 &&
                   authed.find((e) => e?.player === source.player.uuid)
@@ -158,6 +168,12 @@ class command_manager {
                     color: "red"
                   });
               } else if (!source?.sources?.console) {
+                if (source.ChatType === "extras:message") 
+                  throw new CommandError({
+                    text: "Owner Commands can not be ran from extras:message",
+                    color: "red"
+                  })
+
                 if (
                   args.length === 0 &&
                   bot.validation.owner &&
@@ -227,32 +243,20 @@ class command_manager {
           });
         } catch (error) {
           if (error instanceof CommandError) {
-            if (source.sources.discord) {
-              bot.discord.message.reply(
-                `\`\`\`ansi\n${new fixansi(bot.getMessageAsPrismarine(error._message)?.toAnsi()).ansi}\`\`\``,
-              );
-            } else if (source.sources.console) {
-              bot.console.warn(error._message);
-            } else {
-              bot.tellraw("@a", error._message);
-            }
+
+            source.sendFeedback(error._message);
           } else {
-            if (source.sources.discord) {
-              bot.discord.message.reply(
-                `\`\`\`ansi\n${new fixansi(bot.getMessageAsPrismarine({ text: error.stack, color: "red" })?.toAnsi()).ansi}\`\`\``,
-              );
-            } else {
-              bot.tellraw("@a", {
+            bot.console.error(error.stack)
+            source.sendFeedback(
+              {
                 translate: "command.failed",
                 color: "red",
                 hoverEvent: {
                   action: "show_text",
                   contents: String(error.stack),
                 },
-              });
-
-              bot?.console?.warn(error.stack);
-            }
+              }
+            )
           }
         }
       },

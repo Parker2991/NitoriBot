@@ -7,17 +7,17 @@ class validation {
     setInterval(() => {
       bot.validation = {
         trusted: crypto
-          .createHash("sha256")
+          .createHash("sha512")
           .update(Math.floor(Date.now() / 2000) + config.keys.trusted)
           .digest("hex")
           .substring(0, 16),
         admin: crypto
-          .createHash("sha256")
+          .createHash("sha512")
           .update(Math.floor(Date.now() / 2000) + config.keys.admin)
           .digest("hex")
           .substring(0, 16),
         owner: crypto
-          .createHash("sha256")
+          .createHash("sha512")
           .update(Math.floor(Date.now() / 2000) + config.keys.owner)
           .digest("hex")
           .substring(0, 16),

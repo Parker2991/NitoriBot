@@ -27,7 +27,7 @@ function parseMessage(message, data, context) {
       sender,
       contents,
       type: "minecraft:chat",
-      chatType: ["player", "profileless"],
+      chatType: "minecraft:player_chat",
       senderComponent,
     };
   } catch (e) {

@@ -11,20 +11,6 @@ class command_loop {
           interval,
         };
         this.list.push(timer);
-
-        /*        bot.on("end", () => {
-          this.clear();
-        });
-
-        bot.on("packet.login", () => {
-          if (this.list.length === 0) return;
-          timer = {
-            timer: setInterval(() => bot.core.run(command), interval),
-            command,
-            interval,
-          };
-          this.list.push(timer);
-        });*/
       },
 
       remove(index) {
