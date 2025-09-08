@@ -22,7 +22,6 @@ module.exports = {
   core: {
     name: { text: "FNFBoyfriendBot Core", color: "#00FFFF" },
     itemName: { text: "FNFBoyfriendBot core item", color: "#00FFFF" },
-    itemRefill: true,
     refillInterval: 300000,
     // refilling core via item is buggy rn i recommend setting itemRefill to false for now
     area: {
@@ -40,6 +39,11 @@ module.exports = {
   },
 
   weatherApiKey: "weather api token here",
+
+  ratelimit: {
+    console: 20,
+    commands: 3
+  },
 
   debug: {
     commandSetMessage: false,
@@ -110,9 +114,13 @@ module.exports = {
       private: false,
       reconnectDelay: 6000,
       channelId: "discord channel ip here",
-      logging: true,
+      logging: {
+        file: false,
+        console: true
+      },
       mode: "kaboom",
       selfcareInterval: 300,
+      itemRefill: true,
     },
   ],
 };

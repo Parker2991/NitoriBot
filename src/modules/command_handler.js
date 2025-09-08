@@ -39,6 +39,7 @@ class command_handler {
             source.player.hash = "admin";
           else if (command.split(" ")[1] === bot.validation.owner)
             source.player.hash = "owner";
+          else source.player.trustLevel = "public"
           ratelimit++;
           setTimeout(() => {
             ratelimit--;

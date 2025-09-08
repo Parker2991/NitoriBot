@@ -126,13 +126,13 @@ class discord {
                 color: "blue",
               },
             ],
-            clickEvent: bot.discord.invite
+            click_event: bot.discord.invite
               ? {
                   action: "open_url",
-                  value: bot.discord.invite,
+                  url: bot.discord.invite,
                 }
               : undefined,
-            hoverEvent: {
+            hover_event: {
               action: "show_text",
               contents: "Click to join the discord",
             },
@@ -149,13 +149,13 @@ class discord {
             let attachment = {
               text: `[Attachment: ${Attachment.name}] ${message?.content}`,
               color: "blue",
-              hoverEvent: {
+              hover_event: {
                 action: "show_text",
                 contents: "click here to view attachment",
               },
-              clickEvent: {
+              click_event: {
                 action: "open_url",
-                value: `${Attachment?.url}`,
+                url: `${Attachment?.url}`,
               },
             };
 
