@@ -91,7 +91,7 @@ class player_list {
       if (!target) return;
 
       try {
-        target.displayName = JSON.parse(entry.displayName);
+        target.displayName = convertNbtComponentToJson(null, entry.displayName);
       } catch {
         // do nothing
       }

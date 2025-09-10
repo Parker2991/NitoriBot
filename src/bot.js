@@ -1,6 +1,7 @@
 const mc = require("minecraft-protocol");
 const { EventEmitter } = require("events");
 const ChatMessage = require("prismarine-chat");
+const usernameGen = require("./util/usernameGen");
 let disconnectCount = 0;
 
 EventEmitter.defaultMaxListeners = Infinity;
@@ -11,7 +12,7 @@ class Bot {
     bot.options = {
       // Set some default values in options
       host: (options.host ??= "localhost"),
-      username: (options.username ??= "Player"),
+      username: (options.username ??= usernameGen()),
       hideErrors: (options.hideErrors ??= true), // HACK: Hide errors by default as a lazy fix to console being spammed with them
     };
     bot.options = options;

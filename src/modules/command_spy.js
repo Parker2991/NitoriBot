@@ -9,19 +9,18 @@ class command_spy {
           bot.players.find((e) => e?.profile?.name === message.text)?.profile
             ?.name === message.text;
         if (!child || !message.text || !message.color || !sender) return;
-        const command = child[1].text.substring("/".length);
+        const command = child[1].substring("/".length);
 
         if (
           (message.color === "yellow" &&
-            child[0].text === ": " &&
-            child[1].text === `/${command}` &&
+            child[0] === ": " &&
+            child[1] === `/${command}` &&
             sender) ||
           (message.color === "aqua" &&
-            child[0].text === ": " &&
-            child[1].text === `/${command}` &&
+            child[0] === ": " &&
+            child[1] === `/${command}` &&
             sender)
-        )
-          bot.emit("parsed_message", {
+        ) bot.emit("parsed_message", {
             sender: bot.players.find((e) => e.profile.name === message.text),
             contents: { text: command },
             type: "minecraft:chat",

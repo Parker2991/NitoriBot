@@ -9,7 +9,6 @@ class reconnect {
     bot.reconnectDelay = options.reconnectDelay;
 
     bot.on("end", () => {
-      bot._client.removeAllListeners();
       setTimeout(() => {
         if (options.usernameGen) {
           client =

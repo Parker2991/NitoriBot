@@ -87,7 +87,23 @@ class selfcare {
     bot.on("packet.login", (data) => {
       bot.selfcare.entityId = data.entityId;
       bot.selfcare.gameMode = data.gameMode;
-
+      switch (data.worldState.gamemode) {
+        case 'survival':
+          bot.selfcare.gameMode = 0
+        break
+        case 'creative':
+          bot.selfcare.gameMode = 1
+        break
+        case 'adventure':
+          bot.selfcare.gameMode = 2
+        break
+        case 'spectator':
+          bot.selfcare.gameMode = 3
+        break
+        default:
+          bot.selfcare.gameMode = 0
+        break
+      }
       timer = setInterval(() => {
         if (bot.options.mode === "savageFriends") {
           if (bot.selfcare.register) bot.chat.command('register amogusissus amogusissus')

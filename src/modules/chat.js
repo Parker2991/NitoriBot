@@ -13,15 +13,40 @@ function tryParse(json) {
   }
 }
 
+function parse (chatTypes, type, sender, target, message) {
+  const chatType = chatTypes[type]
+  const parsed = convertNbtComponentToJson(null, chatType.value.value.chat)
+  const json = { translate: parsed.translation_key, with: [] }
+
+  for (const parameter of parsed.parameters) {
+
+    switch (parameter) {
+      case "sender": json.with.push(sender)
+      break;
+      case "target": json.with.push(target)
+      case "content": json.with.push(message)
+      break;
+    }
+  }
+
+  return json
+}
+
 class chat {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
     const options = context.options;
     let ChatMessage;
+    let chatTypes;
     bot.on("registry_ready", (registry) => {
       ChatMessage = loadPrismarineChat(registry);
     });
+
+    bot.on('packet.registry_data', (packet) => {
+      if (packet.id !== 'minecraft:chat_type') return // taken from the 1.21.1 build of my bot that chayapak made
+      chatTypes = packet.entries
+    })
 
     if (options.mode === "savageFriends") {
       bot.chatParsers = [CreayunChatParser];
@@ -34,128 +59,24 @@ class chat {
     }
 
     bot.on("packet.profileless_chat", (packet) => {
-      let message;
-      let sender;
-      message = tryParse(packet.message);
-      sender = tryParse(packet.name);
-
-      switch (packet.type) {
-        case 1:
-          bot.emit("message", { 
-            type: "minecraft:disguised_chat",
-            message: {
-              translate: "chat.type.emote",
-              with: [sender, message],
-            }
-          });
-          break;
-        case 2:
-          bot.emit("message", {
-            type: "minecraft:disguised_chat",
-            message: {
-              translate: "commands.message.display.incoming",
-              with: [sender, message],
-              color: "gray",
-              italic: true,
-            }
-          });
-          break;
-        case 3:
-          bot.emit("message",
-            {
-              type: "minecraft:disguised_chat",
-              message: {
-                translate: "commands.message.display.outgoing",
-                with: [sender, message],
-                color: "gray",
-                italic: true
-              }
-            },
-          );
-          break;
-        case 4:
-          bot.emit("message", {
-            type: "minecraft:disguised_chat",
-            message: message
-          });
-          break;
-        case 5:
-          bot.emit("message", {
-            type: "minecraft:disguised_chat",
-            message: { translate: "chat.type.announcement", with: [sender, message] },
-          });
-          break;
-      }
+      const sender = convertNbtComponentToJson(null, packet.name);
+      const message = convertNbtComponentToJson(null, packet.message);
+      const target = convertNbtComponentToJson(null, packet.target)
+      const type = packet.type.chatType;
+      const parsed = parse(chatTypes, type, sender, target, message)
+      bot.emit('message', {
+        type: "minecraft:disguised_chat",
+        message: parsed
+      })
     });
 
     bot.on("packet.player_chat", (packet, data) => {
-      let unsigned;
-      unsigned = tryParse(packet.unsignedChatContent);
+      const unsigned = convertNbtComponentToJson(null, packet.unsignedChatContent);
+      bot.emit('message', {
+        type: "minecraft:player_chat",
+        message: unsigned
+      })
 
-      switch (packet.type) {
-        case 5:
-          bot.emit("message", {
-            type: "minecraft:player_chat",
-            message: {
-              translate: "chat.type.announcement",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-            },
-          });
-          break;
-        case 4:
-          bot.emit("message", {
-            type: "minecraft:player_chat",
-            message: unsigned,
-          });
-          break;
-        case 3:
-          bot.emit("message", {
-            type: "minecraft:player_chat",
-            message: {
-              translate: "commands.message.display.outgoing",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            },
-          });
-          break;
-        case 2:
-          bot.emit("message", {
-            type: "minecraft:player_chat",
-            message: {
-              translate: "commands.message.display.incoming",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-              color: "gray",
-              italic: true,
-            },
-          });
-          break;
-        case 1:
-          bot.emit("message", {
-            type: "minecraft:player_chat",
-            message: {
-              translate: "chat.type.emote",
-              with: [
-                bot.players.find((player) => player.uuid === packet.senderUuid)
-                  .profile.name,
-                packet.plainMessage,
-              ],
-            },
-          });
-          break;
-      }
       tryParsingMessage(unsigned, {
         senderUuid: packet.senderUuid,
         players: bot.players,
@@ -165,10 +86,7 @@ class chat {
     });
 
     bot.on("packet.system_chat", (packet) => {
-      let message;
-
-      message = tryParse(packet.content);
-
+      const message = convertNbtComponentToJson(null, packet.content);
       if (
         message.translate === "advMode.setCommand.success" &&
         config?.debug?.commandSetMessage === false
