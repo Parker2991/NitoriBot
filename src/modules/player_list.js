@@ -61,7 +61,7 @@ class player_list {
         displayName: undefined,
         vanished: false,
       });
-      bot.emit('player_join', entry)
+      bot.emit('player_info', entry)
     }
 
     function initializeChat(entry) {}
