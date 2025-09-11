@@ -58,17 +58,5 @@ module.exports = {
         refreshLine(`${fromNotch("§8[§4error§8]§r")?.toAnsi()} ${fromNotch(error)?.toAnsi(require('../data/language.json'))}`)
       }
     }
-
-/*    bot.on('playerChat', (message) => {
-      bot.console.log(message);
-    });
-
-    bot.on('profilelessChat', (message) => {
-      bot.console.log(message);
-    });
-
-    bot.on('systemChat', (message) => {
-      bot.console.log(message);
-    });*/
   }
 }

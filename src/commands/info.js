@@ -1,5 +1,7 @@
 const { request } = require('undici');
 const { execSync } = require('child_process');
+const { buildstring } = require('../data/info.json');
+
 module.exports = {
   data: {
     name: "info",
@@ -34,11 +36,11 @@ module.exports = {
           with: [
             { text: "Ski", color: "aqua" },
             { text: "Bot", color: "blue" },
-            { text: `${require('../../package-lock.json').version}`, color: "blue" },
+            { text: `${buildstring.version}`, color: "blue" },
             { text: "Build", color: "dark_blue" },
-            { text: `${execSync('git rev-list --count --all').toString().replaceAll('\n','')}`, color: "blue" },
+            { text: `${buildstring.build}`, color: "blue" },
             { text: "Commit", color: "dark_blue" },
-            { text: `${execSync("git rev-parse HEAD").toString().substring(0, 10)}`, color: "blue" },
+            { text: `${execSync("git rev-parse HEAD").toString().substring(0, 10).replaceAll('\n', '')}`, color: "blue" },
             { text: "FNF", color: "dark_blue" },
             { text: "Boyfriend", color: "dark_aqua" },
             { text: "Bot", color: "blue" },

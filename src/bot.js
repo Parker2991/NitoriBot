@@ -63,7 +63,7 @@ function createBot(context) {
     });
 
     process.on("uncaughtException", (e) => {
-//      console?.warn(e.stack)
+      console?.warn(e.stack)
     });
   })
 

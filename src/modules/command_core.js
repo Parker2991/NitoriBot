@@ -30,7 +30,7 @@ module.exports = {
         const { start, end } = bot.core.area
 
         if (!pos) return
-        const command = `/minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} repeating_command_block{CustomName:'${JSON.stringify(config.core.name)}'}`
+        const command = `/minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} repeating_command_block{CustomName:${JSON.stringify(config.core.name)}}`
         bot.chat(`${command}`)
       },
 

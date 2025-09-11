@@ -21,8 +21,7 @@ module.exports = {
     let vanish = false;
     let nick = false;
     let username = false;
-
-
+    
     bot.on("system_chat_selfcare", (message) => {
       try {
       const parsedMessage = fromNotch(message)?.toMotd();
@@ -61,16 +60,14 @@ module.exports = {
       permission = data.entityStatus - 24
     });
 
-    bot.on('packet.game_state_change', (data) => {
-      if (data.reason !== 3) return; // Reason 3 = Change Game Mode
-//      if (data.reason !== 4) return;
-      gameMode = data.gameMode;
+    bot.on('packet.game_state_change', (packet) => {
+      if (packet.reason === 3 || packet.reason === "change_game_mode") {
+        gameMode = packet.gameMode;
+      } if (packet.reason === 4 || packet.reason === "win_game") {
+        bot._client.write('client_command', { action: 0 })        
+      }
     });
 
-    bot.on('packet.game_state_change', (data) => {
-      if (data.reason !== 4) return;
-      clientLock = data.gameMode;
-    })
 
 /*    bot.on("packet.position", (packet, position) => {
       if (!config.selfcare.icu || bot.server.mode === "savageFriends") return;
@@ -125,7 +122,7 @@ module.exports = {
 
         else if (gameMode !== 4) bot._client.write("client_command", { actionId: 0 });
         }
-      }, 300);
+      }, 1000);
     });
 
     bot.on('end', () => {

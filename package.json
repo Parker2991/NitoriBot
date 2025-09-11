@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "discord.js": "^14.16.3",
+    "discord.js": "^14.22.1",
     "js-yaml": "^4.1.0",
-    "minecraft-data": "^3.84.0",
-    "minecraft-protocol": "^1.51.0",
+    "minecraft-data": "^3.98.0",
+    "minecraft-protocol": "^1.62.0",
     "prismarine-chat": "^1.11.0",
     "prismarine-nbt": "^2.7.0",
     "prismarine-registry": "^1.11.0",
-    "terminal-kit": "^3.1.1",
-    "undici": "^7.2.0"
+    "terminal-kit": "^3.1.2",
+    "undici": "^7.16.0"
   }
 }

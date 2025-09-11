@@ -1,5 +1,3 @@
-//const CommandError = require('../util/command_error');
-
 module.exports = {
   data: {
     name: "cloop",

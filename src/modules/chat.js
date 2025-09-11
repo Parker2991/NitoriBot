@@ -1,4 +1,28 @@
 const convertNbtComponentToJson = require('../util/nbt_parser')
+/*
+  please note that the code here for 1.21.8 
+  was ported from the FNFBoyfriendBot Reignite 1.21.8 port
+  and had SkiBot's console format added to it
+*/
+
+function parse (chatTypes, type, sender, target, message) {
+  const chatType = chatTypes[type]
+  const parsed = convertNbtComponentToJson(null, chatType.value.value.chat)
+  const json = { translate: parsed.translation_key, with: [] }
+
+  for (const parameter of parsed.parameters) {
+
+    switch (parameter) {
+      case "sender": json.with.push(sender)
+      break;
+      case "target": json.with.push(target)
+      case "content": json.with.push(message)
+      break;
+    }
+  }
+
+  return json
+}
 
 module.exports = {
   data: {
@@ -11,232 +35,65 @@ module.exports = {
     const bot = context.bot;
     const config = context.config;
 
-    bot.on('packet.player_chat', (data) => {
-      const unsigned = convertNbtComponentToJson(null, data.unsignedChatContent)
-      try {
-      switch (data.type.registryIndex) {
-        case 4:
-          bot.emit('playerChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Player Chat', color: 'dark_purple' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: data.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: "commands.message.display.outgoing",
-              with: [
-                data.networkName.insertion,
-                data.plainMessage
-              ],
-              color: "gray",
-              italic: true
-            }
-          ])
-      break
-      case 3:
-        bot.emit('playerChat', [
-          {
-            translate: "[%s %s %s%s %s] ",
-            color: "dark_gray",
-            with: [
-              { text: 'Player Chat', color: 'dark_purple' },
-              { text: '|' },
-              { text: 'Packet Type', color: "aqua" },
-              { text: ':' },
-              { text: data.type.registryIndex, color: 'gold' },
-            ],
-          },
-          { translate: "commands.message.display.incoming",
-             with: [
-               data.networkName.insertion,
-               data.plainMessage
-             ],
-             color: "gray",
-             italic: true
-          }
-        ])
-      break
-        case 5:
-          bot.emit('playerChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Player Chat', color: 'dark_purple' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: data.type.registryIndex, color: 'gold' },
-              ],
-            },
-            unsigned
-          ])
-        break;
-        case 6:
-          bot.emit('playerChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Player Chat', color: 'dark_purple' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: data.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: "chat.type.announcement",
-              with: [
-                data.networkName.insertion,
-                data.plainMessage
-              ]
-            }
-          ]);
-        break;
-        default:
-          console.warn('invalid chat type');
-      }
-      } catch (e) {
-        console.log(e.stack);
-      }
+    bot.on('packet.registry_data', (packet) => {
+      if (packet.id !== 'minecraft:chat_type') return // taken from FNFBoyfriendBot Reignite 1.21.8 port
+      chatTypes = packet.entries
     })
 
+    bot.on('packet.player_chat', (packet) => {
+      const unsigned = convertNbtComponentToJson(null, packet.unsignedChatContent);
+      bot.emit('message', [
+        {
+          translate: "[%s %s %s%s %s] ",
+          color: "dark_gray",
+          with: [
+            { text: 'Player Chat', color: 'dark_purple' },
+            { text: '|' },
+            { text: 'Packet Type', color: "aqua" },
+            { text: ':' },
+            { text: packet.type.chatType, color: 'gold' },
+          ],
+        },
+        unsigned
+      ])
+    });
+
     bot.on('packet.profileless_chat', (packet) => {
-      const message = convertNbtComponentToJson(null, packet.message)
-      const sender = convertNbtComponentToJson(null, packet.name)
-      try {
-      switch (packet.type.registryIndex) {
-        case 2:
-          bot?.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: "chat.type.emote",
-               with: [
-                 sender,
-                 message
-               ]
-            }
-          ])
-        break
-        case 3:
-          bot.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: "commands.message.display.incoming",
-              with: [
-                sender,
-                message
-              ],
-              color: "gray",
-              italic: true
-            }
-          ])
-        break
-        case 4:
-          bot.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: "commands.message.display.outgoing",
-              with: [
-                sender,
-                message
-              ],
-              color: "gray",
-              italic: true
-            }
-          ])
-        break
-        case 5:
-          bot.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type.registryIndex, color: 'gold' },
-              ],
-            },
-            message
-          ])
-        break
-        case 6:
-          bot.emit('profilelessChat', [
-            {
-              translate: "[%s %s %s%s %s] ",
-              color: "dark_gray",
-              with: [
-                { text: 'Profileless Chat', color: 'dark_aqua' },
-                { text: '|' },
-                { text: 'Packet Type', color: "aqua" },
-                { text: ':' },
-                { text: packet.type.registryIndex, color: 'gold' },
-              ],
-            },
-            { translate: 'chat.type.announcement',
-               with: [
-                 sender,
-                 message
-               ]
-             }
-          ])
-        break
-      }
-    } catch (e) {
-      console.log(e.stack)
-    }
+      const sender = convertNbtComponentToJson(null, packet.name);
+      const message = convertNbtComponentToJson(null, packet.message);
+      const target = convertNbtComponentToJson(null, packet.target)
+      const type = packet.type.chatType;
+      const parsed = parse(chatTypes, type, sender, target, message)
+
+      bot.emit('message', [
+        {
+          translate: "[%s %s %s%s %s] ",
+          color: "dark_gray",
+          with: [
+            { text: 'Profileless Chat', color: 'dark_aqua' },
+            { text: '|' },
+            { text: 'Packet Type', color: "aqua" },
+            { text: ':' },
+            { text: packet.type.chatType, color: 'gold' },
+          ],
+        },
+        parsed
+      ])
     });
 
     bot.on('packet.system_chat', packet => {
       try {
-//      console.log(packet)
       const message = convertNbtComponentToJson(null, packet.content)
 
       if (message.translate === 'advMode.setCommand.success') return // Ignores command set message
 
       if (message.translate === 'multiplayer.message_not_delivered') return;
 
-//      bot.emit('system_chat', { message, actionbar: packet.isActionBar })
-
       if (packet.isActionBar) {
         return
       }
 
-      bot.emit('systemChat', [
+      bot.emit('message', [
         {
           translate: "[%s] ",
           color: "dark_gray",
