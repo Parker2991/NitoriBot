@@ -23,8 +23,7 @@ class command_spy {
         ) bot.emit("parsed_message", {
             sender: bot.players.find((e) => e.profile.name === message.text),
             contents: { text: command },
-            type: "minecraft:chat",
-            chatType: "command_spy",
+            type: "extras:command_spy",
             displayName: bot.players.find(
               (e) => e.profile.name === message.text,
             ).displayName,

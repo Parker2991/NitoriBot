@@ -32,8 +32,8 @@ function chipmunkmod(message, data, context, bot) {
       sender,
       contents,
       type: "minecraft:chat",
-      chatType: ["system"],
       senderComponent,
+      chatType: data.chatType
     };
   } catch (e) {
     console.error(e);

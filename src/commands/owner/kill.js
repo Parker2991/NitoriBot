@@ -10,11 +10,12 @@ class kill extends CommandContext {
       "kill the bots process",
       trustLevel.owner,
       [""],
-      false,
+      true,
     );
   }
   execute(context) {
     const bot = context.bot;
+
     process.exit(1);
   }
 }

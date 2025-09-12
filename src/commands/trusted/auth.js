@@ -11,7 +11,7 @@ class auth extends CommandContext {
       "auth through the bot so you dont need to use a hash everytime",
       trustLevel.trusted,
       [""],
-      false,
+      true,
     );
   }
   execute(context) {
@@ -21,12 +21,10 @@ class auth extends CommandContext {
     const config = context.config;
     const uuid = source.player.uuid;
     let component = []
-
-    if (bot.auth.list.find((e) => e?.player === uuid))
+    if (source.player.validateBypass)
       throw new CommandError(`You are already authed!`);
 
-    if (source.player.hash === "trusted") {
-      source.player.authed = true;
+    if (source.player.trustLevel === 1) {
       bot.auth.add({
         player: uuid,
         trustLevel: "trusted",
@@ -36,8 +34,7 @@ class auth extends CommandContext {
         text: "Authed as Trusted",
         color: config.colors.help.trusted
       })
-    } else if (source.player.hash === "admin") {
-      source.player.authed = true;
+    } else if (source.player.trustLevel === 2) {
       bot.auth.add({
         player: uuid,
         trustLevel: "admin",
@@ -47,8 +44,7 @@ class auth extends CommandContext {
         text: "Authed as Admin",
         color: config.colors.help.admin
       })
-    } else if (source.player.hash === "owner") {
-      source.player.authed = true;
+    } else if (source.player.trustLevel === 3) {
       bot.auth.add({
         player: source.player.uuid,
         trustLevel: "owner",

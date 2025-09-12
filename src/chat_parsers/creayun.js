@@ -15,8 +15,8 @@ function parseMessage(messageobj, data) {
       return {
         sender,
         contents: match[3],
-        chatType: "player",
         type: "minecraft:chat",
+        chatType: data.chatType
       };
     }
   } catch (e) {

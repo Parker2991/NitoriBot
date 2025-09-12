@@ -10,7 +10,7 @@ class refillcore extends CommandContext {
       "refill the bots core",
       trustLevel.public,
       [""],
-      true,
+      false,
     );
   }
 

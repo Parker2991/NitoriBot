@@ -1,7 +1,6 @@
 const nbt = require("prismarine-nbt");
 const sleep = require("../util/sleep");
 const convertNbtComponentToJson = require("../util/nbt_parser");
-const fixansi = require("../util/ansi");
 
 class command_core {
   constructor(context) {
@@ -9,6 +8,7 @@ class command_core {
     const config = context.config;
     const options = context.options;
     const Item = require("prismarine-item")(bot.options.version);
+    
     let command;
 
     bot.core = {
@@ -94,6 +94,8 @@ class command_core {
           y: Math.floor(pos.y - 1),
           z: Math.floor(pos.z),
         };
+
+        bot.core.commandBlocks = [];
 
         if (bot.options.itemRefill && bot.options.mode !== "savageFriends") {
           bot.core.itemRefill();
@@ -240,31 +242,6 @@ class command_core {
     bot.on("end", () => {
       if (timer) clearInterval(timer);
     });
-
-    /*    bot.on("packet.multi_block_change", (data) => {
-      try {
-        if (bot.options.mode !== "kaboom") return;
-
-        let broken = true;
-
-        if (
-          data.chunkCoordinates.x === Math.floor(bot.core.position.x / 16) &&
-          data.chunkCoordinates.y === Math.floor(bot.core.position.y / 16) &&
-          data.chunkCoordinates.z === Math.floor(bot.core.position.z / 16)
-        ) {
-          for (const state of data.records) {
-            if (state >= 7906 && state >= 7917) broken = false;
-            if (state >= 12527 && state >= 12538) broken = false;
-            if (state >= 12515 && state >= 12526) broken = false;
-            else broken = true;
-          }
-
-          if (broken === true) bot.core.move(bot.position);
-        }
-      } catch (e) {
-        console.log(e.stack);
-      }
-    });*/
   }
 }
 module.exports = command_core;

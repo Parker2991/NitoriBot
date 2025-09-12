@@ -3,7 +3,8 @@ class CommandSource {
     this.player = player;
     this.sources = sources;
     this.ChatType = ChatType;
-    this.player.hash = null;
+    this.player.trustLevel = 0;
+    this.player.validateBypass = null;
   }
 }
 module.exports = CommandSource;

@@ -6,7 +6,7 @@ const trustLevel = new CommandTrustLevel();
 
 class mcserver extends CommandContext {
   constructor() {
-    super("mcserver", ["pingserver"], "pings minecraft servers", trustLevel.public, ["<ip>"]);
+    super("mcserver", ["pingserver"], "pings minecraft servers", trustLevel.public, ["<ip>"], false);
   }
 
   async execute(context) {

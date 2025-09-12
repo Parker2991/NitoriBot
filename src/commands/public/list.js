@@ -7,7 +7,9 @@ class list extends CommandContext {
   constructor() {
     super("list", ["pl", "playerlist"], "check whos online on the server", trustLevel.public, [
       "",
-    ]);
+    ],
+    false,
+    );
   }
   execute(context) {
     const bot = context.bot;

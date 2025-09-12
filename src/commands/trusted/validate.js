@@ -10,7 +10,7 @@ class validate extends CommandContext {
       "validate through the bot",
       trustLevel.trusted,
       [""],
-      false,
+      true,
     );
   }
   execute(context) {
@@ -20,18 +20,18 @@ class validate extends CommandContext {
     const config = context.config;
     let component = []
 
-    if (source.player.hash === "trusted")
+    if (source.player.trustLevel === 1)
       component.push({
         text: "Valid Trusted Hash",
         color: config.colors.help.trusted
       })
 
-    else if (source.player.hash === "admin")
+    else if (source.player.trustLevel === 2)
       component.push({
         text: "Valid Admin Hash",
         color: config.colors.help.admin
       })
-    else if (source.player.hash === "owner")
+    else if (source.player.trustLevel === 3)
       component.push({
         text: "Valid Owner Hash",
         color: config.colors.help.owner

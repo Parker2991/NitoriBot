@@ -27,8 +27,8 @@ function parseMessage(message, data, context) {
       sender,
       contents,
       type: "minecraft:chat",
-      chatType: "minecraft:player_chat",
       senderComponent,
+      chatType: data.chatType
     };
   } catch (e) {
     console.error(`${e.stack}`);

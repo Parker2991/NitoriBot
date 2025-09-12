@@ -11,7 +11,7 @@ class kick extends CommandContext {
       "kick a player from the server",
       trustLevel.admin,
       ["invalidstring", "item", "te"],
-      false,
+      true,
     );
   }
   execute(context) {

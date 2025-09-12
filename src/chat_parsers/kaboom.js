@@ -31,7 +31,7 @@ function kaboom (message, data) {
 
   if (!sender) return undefined
 
-  return { sender, contents, type: 'minecraft:chat', displayName, chatType: "minecraft:player_chat" }
+  return { sender, contents, type: "minecraft:chat", displayName, chatType: data.chatType }
 }
 
 function isSeparatorAt (children, start) {

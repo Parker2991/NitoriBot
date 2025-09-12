@@ -84,7 +84,7 @@ class Bot {
       });
 
       process.on("uncaughtException", (e) => {
-        bot.console.warn(`${e.stack}`);
+        console.warn(`${e.stack}`);
       });
     });
 

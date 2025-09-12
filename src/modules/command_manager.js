@@ -4,6 +4,7 @@ const CommandError = require("../command_util/command_error.js");
 const CommandSource = require("../command_util/command_source");
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
+const trustLevels = require('../command_util/command_trust_level.js')
 
 function unknownCommand(commandName, bot) {
   return {
@@ -30,210 +31,62 @@ class command_manager {
       commandlist: [],
       execute(source, commandName, args) {
         const command = this.getCommand(commandName.toLowerCase());
-        const authed = bot.auth.list;
         try {
+          const authFind = bot.auth.list.find((e) => e.player === source.player.uuid)
           if (!command) {
-            if (source?.sources?.console)
-              bot.console.command(
-                unknownCommand(commandName, bot),
-              );
-            else
-              source.sendFeedback(
-                unknownCommand(commandName, bot),
-              );
+            source.sendFeedback(
+              unknownCommand(commandName, bot),
+            );
           }
 
-          const event = bot.discord.message;
-          const roles = event?.member?.roles?.cache;
+          if (authFind) {
+            source.player.validateBypass = true
+            if (authFind.trustLevel === "trusted") source.player.trustLevel = 1;
+            else if (authFind.trustLevel === "admin") source.player.trustLevel = 2;
+            else if (authFind.trustLevel === "owner") source.player.trustLevel = 3;
+          }
 
-          switch (command?.data?.trustLevel) {
-            case 0:
-              // do nothing since trust level 0 is public
-              break;
-            case 1:
-              if (source?.sources?.discord) {
-                const hasRole = roles?.some(
-                  (role) =>
-                    role.name === `${config.discord.roles.trusted}` ||
-                    role.name === `${config.discord.roles.admin}` ||
-                    role.name === `${config.discord.roles.fullAccess}` ||
-                    role.name === `${config.discord.roles.owner}`,
-                );
-                if (!hasRole)
-                  throw new CommandError({
-                    text: "You done have the trusted, admin, or owner roles!",
-                    color: "red"  
-                  });
-              } else if (!source?.sources.console) {
-                if (source.ChatType === "extras:message") 
-                  throw new CommandError({
-                    text: "Trusted Commands can not be ran from extras:message",
-                    color: "red"
-                  })
-                if (
-                  args.length === 0 &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "trusted" &&
-                    authed.find((e) => e?.player === source.player.uuid)
-                      ?.trustLevel !== "admin" &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Please provide a trusted, admin, or owner hash",
-                    color: "red"
-                  });
-                if (
-                  args[0] !== bot.validation.trusted &&
-                  args[0] !== bot.validation.admin &&
-                  args[0] !== bot.validation.owner &&
-                  authed.find((e) => e.player === source.player.uuid)
-                    ?.trustLevel !== "trusted" &&
-                    authed.find((e) => e.player === source.player.uuid)
-                      ?.trustLevel !== "admin" &&
-                  authed.find((e) => e.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Invalid Hash",
-                    color: "red"
-                  });
-                if (source.player.authed) {
-                  args = args;
-                } else {
-                  args = args.slice(1);
-                }
-              }
-              break;
-            case 2:
-              if (source?.sources?.discord) {
-                const hasRole = roles?.some(
-                  (role) =>
-                    role.name === `${config.discord.roles.admin}` ||
-                    role.name === `${config.discord.roles.fullAccess}` ||
-                    role.name === `${config.discord.roles.owner}`,
-                );
-                if (!hasRole)
-                  throw new CommandError({
-                    text: "You dont have the admin, or owner roles!",
-                    color: "red"
-                  });
-              } else if (!source?.sources?.console) {
-                if (source.ChatType === "extras:message") 
-                  throw new CommandError({
-                    text: "Admin Commands can not be ran from extras:message",
-                    color: "red"
-                  })
-                if (
-                  args.length === 0 &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "admin" &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Please provide a hash",
-                    color: "red"
-                  });
-                if (
-                  args[0] !== bot.validation.admin &&
-                  args[0] !== bot.validation.owner &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "admin" &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Invalid hash",
-                    color: "red"
-                  });
-
-                if (source.player.authed) {
-                  args = args;
-                } else {
-                  args = args.slice(1);
-                }
-              }
-              break;
-            case 3:
-              if (source?.sources?.discord) {
-                const hasRole = roles?.some(
-                  (role) =>
-                    role.name === `${config.discord.roles.owner}` ||
-                    role.name === `${config.discord.roles.fullAccess}`,
-                );
-                if (!hasRole)
-                  throw new CommandError({
-                    text: "You dont have the owner role!",
-                    color: "red"
-                  });
-              } else if (!source?.sources?.console) {
-                if (source.ChatType === "extras:message") 
-                  throw new CommandError({
-                    text: "Owner Commands can not be ran from extras:message",
-                    color: "red"
-                  })
-
-                if (
-                  args.length === 0 &&
-                  bot.validation.owner &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Please provide a hash",
-                    color: "red"
-                  });
-
-                if (
-                  args[0] !== bot.validation.owner &&
-                  authed.find((e) => e?.player === source.player.uuid)
-                    ?.trustLevel !== "owner"
-                )
-                  throw new CommandError({
-                    text: "Invalid hash",
-                    color: "red"
-                  });
-
-                if (source.player.authed) {
-                  args = args;
-                } else {
-                  args = args.slice(1);
-                }
-              }
-              break;
-            case 4:
-              if (!source?.sources?.console) {
+          if (command.data.trustLevel !== 0) {
+            if (!source.player.validateBypass && !source.sources.console && !source.sources.discord) {
+              if (args[0] === bot.validation.trusted)
+                source.player.trustLevel = 1
+              else if (args[0] === bot.validation.admin)
+                source.player.trustLevel = 2
+              else if (args[0] === bot.validation.owner)
+                source.player.trustLevel = 3
+              args = args.slice(1)
+              if (source.player.trustLevel < command?.data?.trustLevel && !source.sources.console) {
                 throw new CommandError({
-                  text: "This Command can only be ran via console",
+                  text: "Invalid Hash",
                   color: "red"
-                });
+                })
               }
-              break;
-            case 5:
-              throw new CommandError({
-                text: "This Command has been disabled!",
-                color: "red"
-              });
-              break;
+            } if (source.sources.discord) {
+              const event = bot.discord.message;
+              const roles = event?.member?.roles?.cache;
+              const hashRole = roles?.some((role) => {
+                if (role.name === `${config.discord.roles.trusted}`) source.player.trustLevel = 1;
+                else if (role.name === `${config.discord.roles.admin}`) source.player.trustLevel = 2;
+                else if (role.name === `${config.discord.roles.owner}`) source.player.trustLevel = 3;
+              })
+
+              if (source.player.trustLevel < command?.data?.trustLevel) 
+                throw new CommandError({
+                  text: "Invalid Role",
+                  color: "red"
+                })
+            }
           }
 
-          /*          if (source.sources.discord) {
-            discordClient.channels.cache
-              .get("1361739286113685534")
-              .send(
-                `User: ${source.player.profile.name}, Command: ${command?.data?.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Discord`,
-              );
-          } else if (!source.sources.console) {
-            discordClient.channels.cache
-              .get("1361739286113685534")
-              .send(
-                `User: ${source.player.profile.name}, Command: ${command?.data?.name}, Args: ${args.join(" ")}, Time/Date: ${new Date().toLocaleString("en-us", { TimeZone: "America/Chicago" })}, Source: Minecraft, Server: ${bot.options.host}:${bot.options.port}`,
-              );
-          }*/
-
-          //          if (command.playerOnly === true && source.ChatType.find((e) => e)) return;
-
+          if (
+            command?.data.playerChat
+            &&
+            source.ChatType !== "minecraft:player_chat"
+            &&
+            !source.sources.console
+            && 
+            !source.sources.discord
+          ) return
           return command?.execute({
             bot,
             source,
@@ -241,6 +94,7 @@ class command_manager {
             config,
             discordClient,
           });
+
         } catch (error) {
           if (error instanceof CommandError) {
 

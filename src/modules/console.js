@@ -38,6 +38,10 @@ class Console {
           });
         });
       },
+      /*
+            data.trustLevel,
+            data.validateBypass
+      */
       source: new CommandSource(
         {
           profile: {
@@ -46,6 +50,11 @@ class Console {
           uuid: bot._client.uuid,
         },
         { console: true, discord: false },
+        "minecraft:chat",
+        {
+          trustLevel: 4,
+          validateBypass: true
+        }
       ),
 
       refreshLine(...args) {

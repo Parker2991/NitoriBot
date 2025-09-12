@@ -3,12 +3,10 @@ const ChatMessage = require("prismarine-chat")("1.20.2");
 const stringify = (message) => new ChatMessage(message)?.toString();
 
 class CommandError extends Error {
-  constructor(message, filename, lineError, useChat) {
-    super(stringify(message), filename, lineError, useChat);
+  constructor(message, filename, lineError) {
+    super(stringify(message), filename, lineError);
     this.name = "CommandError";
     this._message = message;
-    return (this._useChat = useChat);
-    //    this._useChat = useChat
   }
 
   get message() {

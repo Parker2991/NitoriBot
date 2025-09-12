@@ -11,6 +11,7 @@ class help extends CommandContext {
       "see a list of commands",
       trustLevel.public,
       ["<command>"],
+      false
     );
   }
 
@@ -58,286 +59,33 @@ class help extends CommandContext {
           Public.push({
             text: commands.data.name + " ",
             color: config.colors.help.public,
-            translate: "",
-            hoverEvent: {
-              action: "show_text",
-              value: [
-                {
-                  translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                  color: config.colors.commands.tertiary,
-                  with: [
-                    {
-                      text: "Command Name",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.name}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    {
-                      text: "Trust Level",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.trustLevel}`,
-                      color: config.colors.integer,
-                    },
-                    {
-                      text: "Description",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.description}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Aliases", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.aliases}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Usages", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.usages}`,
-                      color: config.colors.commands.secondary,
-                    },
-                  ],
-                },
-              ],
-            },
-            clickEvent: {
-              action: "suggest_command",
-              value: `${config.prefixes[0]}${commands.data.name}`,
-            },
           });
           break;
         case 1:
           trusted.push({
             text: commands.data.name + " ",
             color: config.colors.help.trusted,
-            translate: "",
-            hoverEvent: {
-              action: "show_text",
-              value: [
-                {
-                  translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                  color: config.colors.commands.tertiary,
-                  with: [
-                    {
-                      text: "Command Name",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.name}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    {
-                      text: "Trust Level",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.trustLevel}`,
-                      color: config.colors.integer,
-                    },
-                    {
-                      text: "Description",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.description}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Aliases", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.aliases}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Usages", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.usages}`,
-                      color: config.colors.commands.secondary,
-                    },
-                  ],
-                },
-              ],
-            },
-            clickEvent: {
-              action: "suggest_command",
-              value: `${config.prefixes[0]}${commands.data.name}`,
-            },
           });
           break;
         case 2:
           admin.push({
             text: commands.data.name + " ",
             color: config.colors.help.admin,
-            translate: "",
-            hoverEvent: {
-              action: "show_text",
-              value: [
-                {
-                  translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                  color: config.colors.commands.tertiary,
-                  with: [
-                    {
-                      text: "Command Name",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.name}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    {
-                      text: "Trust Level",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.trustLevel}`,
-                      color: config.colors.integer,
-                    },
-                    {
-                      text: "Description",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.description}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Aliases", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.aliases}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Usages", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.usages}`,
-                      color: config.colors.commands.secondary,
-                    },
-                  ],
-                },
-              ],
-            },
-            clickEvent: {
-              action: "suggest_command",
-              value: `${config.prefixes[0]}${commands.data.name}`,
-            },
           });
           break;
         case 3:
           owner.push({
             text: commands.data.name + " ",
             color: config.colors.help.owner,
-            translate: "",
-            hoverEvent: {
-              action: "show_text",
-              value: [
-                {
-                  translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                  color: config.colors.commands.tertiary,
-                  with: [
-                    {
-                      text: "Command Name",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.name}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    {
-                      text: "Trust Level",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.trustLevel}`,
-                      color: config.colors.integer,
-                    },
-                    {
-                      text: "Description",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.description}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Aliases", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.aliases}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Usages", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.usages}`,
-                      color: config.colors.commands.secondary,
-                    },
-                  ],
-                },
-              ],
-            },
-            clickEvent: {
-              action: "suggest_command",
-              value: `${config.prefixes[0]}${commands.data.name}`,
-            },
           });
           break;
         case 4:
           Console.push({
             text: commands.data.name + " ",
             color: config.colors.help.console,
-            translate: "",
-            hoverEvent: {
-              action: "show_text",
-              value: [
-                {
-                  translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                  color: config.colors.commands.tertiary,
-                  with: [
-                    {
-                      text: "Command Name",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.name}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    {
-                      text: "Trust Level",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.trustLevel}`,
-                      color: config.colors.integer,
-                    },
-                    {
-                      text: "Description",
-                      color: config.colors.commands.primary,
-                    },
-                    {
-                      text: `${commands.data.description}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Aliases", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.aliases}`,
-                      color: config.colors.commands.secondary,
-                    },
-                    { text: "Usages", color: config.colors.commands.primary },
-                    {
-                      text: `${commands.data.usages}`,
-                      color: config.colors.commands.secondary,
-                    },
-                  ],
-                },
-              ],
-            },
-            clickEvent: {
-              action: "suggest_command",
-              value: `${config.prefixes[0]}${commands.data.name}`,
-            },
           });
           break;
         default:
-/*          bot.chat.message(
-            `fuck you ${commands.data.name} has a invalid trust level`,
-          );*/
       }
 
       if (

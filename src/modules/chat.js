@@ -16,7 +16,7 @@ function tryParse(json) {
 function parse (chatTypes, type, sender, target, message) {
   const chatType = chatTypes[type]
   const parsed = convertNbtComponentToJson(null, chatType.value.value.chat)
-  const json = { translate: parsed.translation_key, with: [] }
+  let json = { translate: parsed.translation_key, with: [] }
 
   for (const parameter of parsed.parameters) {
 
@@ -28,6 +28,8 @@ function parse (chatTypes, type, sender, target, message) {
       break;
     }
   }
+
+  if (type === 4) json = message
 
   return json
 }
@@ -68,6 +70,8 @@ class chat {
         type: "minecraft:disguised_chat",
         message: parsed
       })
+
+      tryParsingMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 
     bot.on("packet.player_chat", (packet, data) => {
@@ -81,7 +85,7 @@ class chat {
         senderUuid: packet.senderUuid,
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
-        chatType: "player",
+        chatType: "minecraft:player_chat"
       });
     });
 
@@ -106,11 +110,11 @@ class chat {
       });
       bot.emit("system_chat", message);
 
-      if (bot.options.mode !== "savageFriends") return;
+      //if (bot.options.mode !== "savageFriends") return;
       tryParsingMessage(message, {
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
-        chatType: "system",
+        chatType: "minecraft:system_chat",
       });
     });
 

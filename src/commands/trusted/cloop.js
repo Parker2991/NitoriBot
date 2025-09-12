@@ -12,6 +12,7 @@ class cloop extends CommandContext {
       "loops commands",
       trustLevel.trusted,
       ["add <interval> <command>", "remove <index>", "list", "clear"],
+      true,
     );
   }
   execute(context) {
