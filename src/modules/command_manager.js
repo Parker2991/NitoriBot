@@ -46,7 +46,7 @@ class command_manager {
             else if (authFind.trustLevel === "owner") source.player.trustLevel = 3;
           }
 
-          if (command.data.trustLevel !== 0) {
+          if (command?.data?.trustLevel !== 0) {
             if (!source.player.validateBypass && !source.sources.console && !source.sources.discord) {
               if (args[0] === bot.validation.trusted)
                 source.player.trustLevel = 1
