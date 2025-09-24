@@ -1,5 +1,5 @@
 const channels = "extras:register\0extras:unregister\0extras:message\0";
-class extras_message {
+class extrasMessages {
   constructor (context) {
     const bot = context.bot
     const config = context.config
@@ -60,4 +60,4 @@ class extras_message {
   }
 }
 
-module.exports = extras_message;
+module.exports = extrasMessages;

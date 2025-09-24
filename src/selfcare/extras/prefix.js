@@ -1,6 +1,4 @@
-const player_list = require("../../modules/player_list");
-
-class prefixSelfcare {
+class prefix {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -20,4 +18,4 @@ class prefixSelfcare {
   }
 }
 
-module.exports = prefixSelfcare;
+module.exports = prefix;

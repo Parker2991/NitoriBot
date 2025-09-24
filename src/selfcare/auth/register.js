@@ -1,4 +1,4 @@
-class registerSelfcare {
+class register {
   constructor (context) {
     const bot = context.bot
     const options = context.options
@@ -14,4 +14,4 @@ class registerSelfcare {
   }
 }
 
-module.exports = registerSelfcare
+module.exports = register;

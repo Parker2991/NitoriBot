@@ -1,4 +1,4 @@
-class godSelfcare {
+class god {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -9,4 +9,4 @@ class godSelfcare {
   }
 }
 
-module.exports = godSelfcare;
+module.exports = god;

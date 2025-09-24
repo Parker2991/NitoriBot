@@ -1,7 +1,6 @@
-const CommandError = require("../../command_util/command_error");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandError = require("../../commandUtil/CommandError");
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class kick extends CommandContext {
   constructor() {

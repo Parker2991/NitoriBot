@@ -1,10 +1,9 @@
 const os = require("os");
-const CommandError = require("../../command_util/command_error");
+const CommandError = require("../../commandUtil/CommandError");
 const botInfo = require("../../data/info.json");
 const { execSync } = require("child_process");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 function format(seconds) {
   function pad(s) {
@@ -40,7 +39,6 @@ class info extends CommandContext {
         "server",
         "version/",
       ],
-      false,
     );
   }
 

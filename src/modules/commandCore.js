@@ -1,8 +1,7 @@
-const nbt = require("prismarine-nbt");
 const sleep = require("../util/sleep");
-const convertNbtComponentToJson = require("../util/nbt_parser");
+const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 
-class command_core {
+class commandCore {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -243,4 +242,4 @@ class command_core {
     });
   }
 }
-module.exports = command_core;
+module.exports = commandCore;

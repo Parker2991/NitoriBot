@@ -24,7 +24,7 @@ class selfcare {
     };
 
     const messageSelfcare = [
-      require('../selfcare/extras/command_spy'),
+      require('../selfcare/extras/commandSpy'),
       require('../selfcare/essentials/god'),
       require('../selfcare/essentials/mute'),
       require('../selfcare/auth/login'),

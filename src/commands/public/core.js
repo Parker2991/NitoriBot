@@ -1,17 +1,22 @@
-const sleep = require("../../util/sleep");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class core extends CommandContext {
   constructor() {
     super(
       "core",
-      ["cb", "cbrun", "corerun"],
+      [
+        "cb",
+        "cbrun",
+        "corerun"
+      ],
       "run commands in core",
       trustLevel.public,
-      ["$username <message>", "$uuid <message>", "<message>"],
-      false,
+      [
+        "$username <message>",
+        "$uuid <message>",
+        "<message>"
+      ],
     );
   }
   execute(context) {

@@ -104,12 +104,12 @@
 
   "fnfboyfriendbot.command.wiki.article_not_found": "Wiki Article not found!",
 
-  "fnfboyfriendbot.commandManager.trust_level.consoleOnly": "This command can only be ran via console!",
-  "fnfboyfriendbot.commandManager.validation.invalid_admin_hash": "Invalid Admin Hash",
-  "fnfboyfriendbot.commandManager.validation.invalid_hash": "Invalid Hash",
-  "fnfboyfriendbot.commandManager.validation.invalid_owner_hash": "Invalid Owner Hash",
-  "fnfboyfriendbot.commandManager.validation.invalid_trusted_hash": "Invalid Trusted Hash",
-  "fnfboyfriendbot.commandManager.validation.invalid_role": "Invalid Role",
+  "fnfboyfriendbot.command_manager.trust_level.console_only": "This command can only be ran via console!",
+  "fnfboyfriendbot.command_manager.validation.invalid_admin_hash": "Invalid Admin Hash",
+  "fnfboyfriendbot.command_manager.validation.invalid_hash": "Invalid Hash",
+  "fnfboyfriendbot.command_manager.validation.invalid_owner_hash": "Invalid Owner Hash",
+  "fnfboyfriendbot.command_manager.validation.invalid_trusted_hash": "Invalid Trusted Hash",
+  "fnfboyfriendbot.command_manager.validation.invalid_role": "Invalid Role",
 
   "fnfboyfriendbot.reconnect.stop_logging": "stopped logging disconnect messages for now"
 

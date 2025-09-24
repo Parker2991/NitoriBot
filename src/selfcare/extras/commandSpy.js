@@ -1,4 +1,4 @@
-class commandSpySelfcare {
+class commandSpy {
   constructor(context) {
     const bot = context.bot;
     const stringMessage = context.stringMessage;
@@ -14,4 +14,4 @@ class commandSpySelfcare {
   }
 }
 
-module.exports = commandSpySelfcare;
+module.exports = commandSpy;

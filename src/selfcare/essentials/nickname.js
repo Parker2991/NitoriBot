@@ -1,4 +1,4 @@
-class nicknameSelfcare {
+class nickname {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -11,4 +11,4 @@ class nicknameSelfcare {
   }
 }
 
-module.exports = nicknameSelfcare;
+module.exports = nickname;

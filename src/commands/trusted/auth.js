@@ -1,7 +1,5 @@
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const CommandError = require("../../command_util/command_error");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class auth extends CommandContext {
   constructor() {
@@ -11,7 +9,6 @@ class auth extends CommandContext {
       "auth through the bot so you dont need to use a hash everytime",
       trustLevel.trusted,
       [""],
-      true,
     );
   }
   execute(context) {

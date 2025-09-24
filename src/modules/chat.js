@@ -1,9 +1,9 @@
 const loadPrismarineChat = require("prismarine-chat");
-const KaboomChatParser = require("../chat_parsers/kaboom");
-const CreayunChatParser = require("../chat_parsers/creayun");
-const ChipmunkModChatParser = require("../chat_parsers/chipmunkmod");
-const VanilaChatParser = require("../chat_parsers/vanilla");
-const convertNbtComponentToJson = require("../util/nbt_parser");
+const KaboomChatParser = require("../chatParsers/kaboom");
+const CreayunChatParser = require("../chatParsers/creayun");
+const ChipmunkModChatParser = require("../chatParsers/chipmunkmod");
+const VanilaChatParser = require("../chatParsers/vanilla");
+const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 
 function tryParse(json) {
   try {

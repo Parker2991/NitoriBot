@@ -1,4 +1,4 @@
-class command_spy {
+class commandSpy {
   constructor(context) {
     const bot = context.bot;
 
@@ -35,4 +35,4 @@ class command_spy {
   }
 }
 
-module.exports = command_spy;
+module.exports = commandSpy;

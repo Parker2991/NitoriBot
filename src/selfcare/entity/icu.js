@@ -1,4 +1,4 @@
-class icuSelfcare {
+class icu {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -18,4 +18,4 @@ class icuSelfcare {
   }
 }
 
-module.exports = icuSelfcare;
+module.exports = icu;

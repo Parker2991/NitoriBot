@@ -34,7 +34,8 @@ diguised chat:
   //console.log(`Player list display name from Chat Parser ${data.getMessageAsPrismarine(playerListDisplayName)?.toMotd()}`)
   //console.log(`${data.getMessageAsPrismarine(displayName)?.toMotd()}`)
   let sender
-  if (data.uuid) {
+  //console.log(data)
+  if (data.senderUuid) {
     sender = data.players.find(player => player.uuid === data.senderUuid)
   } else {
     const playerListDisplayName = { extra: [prefix, displayName], text: '' }

@@ -1,6 +1,6 @@
-const convertNbtComponentToJson = require("../util/nbt_parser");
+const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 
-class player_list {
+class playerList {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -105,4 +105,4 @@ class player_list {
 
   }
 }
-module.exports = player_list;
+module.exports = playerList;

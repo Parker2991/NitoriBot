@@ -1,4 +1,4 @@
-class gamemodeSelfcare {
+class gamemode {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -15,4 +15,4 @@ class gamemodeSelfcare {
   }
 }
 
-module.exports = gamemodeSelfcare;
+module.exports = gamemode;

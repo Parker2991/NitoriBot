@@ -1,18 +1,23 @@
-const CommandError = require("../../command_util/command_error");
-const fixAnsi = require("../../util/ansi");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandError = require("../../commandUtil/CommandError");
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class cloop extends CommandContext {
   constructor() {
     super(
       "cloop",
-      ["commandloop", "loop"],
+      [
+        "commandloop",
+        "loop"
+      ],
       "loops commands",
       trustLevel.trusted,
-      ["add <interval> <command>", "remove <index>", "list", "clear"],
-      true,
+      [
+        "add <interval> <command>",
+        "remove <index>",
+        "list",
+        "clear"
+      ],
     );
   }
   execute(context) {

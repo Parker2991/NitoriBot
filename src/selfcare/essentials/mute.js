@@ -1,4 +1,4 @@
-class muteSelfcare {
+class mute {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -13,4 +13,4 @@ class muteSelfcare {
   }
 }
 
-module.exports = muteSelfcare;
+module.exports = mute;

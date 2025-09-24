@@ -1,15 +1,15 @@
-const CommandError = require("../../command_util/command_error");
 const { request } = require("undici");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class weather extends CommandContext {
   constructor() {
-    super("weather", [], "check the weather in locations", trustLevel.public, [
-      "<weather/zip code>",
-    ],
-    false
+    super(
+      "weather",
+      [], 
+      "check the weather in locations", 
+      trustLevel.public, 
+      ["<weather/zip code>"],
     );
   }
   async execute(context) {

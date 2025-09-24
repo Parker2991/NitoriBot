@@ -1,7 +1,5 @@
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
-const CommandArguments = require('../../command_util/command_arguments');
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class test extends CommandContext {
   constructor() {
@@ -11,8 +9,6 @@ class test extends CommandContext {
       "testing stuff",
       trustLevel.public,
       [""],
-      false,
-      1
     );
   }
 
@@ -20,7 +16,7 @@ class test extends CommandContext {
     const bot = context.bot;
     const args = context.arguments;
     const source = context.source;
-    source.sendFeedback(CommandArguments.getMaxArguments(this.data.maxArgs, args.join(' ')))
+    
   }
 }
 

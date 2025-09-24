@@ -1,6 +1,5 @@
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class extras extends CommandContext {
   constructor() {
@@ -9,8 +8,12 @@ class extras extends CommandContext {
       [],
       "send messages via the extras channel",
       trustLevel.public,
-      ["send", "register", "unregister", "unregisterall"],
-      true,
+      [
+        "send",
+        "register",
+        "unregister",
+        "unregisterall"
+      ],
     );
   }
   execute(context) {

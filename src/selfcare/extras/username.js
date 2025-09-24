@@ -1,4 +1,4 @@
-class usernameSelfcare {
+class username {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -13,4 +13,4 @@ class usernameSelfcare {
   }
 }
 
-module.exports = usernameSelfcare;
+module.exports = username;

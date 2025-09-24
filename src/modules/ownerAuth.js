@@ -1,8 +1,8 @@
 const sleep = require('../util/sleep');
 const decryption = require('../SkiBot/decryption')
-const CommandSource = require('../command_util/command_source')
+const CommandSource = require('../commandUtil/CommandSource')
 
-class owner_auth {
+class ownerAuth {
   constructor (context) {
     const bot = context.bot;
     const config = context.config;
@@ -74,4 +74,4 @@ class owner_auth {
   }
 }
 
-module.exports = owner_auth
+module.exports = ownerAuth

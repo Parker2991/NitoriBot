@@ -1,5 +1,5 @@
-const CommandSource = require("../command_util/command_source");
-const prismarineChat = require("prismarine-chat")("1.20.2");
+const CommandSource = require("../commandUtil/CommandSource");
+const prismarineChat = require("prismarine-chat")("1.21.8");
 
 class Console {
   // named it Console so that it doesnt override the console variable

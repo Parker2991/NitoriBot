@@ -1,6 +1,5 @@
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class reconnect extends CommandContext {
   constructor() {
@@ -10,7 +9,6 @@ class reconnect extends CommandContext {
       "reconnect the bot",
       trustLevel.trusted,
       [""],
-      true,
     );
   }
   execute(context) {

@@ -1,4 +1,4 @@
-class opSelfcare {
+class op {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -16,4 +16,4 @@ class opSelfcare {
   }
 }
 
-module.exports = opSelfcare;
+module.exports = op;

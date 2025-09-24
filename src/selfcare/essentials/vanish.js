@@ -1,4 +1,4 @@
-class vanishSelfcare {
+class vanish {
   constructor(context) {
     const bot = context.bot;
     const options = context.options;
@@ -11,4 +11,4 @@ class vanishSelfcare {
   }
 }
 
-module.exports = vanishSelfcare;
+module.exports = vanish;

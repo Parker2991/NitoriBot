@@ -1,5 +1,5 @@
 const fixansi = require("../util/ansi");
-const CommandSource = require("../command_util/command_source");
+const CommandSource = require("../commandUtil/CommandSource");
 
 class discord {
   constructor(context) {

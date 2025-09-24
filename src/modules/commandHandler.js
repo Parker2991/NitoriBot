@@ -1,6 +1,6 @@
-const CommandSource = require("../command_util/command_source");
+const CommandSource = require("../commandUtil/CommandSource");
 
-class command_handler {
+class commandHandler {
   constructor(context) {
     let ratelimit = 0;
     const bot = context.bot;
@@ -51,4 +51,4 @@ class command_handler {
     });
   }
 }
-module.exports = command_handler;
+module.exports = commandHandler;

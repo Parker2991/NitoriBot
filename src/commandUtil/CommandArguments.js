@@ -1,4 +1,4 @@
-const CommandError = require('./command_error');
+const CommandError = require('./CommandError');
 const translations = require('../data/translations.json');
 
 class CommandArguments {

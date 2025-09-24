@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
-const CommandError = require("../command_util/command_error");
-const CommandSource = require("../command_util/command_source");
-const CommandArguments = require('../command_util/command_arguments')
+const CommandError = require("../commandUtil/CommandError");
+const CommandSource = require("../commandUtil/CommandSource");
+const CommandArguments = require('../commandUtil/CommandArguments')
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
 
@@ -19,7 +19,7 @@ function unknownCommand(commandName, bot) {
   } 
 }
 
-class command_manager {
+class commandManager {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -40,16 +40,6 @@ class command_manager {
             );
           }
 
-          if (args.length > command.data.args) throw new CommandError({
-            translate: "fnfboyfriendbot.arguments",
-            fallback: translations["fnfboyfriendbot.arguments"],
-            color: "red",
-            with: [
-              { text: `${command.data.args}` },
-              { text: `${args.length}`}
-            ]
-          })
-
           if (authFind) {
             source.player.validateBypass = true
             if (authFind.trustLevel === "trusted") source.player.trustLevel = 1;
@@ -66,23 +56,11 @@ class command_manager {
               else if (args[0] === bot.validation.owner)
                 source.player.trustLevel = 3
 
-              if (args[0] === bot.validation.discord.trusted) {
-                source.player.trustLevel = 1
-                bot.validation.discord.trusted = undefined;
-              } else if (args[0] === bot.validation.discord.admin) {
-                source.player.trustLevel = 2;
-                bot.validation.discord.admin = undefined;
-              } else if (args[0] === bot.validation.discord.owner) {
-                console.log(args[0])
-                console.log(bot.validation.discord.owner)
-                source.player.trustLevel = 3
-                bot.validation.discord.owner = undefined
-              }
               args = args.slice(1)
               if (source.player.trustLevel < command?.data?.trustLevel && !source.sources.console) {
                 throw new CommandError({
-                  translate: "fnfboyfriendbot.commandManager.validation.invalid_hash",
-                  fallback: translations["fnfboyfriendbot.commandManager.validation.invalid_hash"],
+                  translate: "fnfboyfriendbot.command_manager.validation.invalid_hash",
+                  fallback: translations["fnfboyfriendbot.command_manager.validation.invalid_hash"],
                   color: "red"
                 })
               }
@@ -97,15 +75,15 @@ class command_manager {
 
               if (source.player.trustLevel < command?.data?.trustLevel) 
                 throw new CommandError({
-                  translate: "fnfboyfriendbot.commandManager.validation.invalid_role",
-                  fallback: translations["fnfboyfriendbot.commandManager.validation.invalid_role"],
+                  translate: "fnfboyfriendbot.command_manager.validation.invalid_role",
+                  fallback: translations["fnfboyfriendbot.command_manager.validation.invalid_role"],
                   color: "red"
                 })
             }
           } if (command?.data?.trustLevel === 4 && !source.sources.console)
             throw new CommandError({
-              translate: "fnfboyfriendbot.commandManager.trustLevel.consoleOnly",
-              fallback: translations["fnfboyfriendbot.commandManager.trustLevel.consoleOnly"],
+              translate: "fnfboyfriendbot.command_manager.trust_level.console_only",
+              fallback: translations["fnfboyfriendbot.command_manager.trust_level.console_only"],
               color: "red"
             })
 
@@ -195,4 +173,4 @@ class command_manager {
     }
   }
 }
-module.exports = command_manager;
+module.exports = commandManager;

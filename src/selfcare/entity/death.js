@@ -1,4 +1,4 @@
-class deathSelfcare {
+class death {
   constructor(context) {
     const bot = context.bot;
     const config = context.config;
@@ -9,4 +9,4 @@ class deathSelfcare {
     })
   }
 }
-module.exports = deathSelfcare
+module.exports = death

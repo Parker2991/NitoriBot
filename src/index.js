@@ -16,7 +16,7 @@ const discordClient = new Client({
   ],
   partials: [Partials.Channel],
 });
-const CommandSource = require("./command_util/command_source");
+const CommandSource = require("./commandUtil/CommandSource");
 
 console.log("Starting FNFBoyfriendBot");
 

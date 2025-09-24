@@ -1,4 +1,4 @@
-class tab_complete {
+class tabComplete {
   constructor(context) {
     const bot = context.bot;
     // let aaa cook
@@ -18,4 +18,4 @@ class tab_complete {
     };
   }
 }
-module.exports = tab_complete;
+module.exports = tabComplete;

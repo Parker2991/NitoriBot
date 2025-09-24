@@ -1,17 +1,20 @@
-const fixansi = require("../../util/ansi");
-const CommandContext = require("../../command_util/command_context");
-const CommandTrustLevel = require('../../command_util/command_trust_level')
-const trustLevel = new CommandTrustLevel()
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class help extends CommandContext {
   constructor() {
     super(
       "help",
-      ["heko", "?", "cmds", "commands", "hell"],
+      [
+        "heko",
+        "?",
+        "cmds", 
+        "commands", 
+        "hell"
+      ],
       "see a list of commands",
       trustLevel.public,
       ["<command>"],
-      false
     );
   }
 

@@ -1,7 +1,6 @@
-const CommandContext = require("../../command_util/command_context");
-const CommandError = require("../../command_util/command_error");
-const CommandTrustLevel = require("../../command_util/command_trust_level");
-const trustLevel = new CommandTrustLevel();
+const CommandError = require("../../commandUtil/CommandError");
+const CommandContext = require("../../commandUtil/CommandContext");
+const trustLevel = require("../../commandUtil/CommandTrustLevel");
 
 class console extends CommandContext {
   constructor() {
@@ -17,7 +16,6 @@ class console extends CommandContext {
         "validate/validation/val <owner/o/admin/a/trusted/t>",
         "logging/togglelogging/logtoconsole <on/true/enable/off/false/disable>",
       ],
-      false,
     );
   }
   execute(context) {
