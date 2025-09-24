@@ -74,8 +74,10 @@ class chat {
       tryParsingMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 
-    bot.on("packet.player_chat", (packet, data) => {
+    bot.on("packet.player_chat", (packet) => {
+
       const unsigned = convertNbtComponentToJson(null, packet.unsignedChatContent);
+      const networkName = convertNbtComponentToJson(null, packet.networkName)
       bot.emit('message', {
         type: "minecraft:player_chat",
         message: unsigned
@@ -104,13 +106,13 @@ class chat {
 
       if (message.translate === "advMode.notAllowed") return;
 
+    //  console.log(JSON.stringify(message))
       bot.emit("message", {
         type: "minecraft:system_chat",
         message: message
       });
       bot.emit("system_chat", message);
 
-      //if (bot.options.mode !== "savageFriends") return;
       tryParsingMessage(message, {
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,

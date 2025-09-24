@@ -5,7 +5,6 @@ const BOOLEAN_TYPES = [
   "underlined",
   "strikethrough",
   "obfuscated",
-  "float"
 ];
 function convertNbtComponentToJson(key, tag) {
   let chatTypes;

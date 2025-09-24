@@ -10,7 +10,15 @@ function kaboom (message, data) {
   const prefix = children[0]
   let displayName = data.senderName ?? { text: '' }
   let contents = { text: '' }
+  //console.log(data.players.find((e) => e.uuid ==))
+/*
+player chat:
+  senderUuid: '85f5b68d-a567-3877-9701-3cd7404bc9d9',
+  networkName: { extra: [ [Object] ], text: '' },
 
+diguised chat:
+  senderName: { extra: [ [Object] ], text: '' },
+*/
   if (isSeparatorAt(children, 1)) { // Missing/blank display name
     if (children.length > 3) contents = children[3]
   } else if (isSeparatorAt(children, 2)) {
@@ -21,6 +29,10 @@ function kaboom (message, data) {
   }
 
   const playerListDisplayName = { extra: [prefix, displayName], text: '' }
+ // console.log(JSON.stringify(playerListDisplayName))
+  //console.log(JSON.stringify())
+  //console.log(`Player list display name from Chat Parser ${data.getMessageAsPrismarine(playerListDisplayName)?.toMotd()}`)
+  //console.log(`${data.getMessageAsPrismarine(displayName)?.toMotd()}`)
   let sender
   if (data.uuid) {
     sender = data.players.find(player => player.uuid === data.senderUuid)

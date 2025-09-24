@@ -13,39 +13,70 @@ class mcserver extends CommandContext {
     const bot = context.bot;
     const config = context.config;
     const args = context.arguments;
-    const [host, port] = args[0].split(":");
     const source = context.source;
-    const server = await mc.ping({ host, port: Number(port ?? 25565) });
+    const translations = bot.translations
+    const [host, port] = args[0].split(':')
+
     let component = [];
-
-    try {
-      component.push({
-        translate: "%s: %s:%s\n%s: (%s/%s)\n%s: %s\n%s",
-        color: config.colors.commands.tertiary,
+    if (isNaN(port) && port) {
+      source.sendFeedback({
+        translate: "fnfboyfriendbot.arguments.invalid_integer",
+        fallback: translations["fnfboyfriendbot.arguments.invalid_integer"],
+        color: "red",
         with: [
-          { text: "ip", color: config.colors.commands.primary },
-          { text: `${host}`, color: config.colors.commands.secondary },
-          {
-            text: `${Number(port ?? 25565)}`,
-            color: config.colors.commands.secondary,
-          },
-          { text: "players", color: config.colors.commands.primary },
-          { text: `${server.players.online}`, color: config.colors.integer },
-          { text: `${server.players.max}`, color: config.colors.integer },
-          { text: "server version", color: config.colors.commands.primary },
-          {
-            text: `${server.version.name}`,
-            color: config.colors.commands.secondary,
-          },
-          server.description,
-        ],
-      });
-
-      source.sendFeedback(component)
-    } catch (e) {
-      console.log(e.stack);
-      bot.chat.message(`${e.toString()}`);
+          { text: "Port" }
+        ]
+      })
+      return
     }
+
+    process.once('uncaughtException', (error) => {
+      source.sendFeedback({
+        translate: "fnfboyfriendbot.command.mcserver.server.unknown",
+        fallback: translations["fnfboyfriendbot.command.mcserver.server.unknown"],
+        color: "red",
+        with: [
+          { text: `${host}` },
+          { text: `${Number(port ?? 25565)}` }
+        ]
+      })
+    })
+    
+    const server = await mc.ping({ host, port: Number(port ?? 25565) })
+
+    component.push({
+      translate: "%s\n%s\n%s\n%s",
+      with: [
+        {
+          translate: "fnfboyfriendbot.command.mcserver.ip",
+          fallback: translations["fnfboyfriendbot.command.mcserver.ip"],
+          color: config.colors.commands.primary,
+          with: [
+            { text: `${host}`, color: config.colors.commands.secondary },
+            { text: `${Number(port ?? 25565)}`, color: config.colors.integer }
+          ]
+        },
+        {
+          translate: "fnfboyfriendbot.command.mcserver.players",
+          fallback: translations["fnfboyfriendbot.command.mcserver.players"],
+          color: config.colors.commands.primary,
+          with: [
+            { text: `${server.players.online}`, color: config.colors.integer },
+            { text: `${server.players.max}`, color: config.colors.integer }
+          ]
+        },
+        {
+          translate: "fnfboyfriendbot.command.mcserver.server.version",
+          fallback: translations["fnfboyfriendbot.command.mcserver.server.version"],
+          color: config.colors.commands.primary,
+          with: [
+            { text: `${server.version.name}`, color: config.colors.commands.secondary }
+          ]
+        },
+        server.description
+      ]
+    })
+    source.sendFeedback(component)
   }
 }
 module.exports = mcserver;

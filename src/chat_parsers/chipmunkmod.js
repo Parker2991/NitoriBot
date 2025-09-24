@@ -19,7 +19,7 @@ function chipmunkmod(message, data, context, bot) {
     } else {
       const stringUsername = data
         .getMessageAsPrismarine(senderComponent)
-        .toString(); // TypeError: data.getMessageAsPrismarine is not a function
+        ?.toString();
 
       sender = data.players.find(
         (player) => player.profile.name === stringUsername,

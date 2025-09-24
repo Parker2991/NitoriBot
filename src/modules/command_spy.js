@@ -10,7 +10,6 @@ class command_spy {
             ?.name === message.text;
         if (!child || !message.text || !message.color || !sender) return;
         const command = child[1].substring("/".length);
-
         if (
           (message.color === "yellow" &&
             child[0] === ": " &&

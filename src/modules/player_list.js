@@ -47,9 +47,10 @@ class player_list {
 
     function addPlayer(entry) {
       bot.players = bot.players.filter((_entry) => _entry.uuid !== entry.uuid);
+      //console.log(convertNbtComponentToJson(null, entry.displayName).extra[0])
       bot.players.push({
         uuid: entry.uuid,
-        mcUUID: "",
+ //       mcUUID: "",
         profile: {
           name: entry.player.name,
           properties: entry.player.properties,
@@ -59,8 +60,10 @@ class player_list {
         listed: undefined,
         latency: undefined,
         displayName: undefined,
+        prefix: undefined,
         vanished: false,
       });
+
       bot.emit('player_info', entry)
     }
 
@@ -92,12 +95,14 @@ class player_list {
 
       try {
         target.displayName = convertNbtComponentToJson(null, entry.displayName);
+        if (bot.options.mode === "kaboom") target.prefix = convertNbtComponentToJson(null, entry.displayName).extra[0]
       } catch {
         // do nothing
       }
     }
 
     bot.on("end", () => (bot.players = []));
+
   }
 }
 module.exports = player_list;

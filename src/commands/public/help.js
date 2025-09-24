@@ -20,6 +20,7 @@ class help extends CommandContext {
     const args = context.arguments;
     const config = context.config;
     const source = context.source;
+    const translations = bot.translations;
 
     let component = [];
     let infoComponent = [];
@@ -30,29 +31,51 @@ class help extends CommandContext {
     let owner = [];
     let Console = [];
 
-    let cat = {
-      translate: "(%s | %s | %s | %s)",
-      color: config.colors.commands.tertiary,
-      with: [
-        { text: "Public", color: config.colors.help.public },
-        { text: "Trusted", color: config.colors.help.trusted },
-        { text: "Admin", color: config.colors.help.admin },
-        { text: "Owner", color: config.colors.help.owner },
-      ],
-    };
-
     component.push({
-      translate: "%s: (%s) %s \u203a\n",
+      translate: "%s %s \u203a\n",
       color: config.colors.commands.tertiary,
       with: [
-        { text: "Commands", color: config.colors.commands.secondary },
         {
-          text: `${bot.commandManager.commandlist.length}`,
-          color: config.colors.integer,
+          translate: "fnfboyfriendbot.command.help.command_layout",
+          fallback: translations["fnfboyfriendbot.command.help.command_layout"],
+          color: config.colors.commands.primary,
+          with: [
+            { text: ':', color: config.colors.commands.tertiary },
+            { text: '(', color: config.colors.commands.tertiary },
+            { text: `${bot.commandManager.commandlist.length}`, color: config.colors.integer },
+            { text: ')', color: config.colors.commands.tertiary }
+          ]
         },
-        cat,
-      ],
-    });
+        {
+          translate: "fnfboyfriendbot.command.help.category",
+          fallback: translations["fnfboyfriendbot.command.help.category"],
+          with: [
+            {
+              translate: "fnfboyfriendbot.command.help.trust_level.public",
+              fallback: translations["fnfboyfriendbot.command.help.trust_level.public"],
+              color: config.colors.help.public
+            },
+            {
+              translate: "fnfboyfriendbot.command.help.trust_level.trusted",
+              fallback: translations["fnfboyfriendbot.command.help.trust_level.trusted"],
+              color: config.colors.help.trusted
+            },
+            {
+              translate: "fnfboyfriendbot.command.help.trust_level.admin",
+              fallback: translations["fnfboyfriendbot.command.help.trust_level.admin"],
+              color: config.colors.help.admin
+            },
+            {
+              translate: "fnfboyfriendbot.command.help.trust_level.owner",
+              fallback: translations["fnfboyfriendbot.command.help.trust_level.owner"],
+              color: config.colors.help.owner
+            }
+          ]
+        }
+      ]
+    })
+
+
     for (const commands of bot.commandManager.commandlist) {
       switch (commands.data.trustLevel) {
         case 0:
@@ -116,34 +139,57 @@ class help extends CommandContext {
         usagesComponent.pop();
 
         infoComponent.push({
-          translate: "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s:\n",
+          translate: "%s\n%s\n%s\n%s\n%s",
           color: config.colors.commands.tertiary,
           with: [
-            { text: "Name", color: config.colors.commands.primary },
             {
-              text: `${commands.data.name}`,
-              color: config.colors.commands.secondary,
+              translate: "fnfboyfriendbot.command.help.info.command",
+              fallback: translations["fnfboyfriendbot.command.help.info.command"],
+              color: config.colors.commands.primary,
+              with: [
+                { text: ":", color: config.colors.commands.tertiary },
+                commands.data.name,
+              ]
             },
-            { text: "Aliases", color: config.colors.commands.primary },
             {
-              text: `${commands.data.aliases.toString().replaceAll(",", " ")}`,
-              color: config.colors.commands.secondary,
+              translate: "fnfboyfriendbot.command.help.info.alias",
+              fallback: translations["fnfboyfriendbot.command.help.info.alias"],
+              color: config.colors.commands.primary,
+              with: [
+                { text: ":", color: config.colors.commands.tertiary },
+                commands.data.aliases.toString().replaceAll(',',' ')
+              ]
             },
-            { text: "Description", color: config.colors.commands.primary },
             {
-              text: `${commands.data.description}`,
-              color: config.colors.commands.secondary,
+              translate: "fnfboyfriendbot.command.help.info.description",
+              fallback: translations["fnfboyfriendbot.command.help.info.description"],
+              color: config.colors.commands.primary,
+              with: [
+                { text: ":", color: config.colors.commands.tertiary },
+                commands.data.description
+              ]
             },
-            { text: "Trust Level", color: config.colors.commands.primary },
             {
-              text: `${commands.data.trustLevel}`,
-              color: config.colors.integer,
+              translate: "fnfboyfriendbot.command.help.info.trust_level",
+              fallback: translations["fnfboyfriendbot.command.help.info.trust_level"],
+              color: config.colors.commands.primary,
+              with: [
+                { text: ":", color: config.colors.commands.tertiary },
+                { text: `${commands.data.trustLevel}`, color: config.colors.integer }
+              ]
             },
-            { text: "Usages", color: config.colors.commands.primary },
-          ],
-        });
+            {
+              translate: "fnfboyfriendbot.command.help.usages",
+              fallback: translations["fnfboyfriendbot.command.help.info.usages"],
+              color: config.colors.commands.primary,
+              with: [
+                { text: ":", color: config.colors.commands.tertiary },
+                usagesComponent
+              ]
+            },
 
-        infoComponent.push(usagesComponent);
+          ]
+        })
         source.sendFeedback(infoComponent)
         return;
       }

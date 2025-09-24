@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const loadModules = require("./util/loadModules");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
+const fixansi = require("./util/ansi");
 const { MessageContent, GuildMessages, Guilds, DirectMessages } =
   GatewayIntentBits;
 const discordClient = new Client({
@@ -43,12 +44,18 @@ let bot;
 for (const botOptions of config.bots) {
   options = botOptions;
   bot = new createBot(options, config);
+  bot.translations = require('./data/translations.json')
 
   bots.push(bot);
   bot.bots = bots;
   loadModules(bot, options, config, discordClient);
   bot.console.readlineInterface(rl);
 }
+const discord = [
+  require('./discord/directMessages.js'),
+]
+
+for (const file of discord) new file({ bot, config, discordClient })
 
 discordClient.on("messageCreate", (message) => {
   try {
@@ -58,6 +65,7 @@ discordClient.on("messageCreate", (message) => {
     bot.getMessageAsPrismarine = (message) => {
       return new ChatMessage(message);
     };
+
     config.prefixes.map((prefix) => {
       if (message.content.startsWith(prefix)) {
         const source = new CommandSource(
@@ -74,6 +82,9 @@ discordClient.on("messageCreate", (message) => {
           message,
         );
 
+        source.sendFeedback = input => {
+          message?.reply(`\`\`\`ansi\n${fixansi(bot.getMessageAsPrismarine(input)?.toAnsi()?.replaceAll('`', '`\u200b').substring(0, 1780))}\`\`\``);
+        }
         bot.commandManager.executeString(
           source,
           message.content.substring(prefix.length),

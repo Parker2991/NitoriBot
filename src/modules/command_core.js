@@ -149,7 +149,6 @@ class command_core {
       },
 
       run(command) {
-        if (!bot.loggedIn) return;
         const location = bot.core.currentBlock();
         const itemPosition = bot.core.itemPosition;
 

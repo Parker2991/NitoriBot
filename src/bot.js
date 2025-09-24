@@ -33,7 +33,7 @@ class Bot {
 
       client.on("disconnect", (data) => {
         if (
-          JSON.parse(data.reason) ===
+          data.reason ===
           "Wait 5 seconds before connecting, thanks! :)"
         )
           bot.reconnectDelay = 5000;
@@ -64,7 +64,7 @@ class Bot {
           } else {
             bot.console.warn(
               ChatMessage(bot._client.version)
-                .fromNotch(`§8[§bClient Reconnect§8]§r ${error.toString()}`)
+                .fromNotch(`§8[§bClient Reconnect§8]§r ${error.stack}`)
                 ?.toAnsi(),
             );
             bot?.discord?.channel?.send(error.toString());

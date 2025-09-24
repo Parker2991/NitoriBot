@@ -22,7 +22,7 @@ class discord {
       invite: config.discord.invite || undefined,
       prefix: config.discord.prefix,
     };
-    discordClient.once("ready", (context) => {
+    discordClient.once("clientReady", (context) => {
       bot.discord.channel = discordClient.channels.cache.get(options.channelId);
       discordClient.user.setPresence({
         activities: [
@@ -89,8 +89,10 @@ class discord {
           false,
           message,
         );
-
-        sendComponent(message);
+        
+        source.sendFeedback = input => {
+          message?.reply(`\`\`\`ansi\n${fixansi(bot.getMessageAsPrismarine(input)?.toAnsi()?.replaceAll('`', '`\u200b').substring(0, 1780))}\`\`\``);
+        }
 
         bot.commandManager.executeString(
           source,
@@ -134,7 +136,7 @@ class discord {
               : undefined,
             hover_event: {
               action: "show_text",
-              contents: "Click to join the discord",
+              value: [ "Click to join the discord" ],
             },
           },
           {

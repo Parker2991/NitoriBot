@@ -6,6 +6,7 @@ module.exports = {
     prefix: "!",
     invite: "discord invite here",
     enabled: true,
+    serverID: 'server id here',
     presence: {
       name: "amogus",
       status: "dnd",
@@ -101,10 +102,18 @@ module.exports = {
     // channelId is for discord logging
     // logging is for console logging
     // reconnectDelay is for the delay for reconnecting to a server
+    /*
+     logging options
+     console true or false
+     file true or false
+    */
     // modes:
     // kaboom: for the server kaboom.pw
     // savageFriends: for the server savage Friends
     // creayun for the server creayun
+    // version: 1.21.8
+    // port: a number lmao
+    // itemRefill: for refilling the core via chat or a command block
     {
       host: "localhost",
       username: "FNFBoyfriendBot",

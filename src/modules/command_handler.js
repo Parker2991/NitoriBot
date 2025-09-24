@@ -28,7 +28,7 @@ class command_handler {
           );
 
           source.sendFeedback = (message) => {
-            if (options.mode === "savageFriends") bot.tellraw(`@a[name=${source.player.profile.name}]`, [
+            if (options.mode === "savageFriends") bot.tellraw(`@a`, [
                 message
             ])
             else bot.tellraw(`@a[name="${source.player.profile.name}"]`, message)

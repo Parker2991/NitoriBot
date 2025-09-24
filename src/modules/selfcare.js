@@ -23,64 +23,30 @@ class selfcare {
       position_count: 0,
     };
 
-    let selfcare = [];
-    for (const file of fs.readdirSync(
-      path.join(__dirname, "../selfcare/extras"),
-    )) {
-      try {
-        const extrasSelfcare = require(
-          path.join(__dirname, "../selfcare/extras", file),
-        );
-        selfcare.push(extrasSelfcare);
-      } catch (e) {
-        console.error(e.stack);
-      }
-    }
+    const messageSelfcare = [
+      require('../selfcare/extras/command_spy'),
+      require('../selfcare/essentials/god'),
+      require('../selfcare/essentials/mute'),
+      require('../selfcare/auth/login'),
+      require('../selfcare/auth/register'),
+      require('../selfcare/essentials/vanish')
+    ]
 
-    for (const file of fs.readdirSync(
-      path.join(__dirname, "../selfcare/essentials"),
-    )) {
-      try {
-        const essentialsSelfcare = require(
-          path.join(__dirname, "../selfcare/essentials", file),
-        );
-        selfcare.push(essentialsSelfcare);
-      } catch (e) {
-        console.error(e.stack);
-      }
-    }
-
-    for (const file of fs.readdirSync(
-      path.join(__dirname, "../selfcare/auth"),
-    )) {
-      try {
-        const authSelfcare = require(
-          path.join(__dirname, "../selfcare/auth", file),
-        );
-        selfcare.push(authSelfcare);
-      } catch (e) {
-        console.error(e.stack);
-      }
-    }
-
-    for (const file of fs.readdirSync(
-      path.join(__dirname, "../selfcare/entity"),
-    )) {
-      try {
-        const loadEntitySelfcare = require(
-          path.join(__dirname, "../selfcare/entity", file),
-        );
-
-        new loadEntitySelfcare({ bot, config, options });
-      } catch (e) {
-        console.error(e.stack);
-      }
-    }
+    const entitySelfcare = [
+      require('../selfcare/entity/gamemode'),
+      require('../selfcare/entity/icu'),
+      require('../selfcare/entity/op'),
+      require('../selfcare/extras/prefix'),
+      require('../selfcare/extras/username'),
+      require('../selfcare/entity/death')
+      //require('../selfcare/essentials/vanish')
+    ]
+    for (const entity of entitySelfcare) new entity({ bot, config, options });
 
     bot.on("system_chat", (message) => {
       const stringMessage = bot.getMessageAsPrismarine(message)?.toString();
 
-      for (const file of selfcare)
+      for (const file of messageSelfcare)
         new file({ bot, config, options, stringMessage });
     });
     let timer;
@@ -108,7 +74,10 @@ class selfcare {
         if (bot.options.mode === "savageFriends") {
           if (bot.selfcare.register) bot.chat.command('register amogusissus amogusissus')
           else if (bot.selfcare.login) bot.chat.command('login amogusissus')
-
+          else if (bot.selfcare.permissionLevel < 2)
+            bot.chat.command(`minecraft:op ${bot._client.username}`);
+          else if (bot.selfcare.gameMode !== 1)
+            bot._client.write('change_gamemode', { mode: 1 })
         } else if (bot.options.mode === "kaboom") {
           if (!bot.selfcare.prefix)
             bot.chat.command(
@@ -118,7 +87,8 @@ class selfcare {
             bot.chat.command("minecraft:op @s[type=player]");
           else if (bot.selfcare.username) bot.chat.command(`extras:username ${bot._client.username}`)
           else if (bot.selfcare.gameMode !== 1)
-            bot.chat.command("minecraft:gamemode creative");
+            if (bot.options.chatGamemodeChange) bot.chat.command("minecraft:gamemode creative")
+            else bot._client.write("change_gamemode", { mode: 1 })
           else if (!bot.selfcare.commandSpy)
             bot.core.run(`commandspy ${bot.uuid} on`);
           else if (!bot.selfcare.vanished)

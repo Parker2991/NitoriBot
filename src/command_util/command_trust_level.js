@@ -5,7 +5,6 @@ class command_trust_level {
   owner = 3;
   console = 4;
   disabled = 5;
-
 }
 
 module.exports = command_trust_level;

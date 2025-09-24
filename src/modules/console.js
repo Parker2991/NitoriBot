@@ -17,6 +17,9 @@ class Console {
       serverName = `§1${bot.options.host}:§9${bot.options.port}`;
     }
 
+    /*
+process.stdin.on('keypress', (str, key) => {
+    */
     bot.console = {
       readline: null,
       server: "all",
@@ -33,15 +36,12 @@ class Console {
           } else if (args.startsWith("")) {
             bot.chat.send(args);
           }
+        
           rl.on("close", () => {
             this.readline = null;
           });
         });
       },
-      /*
-            data.trustLevel,
-            data.validateBypass
-      */
       source: new CommandSource(
         {
           profile: {
@@ -58,7 +58,7 @@ class Console {
       ),
 
       refreshLine(...args) {
-        this.readline.output.write("\x1b[2K\r");
+        this?.readline.output.write("\x1b[2K\r");
         console.log.apply(console, arguments);
         this.readline._refreshLine();
       },
@@ -94,15 +94,6 @@ class Console {
           prismarineChat
             .fromNotch(
               `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §2info§8] §8[${serverName}§8] `,
-            )
-            ?.toAnsi() + message,
-        );
-      },
-      debug(message) {
-        console.log(
-          prismarineChat
-            .fromNotch(
-              `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §6debug§8] §8[${serverName}§8] `,
             )
             ?.toAnsi() + message,
         );
