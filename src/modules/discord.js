@@ -75,7 +75,6 @@ class discord {
       if (message.channel.id !== bot.discord.channel.id) return;
 
       if (message.content.startsWith(config.discord.prefix)) {
-        // TODO: Don't hardcode this
         const source = new CommandSource(
           {
             profile: {

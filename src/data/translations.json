@@ -111,6 +111,12 @@
   "fnfboyfriendbot.command_manager.validation.invalid_trusted_hash": "Invalid Trusted Hash",
   "fnfboyfriendbot.command_manager.validation.invalid_role": "Invalid Role",
 
-  "fnfboyfriendbot.reconnect.stop_logging": "stopped logging disconnect messages for now"
+  "fnfboyfriendbot.https_requesting.status.forbidden": "",
+  "fnfboyfriendbot.https_requesting.": "",
 
+  "fnfboyfriendbot.json.parse_invalid": "invalid json component to parse",
+  "fnfboyfriendbot.json.stringify.invalid": "invalid json component to stringify",
+  "fnfboyfriendbot.json.stringify.too_long": "stringified json exceeds the max command block character limit",
+
+  "fnfboyfriendbot.reconnect.stop_logging": "stopped logging disconnect messages for now"
 }

@@ -13,9 +13,24 @@ class Bot {
       // Set some default values in options
       host: (options.host ??= "localhost"),
       username: (options.username ??= usernameGen()),
+      version: (options.version ??= "1.21.8"),
       hideErrors: (options.hideErrors ??= true), // HACK: Hide errors by default as a lazy fix to console being spammed with them
+      serverName: (options.serverName ??= "localhost"),
+      private: (options.private ??= false),
+      reconnectDelay: (options.reconnectDelay ??= 300),
+      channelId: (options.channelId ??= "0000000000000000000"),
+      logging: {
+        file: (options.logging.file ??= false),
+        console: (options.logging.console ??= false)
+      },
+      mode: (options.mode ??= "kaboom"),
+      selfcareInterval: (options.selfcareInterval ??= 1000),
+      itemRefill: (options.itemRefill ??= false),
+      chatGamemodeChange: (options.chatGamemodeChange ??= false)
     };
+
     bot.options = options;
+
     // Create our client object, put it on the bot, and register some events
     bot.on("init_client", (client) => {
       client.on("packet", (data, meta) => {
@@ -27,7 +42,7 @@ class Bot {
         bot.uuid = client.uuid;
         bot.username = client.username;
         bot.loggedIn = true;
-        disconnectCount = 0;
+        disconnectCount = 0
         bot.reconnectDelay = options.reconnectDelay;
       });
 
@@ -82,11 +97,12 @@ class Bot {
           ChatMessage(bot._client.version).fromNotch(data.reason)?.toString(),
         );
       });
-
-      process.on("uncaughtException", (e) => {
-        console.warn(`${e.stack}`);
-      });
     });
+
+    process.on("uncaughtException", (e) => {
+      console.warn(`${e.stack}`);
+    });
+
 
     const client = options.client ?? new mc.createClient(bot.options);
     bot._client = client;

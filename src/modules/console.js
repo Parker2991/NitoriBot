@@ -17,9 +17,6 @@ class Console {
       serverName = `§1${bot.options.host}:§9${bot.options.port}`;
     }
 
-    /*
-process.stdin.on('keypress', (str, key) => {
-    */
     bot.console = {
       readline: null,
       server: "all",

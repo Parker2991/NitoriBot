@@ -1,4 +1,4 @@
-function parseMessage(message, data, context) {
+function vanila(message, data, context) {
   try {
     if (message === null || typeof message !== "object") return;
 
@@ -34,4 +34,4 @@ function parseMessage(message, data, context) {
     console.error(`${e.stack}`);
   }
 }
-module.exports = parseMessage;
+module.exports = vanila;

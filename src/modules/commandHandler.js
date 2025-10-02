@@ -31,9 +31,8 @@ class commandHandler {
             if (options.mode === "savageFriends") bot.tellraw(`@a`, [
                 message
             ])
-            else bot.tellraw(`@a[name="${source.player.profile.name}"]`, message)
+            else bot.tellraw(`@p[nbt={UUID:${source.player.entityUuid}}]`, message)
           }
-
           ratelimit++;
           setTimeout(() => {
             ratelimit--;

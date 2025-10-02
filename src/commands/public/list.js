@@ -20,7 +20,6 @@ class list extends CommandContext {
     const config = context.config;
     const source = context.source;
     let component = [];
-    let infoComponent = [];
     let playerCount = [];
 
     playerCount.push({
@@ -37,7 +36,7 @@ class list extends CommandContext {
 
     for (const player of bot.players) {
       component.push({
-        translate: "%s \u203a %s [%s: %s]\n",
+        translate: "%s \u203a %s [%s: %s]",
         color: config.colors.commands.tertiary,
         with: [
           player.displayName ?? player.profile.name,
@@ -46,7 +45,10 @@ class list extends CommandContext {
           { text: `${player.latency}`, color: config.colors.integer }
         ]
       })
+      component.push("\n");
     }
+    component.pop();
+    
     source.sendFeedback(component)
   }
 }

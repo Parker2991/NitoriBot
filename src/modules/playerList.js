@@ -1,4 +1,6 @@
 const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
+const entityUUID = require('../util/entityUUID');
+const mc = require('minecraft-protocol')
 
 class playerList {
   constructor(context) {
@@ -7,7 +9,7 @@ class playerList {
     const options = context.options;
     bot.players = [];
 
-    bot.on("packet.player_info", async (packet) => {
+    bot.on("packet.player_info", (packet) => {
       const actions = [];
       if (packet.action._value & 0b000001) actions.push(addPlayer);
       if (packet.action._value & 0b000010) actions.push(initializeChat);
@@ -15,7 +17,6 @@ class playerList {
       if (packet.action._value & 0b001000) actions.push(updateListed);
       if (packet.action._value & 0b010000) actions.push(updateLatency);
       if (packet.action._value & 0b100000) actions.push(updateDisplayName);
-
       for (const entry of packet.data) {
         for (const action of actions) {
           action(entry);
@@ -36,7 +37,6 @@ class playerList {
         );
         if (a.length >= 1) {
           player.vanished = true;
-          
         } else {
           bot.players = bot.players.filter((_) => _.uuid != player.uuid);
           if (player.vanished === true)
@@ -47,10 +47,9 @@ class playerList {
 
     function addPlayer(entry) {
       bot.players = bot.players.filter((_entry) => _entry.uuid !== entry.uuid);
-      //console.log(convertNbtComponentToJson(null, entry.displayName).extra[0])
       bot.players.push({
         uuid: entry.uuid,
- //       mcUUID: "",
+        entityUuid: entityUUID(entry.uuid),
         profile: {
           name: entry.player.name,
           properties: entry.player.properties,

@@ -37,7 +37,7 @@ class info extends CommandContext {
         "usages ",
         "uptimes",
         "server",
-        "version/",
+        "version",
       ],
     );
   }

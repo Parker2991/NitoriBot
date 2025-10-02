@@ -5,7 +5,6 @@ class register {
     const config = context.config
     const stringMessage = context.stringMessage
 
-    //if (options.mode !== "savageFriends") return
     if (stringMessage === "Please, register to the server with the command: /register <password> <ConfirmPassword>") bot.selfcare.register = true;
     else if (stringMessage === "This user isn't registered!") bot.selfcare.register = true;
     else if (stringMessage === "Successfully registered!") bot.selfcare.register = false;

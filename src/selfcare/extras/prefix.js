@@ -6,6 +6,7 @@ class prefix {
 
     if (bot.options.mode === "savageFriends") return 
     bot.on('packet.player_info', (packet) => {
+      try {
       const uuid = packet.data[0].uuid
       if (uuid === bot.uuid) {
         const player = bot.players.find((player) => player.uuid === uuid)
@@ -14,6 +15,9 @@ class prefix {
         if (prefix !== forcedPrefix) bot.selfcare.prefix = false
         else bot.selfcare.prefix = true
       }
+    } catch (e) {
+      
+    }
     })
   }
 }

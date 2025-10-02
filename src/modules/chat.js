@@ -1,19 +1,13 @@
 const loadPrismarineChat = require("prismarine-chat");
+const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 const KaboomChatParser = require("../chatParsers/kaboom");
 const CreayunChatParser = require("../chatParsers/creayun");
 const ChipmunkModChatParser = require("../chatParsers/chipmunkmod");
-const VanilaChatParser = require("../chatParsers/vanilla");
-const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
+const { stringify } = require('../util/json');
 
-function tryParse(json) {
-  try {
-    return JSON.parse(json);
-  } catch (error) {
-    return { text: "" };
-  }
-}
+//const VanilaChatParser = require("../chatParsers/vanilla");
 
-function parse (chatTypes, type, sender, target, message) {
+function parseNbt (chatTypes, type, sender, target, message) {
   const chatType = chatTypes[type]
   const parsed = convertNbtComponentToJson(null, chatType.value.value.chat)
   let json = { translate: parsed.translation_key, with: [] }
@@ -48,6 +42,7 @@ class chat {
     bot.on('packet.registry_data', (packet) => {
       if (packet.id !== 'minecraft:chat_type') return // taken from the 1.21.1 build of my bot that chayapak made
       chatTypes = packet.entries
+
     })
 
     if (options.mode === "savageFriends") {
@@ -56,7 +51,7 @@ class chat {
       bot.chatParsers = [
         KaboomChatParser,
         ChipmunkModChatParser,
-        VanilaChatParser,
+    //    VanilaChatParser,
       ];
     }
 
@@ -65,17 +60,16 @@ class chat {
       const message = convertNbtComponentToJson(null, packet.message);
       const target = convertNbtComponentToJson(null, packet.target)
       const type = packet.type.chatType;
-      const parsed = parse(chatTypes, type, sender, target, message)
+      const parsed = parseNbt(chatTypes, type, sender, target, message)
       bot.emit('message', {
         type: "minecraft:disguised_chat",
         message: parsed
       })
 
-      tryParsingMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
+      parseMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 
     bot.on("packet.player_chat", (packet) => {
-
       const unsigned = convertNbtComponentToJson(null, packet.unsignedChatContent);
       const networkName = convertNbtComponentToJson(null, packet.networkName)
       bot.emit('message', {
@@ -83,7 +77,7 @@ class chat {
         message: unsigned
       })
 
-      tryParsingMessage(unsigned, {
+      parseMessage(unsigned, {
         senderUuid: packet.senderUuid,
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
@@ -106,21 +100,20 @@ class chat {
 
       if (message.translate === "advMode.notAllowed") return;
 
-    //  console.log(JSON.stringify(message))
       bot.emit("message", {
         type: "minecraft:system_chat",
         message: message
       });
       bot.emit("system_chat", message);
 
-      tryParsingMessage(message, {
+      parseMessage(message, {
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
         chatType: "minecraft:system_chat",
       });
     });
 
-    function tryParsingMessage(message, data) {
+    function parseMessage(message, data) {
       try {
         let parsed;
 
@@ -185,7 +178,8 @@ class chat {
     };
 
     bot.tellraw = (selector, message) => {
-      bot.core.run(`minecraft:tellraw ${selector} ` + JSON.stringify(message));
+      console.log(stringify(message))
+      bot.core.run(`minecraft:tellraw ${selector} ` + stringify(message));
     };
   }
 }
