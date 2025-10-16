@@ -1,5 +1,5 @@
 const os = require("os");
-const CommandError = require("../../commandUtil/errors/CommandError");
+const CommandError = require("../../commandUtil/CommandError");
 const botInfo = require("../../data/info.json");
 const { execSync } = require("child_process");
 const CommandContext = require("../../commandUtil/CommandContext");

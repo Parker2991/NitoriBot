@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const CommandError = require("../commandUtil/errors/CommandError");
-const UnknownCommand = require('../commandUtil/errors/UnknownCommand')
+const CommandError = require("../commandUtil/CommandError");
 const CommandSource = require("../commandUtil/CommandSource");
 const CommandArguments = require('../commandUtil/CommandArguments')
 const fixansi = require("../util/ansi");
@@ -24,16 +23,17 @@ class commandManager {
         try {
           const authFind = bot.auth.list.find((e) => e.player === source.player.uuid)
           if (!command) {
-            throw new UnknownCommand(commandName)
+            throw new CommandError({
+              translate: "%s%s%s %s",
+              color: "red",
+              with: [
+                { translate: "command.unknown.command", color: "red" },
+                { text: "\n" },
+                { text: `${commandName}`, color: "gray" },
+                { translate: "command.context.here", color: "red" }
+              ]
+            })
           }
-
-          process.on('uncaughtException', (error) => {
-            process.emit('error', source, error)
-          })
-
-          process.on('unhandledRejection', (error) => {
-            process.emit('error', source, error)
-          }) // unhandledRejection and uncaughtException emit here so the emitted error can use source.sendFeedback for async
 
           if (authFind) {
             source.player.validateBypass = true
@@ -100,7 +100,21 @@ class commandManager {
             discordClient,
           });
         } catch (error) {
-          process.emit('error', source, error)
+          if (error instanceof CommandError) {
+            source.sendFeedback(error._message);
+          } else {
+            bot.console.error(error.stack)
+            source.sendFeedback(
+              {
+                translate: "command.failed",
+                color: "red",
+                hoverEvent: {
+                  action: "show_text",
+                  contents: String(error.stack),
+                },
+              }
+            )
+          }
         }
       },
 

@@ -111,19 +111,12 @@
   "fnfboyfriendbot.command_manager.validation.invalid_role": "Invalid Role",
   "fnfboyfriendbot.command_manager.trust_level.console_only": "This command can only be ran via console!",
 
-  "fnfboyfriendbot.error.assertion": "An Assertion Error has occurred, hover over this for more info",
-  "fnfboyfriendbot.error.error": "An Error has occured, hover over this for more info",
-  "fnfboyfriendbot.error.range": "An Range Error has occurred, hover over this for more info",
-  "fnfboyfriendbot.error.reference": "An Reference Error has occured, hover over this for more info",
-  "fnfboyfriendbot.error.syntax": "An Syntax Error has occurred, hover over this for more info",
-  "fnfboyfriendbot.error.type_error": "An Type Error has occurred, hover over this for more info",
-
   "fnfboyfriendbot.https_requesting.status.forbidden": "",
   "fnfboyfriendbot.https_requesting.": "",
 
   "fnfboyfriendbot.json.parse_invalid": "invalid json component to parse",
   "fnfboyfriendbot.json.stringify.invalid": "invalid json component to stringify",
-  "fnfboyfriendbot.json.stringify.too_long": "stringified json exceeds the max command block character limit",
+  "fnfboyfriendbot.json.too_long": "Stringified JSON exceeds the max command block character limit",
 
   "fnfboyfriendbot.reconnect.stop_logging": "stopped logging disconnect messages for now"
 }

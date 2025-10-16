@@ -1,4 +1,4 @@
-const CommandError = require("../../commandUtil/errors/CommandError");
+const CommandError = require("../../commandUtil/CommandError");
 const CommandContext = require("../../commandUtil/CommandContext");
 const trustLevel = require("../../commandUtil/CommandTrustLevel");
 

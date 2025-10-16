@@ -5,7 +5,6 @@ const creayun = require("../chatParsers/creayun");
 const chipmunkmod = require("../chatParsers/chipmunkmod");
 const vanilla = require('../chatParsers/vanilla/vanilla');
 const me = require('../chatParsers/vanilla/me')
-const { stringify } = require('../util/json');
 
 function parseNbt (chatTypes, type, sender, target, message) {
   const chatType = chatTypes[type]
@@ -183,7 +182,18 @@ class chat {
     };
 
     bot.tellraw = (selector, message) => {
-      bot.core.run(`minecraft:tellraw ${selector} ` + stringify(message));
+      const command = "minecraft:tellraw";
+      const commandLength = 32767 - selector.length;
+      const messageLength = JSON.stringify(message).length
+      const finalLength = commandLength - messageLength
+      // here we check to see if the output surpasses the max command block character limit which is 32767
+      if (messageLength > finalLength) 
+        bot.core.run(`${command} ${selector} ` + JSON.stringify({
+          translate: "fnfboyfriendbot.json.too_long",
+          fallback: bot.translations["fnfboyfriendbot.json.too_long"],
+          color: "red"
+        }))
+      else bot.core.run(`${command} ${selector} ` + JSON.stringify(message));
     };
   }
 }
