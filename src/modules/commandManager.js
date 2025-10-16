@@ -21,7 +21,6 @@ class commandManager {
         const command = this.getCommand(commandName.toLowerCase());
 
         try {
-          const authFind = bot.auth.list.find((e) => e.player === source.player.uuid)
           if (!command) {
             throw new CommandError({
               translate: "%s%s%s %s",
@@ -35,15 +34,8 @@ class commandManager {
             })
           }
 
-          if (authFind) {
-            source.player.validateBypass = true
-            if (authFind.trustLevel === "trusted") source.player.trustLevel = 1;
-            else if (authFind.trustLevel === "admin") source.player.trustLevel = 2;
-            else if (authFind.trustLevel === "owner") source.player.trustLevel = 3;
-          }
-
           if (command?.data?.trustLevel !== 0 && command?.data.trustLevel < 4) {
-            if (!source.player.validateBypass && !source.sources.console && !source.sources.discord) {
+            if (!source.sources.console && !source.sources.discord) {
               if (args[0] === bot.validation.trusted)
                 source.player.trustLevel = 1
               else if (args[0] === bot.validation.admin)
