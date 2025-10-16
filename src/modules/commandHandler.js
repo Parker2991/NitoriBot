@@ -24,7 +24,6 @@ class commandHandler {
             { discord: false, console: false },
             data.chatType,
             data.trustLevel,
-            data.validateBypass
           );
 
           source.sendFeedback = (message) => {

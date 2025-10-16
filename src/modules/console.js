@@ -50,10 +50,8 @@ class Console {
         "minecraft:chat",
         {
           trustLevel: 4,
-          validateBypass: true
         }
       ),
-
       refreshLine(...args) {
         this?.readline.output.write("\x1b[2K\r");
         console.log.apply(console, arguments);
