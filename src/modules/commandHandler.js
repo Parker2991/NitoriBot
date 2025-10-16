@@ -8,7 +8,7 @@ class commandHandler {
     const options = context.options;
 
     bot.on("parsed_message", (data) => {
-      try { 
+      //try { 
         if (data.type !== "minecraft:chat" && data.type !== "extras:command_spy") return;
         const prefixes = config.prefixes;
         prefixes.map((prefix) => {
@@ -30,8 +30,8 @@ class commandHandler {
           source.sendFeedback = (message) => {
             if (options.mode === "savageFriends") bot.tellraw(`@a`, [
                 message
-            ])
-            else bot.tellraw(`@p[nbt={UUID:${source.player.entityUuid}}]`, message)
+            ])//[I;
+            else bot.tellraw(`@p[nbt={UUID:[I;${source.player.entityUuid}]}]`, message)
           }
           ratelimit++;
           setTimeout(() => {
@@ -44,9 +44,9 @@ class commandHandler {
             bot.commandManager.executeString(source, command);
           }
         });
-      } catch (e) {
-        console.log(e.stack);
-      }
+      //} catch (e) {
+        //console.log(e.stack);
+      //}
     });
   }
 }

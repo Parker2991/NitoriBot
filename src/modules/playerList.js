@@ -1,6 +1,5 @@
 const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 const entityUUID = require('../util/entityUUID');
-const mc = require('minecraft-protocol')
 
 class playerList {
   constructor(context) {

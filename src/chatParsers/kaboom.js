@@ -29,7 +29,6 @@ function kaboom (message, data) {
   } else {
     const playerListDisplayName = { extra: [prefix, displayName], text: '' }
     sender = data.players.find(player => util.isDeepStrictEqual(player.displayName, playerListDisplayName))
-    console.log(sender)
   }
 
   if (!sender) return undefined

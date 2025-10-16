@@ -51,13 +51,14 @@ for (const botOptions of config.bots) {
   loadModules(bot, options, config, discordClient);
   bot.console.readlineInterface(rl);
 }
+
 const discord = [
   require('./discord/directMessages.js'),
 ]
 
 for (const file of discord) new file({ bot, config, discordClient })
 
-discordClient.on("messageCreate", (message) => {
+/*discordClient.on("messageCreate", (message) => {
   try {
     if (message.author.id === bot.discord.client.user.id) return;
 
@@ -96,3 +97,4 @@ discordClient.on("messageCreate", (message) => {
     console.log(e.stack);
   }
 });
+*/

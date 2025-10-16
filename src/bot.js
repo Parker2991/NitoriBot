@@ -47,17 +47,19 @@ class Bot {
       });
 
       client.on("disconnect", (data) => {
-        if (
-          data.reason ===
-          "Wait 5 seconds before connecting, thanks! :)"
-        )
-          bot.reconnectDelay = 5000;
-        bot.console.warn(
-          `${ChatMessage(bot._client.version).fromNotch("§8[§bClient Reconnect§8]§r")?.toAnsi()} ${ChatMessage(bot._client.version).fromNotch(data.reason)?.toAnsi()}`,
-        );
-        bot?.discord?.channel?.send(
-          ChatMessage(bot._client.version).fromNotch(data.reason)?.toString(),
-        );
+        try {
+          if (
+            JSON.parse(data.reason) ===
+            "Wait 5 seconds before connecting, thanks! :)"
+          )
+            bot.reconnectDelay = 5000;
+          bot.console.warn(
+            `${ChatMessage(bot._client.version).fromNotch("§8[§bClient Reconnect§8]§r")?.toAnsi()} ${ChatMessage(bot._client.version).fromNotch(data.reason)?.toAnsi()}`,
+          );
+          bot?.discord?.channel?.send(
+            ChatMessage(bot._client.version).fromNotch(data.reason)?.toString(),
+          );
+        } catch {} // do nothing
       });
 
       client.on("end", (reason) => {
@@ -67,7 +69,7 @@ class Bot {
       });
 
       client.on("error", (error) => {
-        try {
+        //try {
           if (disconnectCount === 10) {
             bot.console.info("stopped logging disconnect messages for now...");
             bot?.discord?.channel?.send(
@@ -84,9 +86,9 @@ class Bot {
             );
             bot?.discord?.channel?.send(error.toString());
           }
-        } catch (e) {
-          console.log(e.stack);
-        }
+     //   } catch (e) {
+       //   console.log(e.stack);
+       // }
       });
 
       client.on("kick_disconnect", (data) => {
@@ -100,7 +102,8 @@ class Bot {
     });
 
     process.on("uncaughtException", (e) => {
-      console.warn(`${e.stack}`);
+      //console.log('meow')
+     // console.warn(`${e.stack}`);
     });
 
 

@@ -15,10 +15,9 @@ class echo extends CommandContext {
     );
   }
 
-  execute(context) {
+  async execute(context) {
     const bot = context.bot;
     const args = context.arguments;
-
     bot.chat.send(`${args.join(" ")}`);
   }
 }

@@ -1,4 +1,3 @@
-// TODO: Improve how messages are stringified
 const ChatMessage = require("prismarine-chat")("1.21.8");
 const stringify = (message) => new ChatMessage(message)?.toString();
 

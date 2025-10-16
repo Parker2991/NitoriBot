@@ -1,5 +1,5 @@
 const os = require("os");
-const CommandError = require("../../commandUtil/CommandError");
+const CommandError = require("../../commandUtil/errors/CommandError");
 const botInfo = require("../../data/info.json");
 const { execSync } = require("child_process");
 const CommandContext = require("../../commandUtil/CommandContext");
@@ -307,7 +307,7 @@ class info extends CommandContext {
               color: config.colors.commands.primary,
               with: [
                 { text: ":", color: config.colors.commands.tertiary },
-                { text: `${os.cpus()[0].model }`, color: config.colors.commands.secondary }
+                { text: `${os.cpus()[0].model}`, color: config.colors.commands.secondary }
               ]
             },
             {

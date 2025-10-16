@@ -1,23 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const CommandError = require("../commandUtil/CommandError");
+const CommandError = require("../commandUtil/errors/CommandError");
+const UnknownCommand = require('../commandUtil/errors/UnknownCommand')
 const CommandSource = require("../commandUtil/CommandSource");
 const CommandArguments = require('../commandUtil/CommandArguments')
 const fixansi = require("../util/ansi");
 const sleep = require("../util/sleep.js");
-
-function unknownCommand(commandName, bot) {
-  return {
-    translate: "%s%s%s %s",
-    color: "red",
-    with: [
-      { translate: "command.unknown.command", color: "red" },
-      { text: "\n"},
-      { text: `${commandName}`, color: "gray" },
-      { translate: "command.context.here", color: "red" }
-    ]
-  } 
-}
 
 class commandManager {
   constructor(context) {
@@ -32,13 +20,20 @@ class commandManager {
       commandlist: [],
       execute(source, commandName, args) {
         const command = this.getCommand(commandName.toLowerCase());
+
         try {
           const authFind = bot.auth.list.find((e) => e.player === source.player.uuid)
           if (!command) {
-            throw new CommandError(
-              unknownCommand(commandName, bot),
-            );
+            throw new UnknownCommand(commandName)
           }
+
+          process.on('uncaughtException', (error) => {
+            process.emit('error', source, error)
+          })
+
+          process.on('unhandledRejection', (error) => {
+            process.emit('error', source, error)
+          }) // unhandledRejection and uncaughtException emit here so the emitted error can use source.sendFeedback for async
 
           if (authFind) {
             source.player.validateBypass = true
@@ -86,7 +81,6 @@ class commandManager {
               fallback: translations["fnfboyfriendbot.command_manager.trust_level.console_only"],
               color: "red"
             })
-
           if (
             command?.data.playerChat
             &&
@@ -105,23 +99,8 @@ class commandManager {
             config,
             discordClient,
           });
-
         } catch (error) {
-          if (error instanceof CommandError) {
-            source.sendFeedback(error._message);
-          } else {
-            bot.console.error(error.stack)
-            source.sendFeedback(
-              {
-                translate: "command.failed",
-                color: "red",
-                hoverEvent: {
-                  action: "show_text",
-                  contents: String(error.stack),
-                },
-              }
-            )
-          }
+          process.emit('error', source, error)
         }
       },
 

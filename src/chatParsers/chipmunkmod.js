@@ -1,4 +1,4 @@
-function chipmunkmod(message, data, context, bot) {
+function chipmunkmod(message, data) {
   try {
     if (message === null || typeof message !== "object") return;
     if (
@@ -11,11 +11,12 @@ function chipmunkmod(message, data, context, bot) {
     const senderComponent = message.with[1];
     const contents = message.with[2];
     let sender;
-    const hoverEvent = senderComponent.hoverEvent;
+    const hoverEvent = senderComponent.hover_event;
+   // console.log(hoverEvent)
     if (hoverEvent?.action === "show_entity") {
-      const id = hoverEvent.contents.id;
+      const id = hoverEvent.uuid;
 
-      sender = data.players.find((player) => player.uuid === id);
+      sender = data.players.find((player) => player.entityUuid[0] === id[0])//.entityUuid //=== hoverEvent.uuid)//.entityUuid;
     } else {
       const stringUsername = data
         .getMessageAsPrismarine(senderComponent)

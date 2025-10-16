@@ -1,11 +1,11 @@
 const loadPrismarineChat = require("prismarine-chat");
 const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
-const KaboomChatParser = require("../chatParsers/kaboom");
-const CreayunChatParser = require("../chatParsers/creayun");
-const ChipmunkModChatParser = require("../chatParsers/chipmunkmod");
+const kaboom = require("../chatParsers/kaboom");
+const creayun = require("../chatParsers/creayun");
+const chipmunkmod = require("../chatParsers/chipmunkmod");
+const vanilla = require('../chatParsers/vanilla/vanilla');
+const me = require('../chatParsers/vanilla/me')
 const { stringify } = require('../util/json');
-
-//const VanilaChatParser = require("../chatParsers/vanilla");
 
 function parseNbt (chatTypes, type, sender, target, message) {
   const chatType = chatTypes[type]
@@ -46,12 +46,17 @@ class chat {
     })
 
     if (options.mode === "savageFriends") {
-      bot.chatParsers = [CreayunChatParser];
+      bot.chatParsers = [creayun];
     } else {
       bot.chatParsers = [
-        KaboomChatParser,
+        kaboom,
+        creayun,
+        chipmunkmod,
+        vanilla, 
+        me
+/*        KaboomChatParser,
         ChipmunkModChatParser,
-    //    VanilaChatParser,
+        VanilaChatParser,*/
       ];
     }
 
@@ -178,7 +183,6 @@ class chat {
     };
 
     bot.tellraw = (selector, message) => {
-      console.log(stringify(message))
       bot.core.run(`minecraft:tellraw ${selector} ` + stringify(message));
     };
   }
