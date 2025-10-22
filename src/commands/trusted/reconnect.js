@@ -9,6 +9,7 @@ class reconnect extends CommandContext {
       "reconnect the bot",
       trustLevel.trusted,
       [""],
+      false
     );
   }
   execute(context) {

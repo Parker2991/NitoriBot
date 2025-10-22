@@ -69,7 +69,7 @@ class Bot {
       });
 
       client.on("error", (error) => {
-        //try {
+        try {
           if (disconnectCount === 10) {
             bot.console.info("stopped logging disconnect messages for now...");
             bot?.discord?.channel?.send(
@@ -86,9 +86,9 @@ class Bot {
             );
             bot?.discord?.channel?.send(error.toString());
           }
-     //   } catch (e) {
-       //   console.log(e.stack);
-       // }
+        } catch (e) {
+          console.log(e.stack);
+        }
       });
 
       client.on("kick_disconnect", (data) => {

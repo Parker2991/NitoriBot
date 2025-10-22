@@ -16,6 +16,7 @@ class console extends CommandContext {
         "validate/validation/val <owner/o/admin/a/trusted/t>",
         "logging/togglelogging/logtoconsole <on/true/enable/off/false/disable>",
       ],
+      false,
     );
   }
   execute(context) {

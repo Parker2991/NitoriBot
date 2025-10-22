@@ -9,6 +9,7 @@ class mcserver extends CommandContext {
       "pings minecraft servers",
       trustLevel.public,
       ["<ip>"],
+      false,
     );
   }
 
@@ -33,7 +34,8 @@ class mcserver extends CommandContext {
       return
     }
 
-    process.once('uncaughtException', (error) => {
+    process.on('uncaughtException', (error) => {
+      console.log(error)
       source.sendFeedback({
         translate: "fnfboyfriendbot.command.mcserver.server.unknown",
         fallback: translations["fnfboyfriendbot.command.mcserver.server.unknown"],

@@ -180,18 +180,7 @@ class discord {
         } else if (message?.reference?.type === 1) {
           // this is for messages that are forwarded
         } else {
-          if (options.mode === "creayun") {
-            bot.chat.message(
-              bot
-                .getMessageAsPrismarine(
-                  `&7[&9FNF&3Boyfriend&1Bot Discord&7] ${message?.member?.displayName} \u203a ${message?.content}`,
-                )
-                ?.toMotd()
-                .replaceAll("§", "&"),
-            );
-          } else {
-            bot.tellraw("@a", [tag, message.content]);
-          }
+          bot.tellraw("@a", [tag, message.content]);
         }
       } catch (e) {
         console.log(e.stack);

@@ -7,8 +7,5 @@
     "prismarine-registry": "^1.11.0",
     "undici": "^7.16.0",
     "wikipedia": "^2.1.2"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4"
   }
 }

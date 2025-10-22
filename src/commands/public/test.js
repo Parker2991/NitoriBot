@@ -9,9 +9,7 @@ class test extends CommandContext {
       "testing stuff",
       trustLevel.public,
       [""],
-      [
-      
-      ]
+      true
     );
   }
 
@@ -20,7 +18,7 @@ class test extends CommandContext {
     const args = context.arguments;
     const source = context.source;
 
-    
+    bot.chat.message('meow')
   }
 }
 

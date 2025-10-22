@@ -12,10 +12,11 @@ class echo extends CommandContext {
       "make me say something!",
       trustLevel.public,
       [""],
+      true
     );
   }
 
-  async execute(context) {
+  execute(context) {
     const bot = context.bot;
     const args = context.arguments;
     bot.chat.send(`${args.join(" ")}`);

@@ -12,6 +12,7 @@ class list extends CommandContext {
       "check whos online on the server", 
       trustLevel.public, 
       [""],
+      false
     );
   }
   execute(context) {

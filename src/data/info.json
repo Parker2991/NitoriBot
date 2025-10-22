@@ -1,9 +1,7 @@
 {
   "buildstring": {
-    "build": "3000",
+    "build": "3350",
     "codename": "§4Reignite",
-    "version": "v8.0.0-alpha",
-    "url": "https://code.chipmunk.land/Parker2991/FridayNightFunkinBoyfriendBot.git",
-    "branch": "dev"
+    "version": "v8.0.0-beta"
   }
 }

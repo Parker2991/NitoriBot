@@ -74,7 +74,7 @@ class commandManager {
               color: "red"
             })
           if (
-            command?.data.playerChat
+            command?.data.playerChatOnly
             &&
             source.ChatType !== "minecraft:player_chat"
             &&
@@ -152,7 +152,7 @@ class commandManager {
             bot.commandManager.commandlist.push(commands);
           }
         } catch (error) {
-          console.error("Failed to load command ", filename, ":", error);
+          console.error("Failed to load command", filename, ":", error);
         }
       }
     }

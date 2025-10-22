@@ -10,6 +10,7 @@ class weather extends CommandContext {
       "check the weather in locations", 
       trustLevel.public, 
       ["<weather/zip code>"],
+      false,
     );
   }
   async execute(context) {

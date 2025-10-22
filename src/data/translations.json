@@ -34,7 +34,7 @@
   "fnfboyfriendbot.command.help.trust_level.admin": "Admin",
   "fnfboyfriendbot.command.help.trust_level.owner": "Owner",
 
-  "fnfboyfriendbot.command.info.about": "FNFBoyfriendBot is a kaboom bot created by Parker2991\nThe source code and changelog can be found here %s",
+  "fnfboyfriendbot.command.info.about": "FNFBoyfriendBot is a kaboom bot created by Parker2991",
 
   "fnfboyfriendbot.command.info.config.discord.channel": "Discord Channel%s %s",
   "fnfboyfriendbot.command.info.config.discord.username": "Discord Username%s %s",
@@ -85,9 +85,14 @@
   "fnfboyfriendbot.command.mcserver.server.unknown": "could not ping %s:%s",
   "fnfboyfriendbot.command.mcserver.server.version": "Server Version: %s",
 
-  "fnfboyfriendbot.command.rtp": "Telported %s to X%s %s Y%s %s Z%s%s",
+  "fnfboyfriendbot.command.rps.draw": "You chose %s and the bot chose %s so its a draw",
+  "fnfboyfriendbot.command.rps.lose": "You lose! You chose %s and the bot chose %s",
+  "fnfboyfriendbot.command.rps.win": "You win! You chose %s and the bot chose %s",
+  "fnfboyfriendbot.command.rps.invalid_choice": "%s is not a valid option please pick rock paper or scissors",
 
-  "fnfboyfriendbot.command.urban.definition_not_found": "Urban Definition not found!",
+  "fnfboyfriendbot.command.rtp": "Telporting Player %s to X: %s, Y: %s, Z: %s",
+  "fnfboyfriendbot.command.urban.definition_not_found": "%s Definition not found!",
+  "fnfboyfriendbot.command.urban.text": "Urban",
 
   "fnfboyfriendbot.command.validate.owner": "Validated as Owner",
   "fnfboyfriendbot.command.validate.admin": "Validated as Admin",

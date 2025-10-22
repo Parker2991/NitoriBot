@@ -14,6 +14,7 @@ class extras extends CommandContext {
         "unregister",
         "unregisterall"
       ],
+      true,
     );
   }
   execute(context) {

@@ -9,6 +9,7 @@ class validate extends CommandContext {
       "validate through the bot",
       trustLevel.trusted,
       [""],
+      false,
     );
   }
   execute(context) {

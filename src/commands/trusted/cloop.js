@@ -18,6 +18,7 @@ class cloop extends CommandContext {
         "list",
         "clear"
       ],
+      false
     );
   }
   execute(context) {

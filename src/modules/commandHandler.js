@@ -44,7 +44,7 @@ class commandHandler {
           }
         });
       } catch (e) {
-        console.log(e.stack);
+        bot.console.error(e.toString());
       }
     });
   }

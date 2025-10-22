@@ -39,6 +39,7 @@ class info extends CommandContext {
         "server",
         "version",
       ],
+      false
     );
   }
 
@@ -57,22 +58,6 @@ class info extends CommandContext {
           translate: "fnfboyfriendbot.command.info.about",
           fallback: translations["fnfboyfriendbot.command.info.about"],
           color: config.colors.commands.primary,
-          with: [
-            { text: `${botInfo.buildstring.url}`, color: config.colors.commands.secondary }
-          ],
-          hover_event: {
-            action: "show_text",
-            value: [
-              {
-                text: "click here to view bots source code",
-                color: `${config.colors.commands.primary}`,
-              },
-            ],
-          },
-          click_event: {
-            action: "open_url",
-            url: `${botInfo.buildstring.url}`,
-          }
         })
       break;
       case "config":
@@ -169,7 +154,7 @@ class info extends CommandContext {
       case "contributors":
       case "credits":
         component.push({
-          translate: "%s%s - %s\n%s:\n%s\n%s\n%s\n%s\n%s %s\n%s\n%s",
+          translate: "%s%s - %s\n%s:\n%s\n%s\n%s\n%s\n%s\n%s",
           color: config.colors.commands.tertiary,
           with: [
             { text: "Parker", color: "dark_red" },
@@ -179,11 +164,9 @@ class info extends CommandContext {
             { text: "_ChipMC_", color: "dark_blue" },
             { text: "chayapak", color: "yellow" },
             { text: "_yfd", color: "light_purple" },
-            { text: "aaa", color: "gold" },
-            { text: "Morgan", color: "green" },
-            { text: "Ankan", color: "dark_green" },
-            { text: "TurtleKid", color: "green" },
+            { text: "aaa/ImFloriz", color: "gold" },
             { text: "Ploat/ImGloriz", color: "#cd8ccb" },
+            { text: "TurtleKid", color: "green" }
           ],
         });
       break;

@@ -7,6 +7,7 @@ class Console {
     const bot = context.bot;
     const config = context.config;
     const options = context.options;
+
     let ratelimit = 0;
 
     let serverName;
@@ -94,7 +95,7 @@ class Console {
         );
       },
       command(message) {
-        console.log(
+        this.refreshLine(
           prismarineChat
             .fromNotch(
               `§8[§1${new Date().toLocaleTimeString("en-US", { timeZone: "America/CHICAGO" })} §3${new Date().toLocaleDateString("en-US", { timeZone: "America/CHICAGO" })} §6command§8] §8[${serverName}§8] `,

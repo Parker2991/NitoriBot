@@ -10,7 +10,7 @@ class kick extends CommandContext {
       "kick a player from the server",
       trustLevel.admin,
       ["invalidstring", "item", "te"],
-      true,
+      false,
     );
   }
   execute(context) {
@@ -19,7 +19,7 @@ class kick extends CommandContext {
     const config = context.config;
 
     if (!args && !args[0] && !args[1] && !args[2]) return;
-    switch (args[1]?.toLowerCase()) {
+    switch (args[0]?.toLowerCase()) {
       case "invalidstring":
         bot.exploits.crashes.invalidString(args[2]);
         bot.tellraw("@a", `crashing ${args[2]}`);

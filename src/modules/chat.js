@@ -92,17 +92,15 @@ class chat {
     bot.on("packet.system_chat", (packet) => {
       const message = convertNbtComponentToJson(null, packet.content);
       if (
-        message.translate === "advMode.setCommand.success" &&
-        config?.debug?.commandSetMessage === false
+        message.translate === "advMode.setCommand.success"
+        ||
+        message.translate === "multiplayer.message_not_delivered"
+        ||
+        packet.isActionBar
+        ||
+        message.translate === "advMode.notAllowed"
       )
         return;
-      if (message.translate === "multiplayer.message_not_delivered") return;
-
-      if (packet.isActionBar) {
-        return;
-      }
-
-      if (message.translate === "advMode.notAllowed") return;
 
       bot.emit("message", {
         type: "minecraft:system_chat",

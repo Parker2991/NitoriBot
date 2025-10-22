@@ -12,6 +12,7 @@ class kill extends CommandContext {
       "kill the bots process",
       trustLevel.owner,
       [""],
+      false
     );
   }
   execute(context) {

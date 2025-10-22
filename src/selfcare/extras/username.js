@@ -6,6 +6,7 @@ class username {
 
     bot.on('player_info', (data) => {
       if (data.uuid === bot.uuid) {
+        console.log(data)
         if (data.player.name !== bot.username) bot.selfcare.username = true;
         else bot.selfcare.username = false
       }

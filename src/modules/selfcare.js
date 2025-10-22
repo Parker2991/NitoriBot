@@ -74,12 +74,13 @@ class selfcare {
         if (bot.options.mode === "savageFriends") {
           if (bot.selfcare.register) bot.chat.command('register amogusissus amogusissus')
           else if (bot.selfcare.login) bot.chat.command('login amogusissus')
+          if (!bot.selfcare.login) return
           else if (bot.selfcare.permissionLevel < 2)
             bot.chat.command(`minecraft:op ${bot._client.username}`);
           else if (bot.selfcare.gameMode !== 1)
             bot._client.write('change_gamemode', { mode: 1 })
         } else if (bot.options.mode === "kaboom") {
-          if (!bot.selfcare.prefix)
+           if (!bot.selfcare.prefix)
             bot.chat.command(
               `extras:prefix &8[&bPrefix&8: &3${config.prefixes[0]}&8]`,
             );
