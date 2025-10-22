@@ -38,7 +38,7 @@ class Bot {
         bot.emit("packet." + meta.name, data);
       });
 
-      client.on("login", (data) => {
+      client.once("login", (data) => {
         bot.uuid = client.uuid;
         bot.username = client.username;
         bot.loggedIn = true;
@@ -103,7 +103,7 @@ class Bot {
 
     process.on("uncaughtException", (e) => {
       //console.log('meow')
-     // console.warn(`${e.stack}`);
+      console.warn(`${e.stack}`);
     });
 
 
