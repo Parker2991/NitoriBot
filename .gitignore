@@ -1,4 +1,8 @@
+# ignore node_modules
 node_modules
-config.js
-.git
-src/modules/exploits.js
+
+# ignore build folder
+build
+
+# ignore config
+config.yml
