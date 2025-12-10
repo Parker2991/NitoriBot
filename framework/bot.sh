@@ -1,0 +1,1 @@
+node --max-old-space-size=1000 --expose-gc build/index.js

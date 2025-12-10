@@ -1,7 +1,8 @@
-class console {
-  constructor (context) {
-
+export default class console {
+  constructor (context: any) {
+    const bot = context.bot;
+    const config = context.config;
+    
   }
 }
 
-export = console;

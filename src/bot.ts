@@ -1,16 +1,24 @@
 import mc from "minecraft-protocol";
 import { EventEmitter } from "events";
 
-class createBot {
+export class createBot {
 
   bot: any
   
   bots: any;
 
-  constructor (options) {
+  constructor (options: any) {
     this.bot = new EventEmitter();
 
     const bot = this.bot;
+
+    bot.options = {
+      host: (options.host ??= "localhost"),
+      username: (options.username ??= "Player"),
+      version: (options.version ??= "1.21.8"),
+      hideErrors: (options.hideErrors ??= true),
+    }
+    //options.hideError = true;
 
     bot.on("init_client", (client: any) => {
       client?.on('packet', (data: any, meta: any) => {
@@ -31,4 +39,4 @@ class createBot {
     return bot;
   }
 }
-export = createBot
+//export = createBot

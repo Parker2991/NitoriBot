@@ -1,22 +1,20 @@
-import { readdirSync } from "fs";
-import { join } from "path";
+import fs from "fs";
+import path from "path";
+import url from "url";
 
-class loadModules {
-  constructor (bot, config) {
-    for (const filename of readdirSync(join(__dirname, '../modules'))) {
-      try {
-        if (filename.endsWith(".ts")) {
-          //import * as module from filename;
-
-          const module = import(filename);
-          console.log(module)
-          //module({ bot, config })
-        }
-      } catch (error) {
+export default async function loadModules (bot: any, config: any) {
+  for (const filename of fs.readdirSync(path.join(__dirname, '../modules'))) {
+    try {
+      if (filename.endsWith(".ts") || filename.endsWith(".js")) {
+        const module = await import(path.join(__dirname, '../modules/', filename))
+        const modules = module.default;
+        new modules({ bot, config })
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
         console.error(`Failed to load module ${filename} due to error`);
         console.error(`\x1b[31m${error.stack}\x1b[0m`);
       }
-    } 
-  }
+    }
+  } 
 }
-export = loadModules;
