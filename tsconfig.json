@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": "./bot",
     "outDir": "./build",
     "module": "commonjs",
     "allowJs": true,
-    "target": "ES2015",
+    "target": "es2022",
     "types": ["node"],
     "sourceMap": false,
     "declaration": false,

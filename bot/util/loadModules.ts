@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import url from "url";
 
 export default async function loadModules (bot: any, config: any) {
   for (const filename of fs.readdirSync(path.join(__dirname, '../modules'))) {

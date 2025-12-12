@@ -1,6 +1,7 @@
 import convertNbtComponentToJson from "../util/convertNbtComponentToJson";
 import loadPrismarineChat from 'prismarine-chat';
 import kaboom from '../chatParsers/kaboom';
+import chipmunkmod from '../chatParsers/chipmunkmod';
 
 // taken from FNFBoyfriendBot v8.0.0
 
@@ -41,7 +42,7 @@ export default class chat {
       chatTypes = packet.entries
     })
 
-    bot.chatParsers = [kaboom]
+    bot.chatParsers = [kaboom, chipmunkmod]
   /*  if (options.mode === "savageFriends") {
       bot.chatParsers = [creayun];
     } else {
@@ -65,7 +66,6 @@ export default class chat {
         message: parsed
       })
 
-      console.log(packet)
       parseMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 

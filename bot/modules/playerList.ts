@@ -2,7 +2,7 @@ const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 const entityUUID = require('../util/entityUUID');
 
 // taken from FNFBoyfriendBot v8.0.0
-
+console.log(entityUUID)
 export default class playerList {
   constructor(context: any) {
     const bot = context.bot;
@@ -40,14 +40,13 @@ export default class playerList {
           bot.players = bot.players.filter((_: any) => _.uuid != player.uuid);
         }
       });
-      console.log(playerList)
     });
 
     function addPlayer(entry: any) {
       bot.players = bot.players.filter((_entry: any) => _entry.uuid !== entry.uuid);
       bot.players.push({
         uuid: entry.uuid,
-        //entityUuid: entityUUID(entry.uuid),
+        entityUuid: entityUUID(entry.uuid),
         profile: {
           name: entry.player.name,
           properties: entry.player.properties,

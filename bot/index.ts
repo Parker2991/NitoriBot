@@ -6,6 +6,7 @@ import loadModules from './util/loadModules';
 
 const config = parseToml('./config.toml');
 const bots = []
+console.log(config)
 for (const options of config.bots) {
   const bot = new createBot(options);
   loadModules(bot, config)

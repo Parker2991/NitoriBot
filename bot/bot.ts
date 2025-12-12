@@ -17,6 +17,7 @@ export class createBot {
       username: (options.username ??= "Player"),
       version: (options.version ??= "1.21.8"),
       hideErrors: (options.hideErrors ??= true),
+      scInterval: (options.scInterval ??= 1000)
     }
     //options.hideError = true;
 
@@ -24,14 +25,18 @@ export class createBot {
       client?.on('packet', (data: any, meta: any) => {
         bot.emit("packet", data, meta);
         bot.emit("packet." + meta.name, data)
+      });
+
+      client.on('login', (packet: any) => {
+        bot.entityId = packet.entityId;
+      });
+
+      client?.on("end", (reason: any) => {
+        bot.emit("end", reason);
       })
     })
 
-    const client = mc.createClient({
-      host: options.host ??= 'localhost',
-      username: options.username ??= "Player",
-      version: options.version ??= "1.21.8"
-    })
+    const client = mc.createClient(options)
 
     bot._client = client;
     bot.emit('init_client', client);
@@ -39,4 +44,3 @@ export class createBot {
     return bot;
   }
 }
-//export = createBot

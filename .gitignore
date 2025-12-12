@@ -9,3 +9,9 @@ config.toml
 
 # ignore .git folder
 .git
+
+# ignore the .gradle folder in the debug bridge
+debug-bridge/.gradle
+
+# ignore the build folder in the debug bridge
+debug-bridge/build
