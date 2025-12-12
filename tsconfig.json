@@ -18,5 +18,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "esModuleInterop": true,
-  }
+  },
+  "exclude": ["./debug-bridge", "./build"]
 }

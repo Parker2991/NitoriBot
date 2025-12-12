@@ -1,12 +1,14 @@
 import fs from "fs";
 import path from "path";
 
-export default async function loadModules (bot: any, config: any) {
+export default async function loadModules (bot: any, config: any, rl: any) {
+  bot.modules = []
   for (const filename of fs.readdirSync(path.join(__dirname, '../modules'))) {
     try {
       if (filename.endsWith(".ts") || filename.endsWith(".js")) {
         const module = await import(path.join(__dirname, '../modules/', filename))
         const modules = module.default;
+        bot.modules.push(modules)
         new modules({ bot, config })
       }
     } catch (error: unknown) {
@@ -15,5 +17,6 @@ export default async function loadModules (bot: any, config: any) {
         console.error(`\x1b[31m${error.stack}\x1b[0m`);
       }
     }
-  } 
+  }
+  if (bot.debugEnabled) console.info(`Loaded ${bot.modules.length} Modules`);
 }

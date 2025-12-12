@@ -66,6 +66,8 @@ export default class chat {
         message: parsed
       })
 
+      if (bot.debugEnabled) bot.emit("disguised", parsed);
+
       parseMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 
@@ -77,6 +79,8 @@ export default class chat {
         message: unsigned
       })
 
+      if (bot.debugEnabled) bot.emit("player", unsigned)
+
       parseMessage(unsigned, {
         senderUuid: packet.senderUuid,
         players: bot.players,
@@ -87,7 +91,7 @@ export default class chat {
 
     bot.on("packet.system_chat", (packet: any) => {
       const message = convertNbtComponentToJson(null, packet.content);
-      bot.emit("system_chat", message);
+      bot.emit("system", message);
       if (
       //  message.translate === "advMode.setCommand.success"
         //||
@@ -103,6 +107,8 @@ export default class chat {
         type: "minecraft:system_chat",
         message: message
       });
+
+     // if (bot.debugEnabled) bot.emit("system", message)
 
       parseMessage(message, {
         players: bot.players,

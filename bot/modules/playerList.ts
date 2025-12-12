@@ -2,7 +2,6 @@ const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 const entityUUID = require('../util/entityUUID');
 
 // taken from FNFBoyfriendBot v8.0.0
-console.log(entityUUID)
 export default class playerList {
   constructor(context: any) {
     const bot = context.bot;

@@ -2,10 +2,10 @@ import mc from "minecraft-protocol";
 import { EventEmitter } from "events";
 
 export class createBot {
-
-  bot: any
-  
+  bot: any;
   bots: any;
+  debugEnabled: any;
+  console: any;
 
   constructor (options: any) {
     this.bot = new EventEmitter();
@@ -19,8 +19,9 @@ export class createBot {
       hideErrors: (options.hideErrors ??= true),
       scInterval: (options.scInterval ??= 1000)
     }
-    //options.hideError = true;
 
+    bot.options = options;
+    
     bot.on("init_client", (client: any) => {
       client?.on('packet', (data: any, meta: any) => {
         bot.emit("packet", data, meta);
