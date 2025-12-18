@@ -1,4 +1,4 @@
-export default class selfcare {
+export class selfcare {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;

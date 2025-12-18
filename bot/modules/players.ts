@@ -2,7 +2,7 @@ const convertNbtComponentToJson = require("../util/convertNbtComponentToJson");
 const entityUUID = require('../util/entityUUID');
 
 // taken from FNFBoyfriendBot v8.0.0
-export default class playerList {
+export class players {
   constructor(context: any) {
     const bot = context.bot;
     bot.players = [];
@@ -25,7 +25,7 @@ export default class playerList {
     bot.on("packet.player_remove", async ({ players }: { players: any    }) => {
       // players has uuids of the players
       let player_completion = (
-        await bot.tab_complete("scoreboard players add ")
+        await bot.tabcomplete("scoreboard players add ")
       ).filter((_: any) => _.tooltip == undefined); // exclude @a, @r, @s, @e, @p -aaa
       bot.players.forEach(async (player: any) => {
         if (!players.includes(player.uuid)) return;

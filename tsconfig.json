@@ -18,6 +18,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "strictPropertyInitialization": false,
   },
-  "exclude": ["./debug-bridge", "./build"]
+  "exclude": ["./build", "./memoryTest.js"]
 }

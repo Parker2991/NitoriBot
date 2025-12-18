@@ -1,9 +1,10 @@
-export default class Console {
+import translations from '../resources/translations.json';
+import format from '../data/console/format';
+export class Console {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
     const options = bot.options;
-    
     let host = `${options.host}:${options.port}`;
     
     bot.console = {
@@ -15,6 +16,7 @@ export default class Console {
         this.readline = rl;
 
         rl.on("line", (args: any) => {
+          console.log(args)
           if (options.serverName !== this.server && this.server !== "all") return;
 
           if (args.startsWith(config.console.prefix)) {
@@ -36,9 +38,17 @@ export default class Console {
       },
 
       prefix(type: any, server: any, message: any) {
-        let time = new Date().toLocaleTimeString("en-US", { timeZone: config.console.timezone });
-        let date = new Date().toLocaleDateString("en-US", { timeZone: config.console.timezone })
-        return bot.getMessageAsPrismarine(`§8[§1${time} §3${date} ${type}§8] §8[§b${server}§8]§r `)?.toAnsi() + bot.getMessageAsPrismarine(message)?.toAnsi()
+        // i read the firefox docs to see how to get elements of date seperately if that makes any sense
+        const timeZone = config.console.timeZone
+        const dayName = new Date().toLocaleDateString('en-US', { weekday: 'long', timeZone });
+        const dayNumber = new Date().toLocaleDateString('en-US', { day: 'numeric', timeZone });
+        const month = new Date().toLocaleDateString('en-US', { month: 'long', timeZone });
+        const year = new Date().toLocaleDateString('en-US', { year: 'numeric', timeZone });
+        //const date = format(translations['console.format.date'], `${dayName}`, `${month}`, `${dayNumber}`, `${year}`);
+        const time = new Date().toLocaleTimeString("en-US", { timeZone });
+        const consoleFormat = format(bot, time, dayName, month, dayNumber, year, type, server, message);
+
+        return bot.getMessageAsPrismarine(consoleFormat)?.toAnsi()
       },
 
       log(message: any) {

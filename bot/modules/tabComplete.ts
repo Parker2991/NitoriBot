@@ -1,10 +1,10 @@
 // taken from FNFBoyfriendBot v8.0.0
 
-export default class tabComplete {
+export class tabComplete {
   constructor(context: any) {
     const bot = context.bot;
     // let aaa cook
-    bot.tab_complete = (str: any) => {
+    bot.tabcomplete = (str: any) => {
       return new Promise((resolve) => {
         bot._client.write("tab_complete", {
           text: str,

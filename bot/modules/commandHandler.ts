@@ -1,4 +1,6 @@
-export default class commandHandler {
+import { source } from '../command/source';
+
+export class commandHandler {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
@@ -8,19 +10,17 @@ export default class commandHandler {
       try {
         const prefixes = config.prefixes;
         const message = packet.contents;
-        const color = message.color;
-        let text;
-        if (message.extra) text = message.extra[0];
-        else text = message.text;
-        
-        //console.log(message)
-     //   console.log(bot.getMessageAsPrismarine(message))
-        //const e = bot.getMessageAsPrismarine(message)?.toMotd();
-        //console.log(e)
+        const plainMessage = bot.getMessageAsPrismarine(message)?.toString();
+
+        for (const prefix of prefixes) {
+          if (!plainMessage.startsWith(prefix)) return;
+          const command = plainMessage.substring(prefix.length);
+          const getPrefix = plainMessage.split(command)[0];
+          bot.core.run(command)
+        }
       } catch (e) {
-        
+        if (e instanceof Error) bot.console.info(e.stack)
       }
-      //console.log(packet)
     })
   }
 }

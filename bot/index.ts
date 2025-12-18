@@ -1,10 +1,9 @@
-import fs from "fs";;
-import path from "path";
-import readline from 'readline'
+import fs from "fs";
+import path from "path"
+import readline from 'readline';
 import { createBot } from "./bot";
 import { parseToml } from './util/parseToml';
-import loadModules from './util/loadModules';
-import version from './data/version.json'
+import version from './resources/version.json';
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -23,10 +22,8 @@ const config = parseToml('./config.toml');
 const bots = [];
 
 for (const options of config.bots) {
-  const bot = new createBot(options);
-  bot.debugEnabled = debugEnabled;
+  let bot = new createBot(options, config);
   bots.push(bot);
   bot.bots = bots;
-  loadModules(bot, config, rl);
-  bot?.console?.interface(rl);
+  bot.console.interface(rl)
 }

@@ -26,7 +26,7 @@ function parseChatType (chatTypes: any, type: any, sender: any, target: any, mes
   return json
 }
 
-export default class chat {
+export class chat {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
@@ -42,7 +42,8 @@ export default class chat {
       chatTypes = packet.entries
     })
 
-    bot.chatParsers = [kaboom, chipmunkmod]
+    bot.chatParsers = [kaboom, chipmunkmod];
+    
   /*  if (options.mode === "savageFriends") {
       bot.chatParsers = [creayun];
     } else {
@@ -79,14 +80,14 @@ export default class chat {
         message: unsigned
       })
 
-      if (bot.debugEnabled) bot.emit("player", unsigned)
-
       parseMessage(unsigned, {
         senderUuid: packet.senderUuid,
         players: bot.players,
         getMessageAsPrismarine: bot.getMessageAsPrismarine,
         chatType: "minecraft:player_chat"
       });
+
+      if (bot.debugEnabled) bot.emit("player", unsigned)
     });
 
     bot.on("packet.system_chat", (packet: any) => {
@@ -127,6 +128,7 @@ export default class chat {
         }
 
         if (!parsed) return;
+        
         bot.emit("parsed_message", parsed);
       } catch (e: unknown) {
         console.log(e);
@@ -153,7 +155,7 @@ export default class chat {
         bot._client.write("chat_message", {
           message: message?.substring(0, 256)?.replaceAll("§", "&"),
           timestamp: BigInt(Date.now()),
-         // salt: 0n,
+          salt: 0n,
           offset: 0,
           acknowledged: bitset,
         });
@@ -163,7 +165,7 @@ export default class chat {
         bot._client.write("chat_command", {
           command: command?.substring(0, 256)?.replaceAll("§", "&"),
           timestamp: BigInt(Date.now()),
-      //    salt: 0n,
+          salt: 0n,
           argumentSignatures: [],
           signedPreview: false,
           messageCount: 0,

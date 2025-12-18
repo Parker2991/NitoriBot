@@ -1,20 +1,16 @@
 import createRegistry from 'prismarine-registry';
+import language from '../resources/language.json';
 
-export default class registry {
+export class registry {
   constructor(context: any) {
     const bot = context.bot;
-    bot.once("packet.login", (packet: any) => {
-      bot.registry = createRegistry(bot._client.version);
-     // bot.registry.language = require("../data/language.json");
-      bot.emit("registry_ready", bot.registry);
-    });
 
+    bot.registry = createRegistry(bot.options.version);
+    bot.registry.language = language;
+    bot.emit("registry_ready", bot.registry);
 
-/*    bot.on('packet.registry_data', async (packet: ant) => {
-      await sleep(1000)
-      if (bot.loggedIn) {
-        bot.registry.loadDimensionCodec(packet)
-      }
-    })*/
+    bot.on('packet.registry_data', (packet: any) => {
+      bot.registry.loadDimensionCodec(packet)
+    })
   }
 }
