@@ -17,23 +17,3 @@ export class reconnect {
     })
   }
 }
-
-/*
-    bot.on("end", () => {
-      setTimeout(() => {
-        if (options.usernameGen) {
-          client =
-            options.client ??
-            mc.createClient(options, (options.username = usernameGen()));
-        } else {
-          client = options.client ?? mc.createClient(options);
-        }
-        bot._client = client;
-        bot.emit("init_client", bot._client);
-      }, bot.reconnectDelay);
-    });
-  }
-}
-module.exports = reconnect;
-
-*/

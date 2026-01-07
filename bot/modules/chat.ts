@@ -182,5 +182,9 @@ export class chat {
         bot.chat.message(message);
       }
     }
+
+    bot.tellraw = (selector: any, message: any) => {
+      bot.core.run(`minecraft:tellraw ${selector} ` + JSON.stringify(message))
+    }
   }
 }

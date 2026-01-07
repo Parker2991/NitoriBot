@@ -18,7 +18,9 @@ export class createBot extends FNFBoyfriendBot {
 
       client?.on("end", (reason: any) => {
         bot.emit("end", reason);
-      })
+      });
+
+    //  client.on("error", (error: any) => console.error(error))
     })
 
     const client = mc.createClient(options)

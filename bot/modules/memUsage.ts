@@ -5,7 +5,8 @@ export class memUsage {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
-
+    if (!config.debug.memoryUsage) return;
+    
     setInterval(() => {
       let mbDivide = 1048576;
       bot.console.info(`[Heap Memory] ${Math.floor(process.memoryUsage().heapUsed / mbDivide)} MB / ${Math.floor(process.memoryUsage().heapTotal / mbDivide)} MB`);

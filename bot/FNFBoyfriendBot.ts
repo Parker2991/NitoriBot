@@ -13,11 +13,13 @@ import { position } from './modules/position';
 import { core } from './modules/core';
 import { reconnect } from './modules/reconnect';
 import { commandManager } from './modules/commandManager';
+import { sign } from './modules/sign';
 
 export default class FNFBoyfriendBot extends EventEmitter {
   public _client: any
   public bots: any;
   public chat: any;
+  public commandManager: any;
   public core: any;
   public console: any;
   public entityId: number;
@@ -45,6 +47,7 @@ export default class FNFBoyfriendBot extends EventEmitter {
     this.options = options;
 
     new chat({ bot: this, config });
+    new commandManager({ bot: this, config })
     new Console({ bot: this, config });
     new players({ bot: this, config });
     new registry({ bot: this, config });
@@ -54,6 +57,7 @@ export default class FNFBoyfriendBot extends EventEmitter {
     new reconnect({ bot: this, config });
     new position({ bot: this, config });
     new core({ bot: this, config });
-    new commandHandler({ bot: this, config })
+    new commandHandler({ bot: this, config });
+    new sign({ bot: this, config })
   }
 }

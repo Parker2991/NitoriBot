@@ -17,7 +17,7 @@ export class Console {
 
         rl.on("line", (args: any) => {
           console.log(args)
-          if (options.serverName !== this.server && this.server !== "all") return;
+          //if (options.serverName !== this.server && this.server !== "all") return;
 
           if (args.startsWith(config.console.prefix)) {
 

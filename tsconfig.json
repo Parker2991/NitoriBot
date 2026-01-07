@@ -11,6 +11,7 @@
     "declarationMap": false,
     "noUncheckedIndexedAccess": true,
     "strict": true,
+    "resolveJsonModule": true,
    // "jsx": "react-jsx",
     "verbatimModuleSyntax": false,
     "isolatedModules": false,
