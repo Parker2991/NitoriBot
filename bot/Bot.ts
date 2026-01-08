@@ -1,11 +1,12 @@
 import mc from "minecraft-protocol";
 import FNFBoyfriendBot from "./FNFBoyfriendBot";
 
-export class createBot extends FNFBoyfriendBot {
-  constructor (options: any, config: any) {
+export class Bot extends FNFBoyfriendBot {
+  constructor (options: any, config: any, rl: any) {
     super(options, config);
     const bot = this;
     
+    bot?.console?.interface(rl)
     bot.on("init_client", (client: any) => {
       client?.on('packet', (data: any, meta: any) => {
         bot.emit("packet", data, meta);

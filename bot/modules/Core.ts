@@ -1,6 +1,6 @@
 // i may or may not have used v4's command core for a base here
 
-export class core {
+export default class Core {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
@@ -32,6 +32,10 @@ export class core {
         bot.core.refill()
       },
 
+      commandBlockCoords: [],
+
+      needsFilling: false,
+      
       currentBlock () {
         const relativePosition = bot.core.currentBlockRelative
         const corePosition = bot.core.position

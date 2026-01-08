@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export async function loadCommands (bot: any, config: any) {
+export async function LoadCommands (bot: any, config: any) {
   const foldersPath = path.join(__dirname, "../commands");
   const commandFolders = fs.readdirSync(foldersPath);
   for (const folder of commandFolders) {
@@ -17,19 +17,6 @@ export async function loadCommands (bot: any, config: any) {
           const command = new commands.default();
           bot.commandManager.register(command, filename, folderName);
           bot.commandManager.list.push(command);
-          //console.log(command)
-          //console.log(new commands.default())
-          //const command = new commands.default();
-          //console.log(command)
-       //   bot.commandManager.register(command, filename, folderName);
-//          console.log(command.default)
-         // console.log(path.basename(path.dirname(filePath)));
-//          console.log(path.dirname(commandFolders))
-        //  console.log(path.dirname(filename).split(filePath))
-         // console.log(path.dirname(filename))
-//          console.log(filename);
-      // path.dirname(filename).split(path.sep).pop()
-//          console.log(commandsPath)
         }
       } catch (error) {
         console.error("Failed to load command", filename, ":", error);

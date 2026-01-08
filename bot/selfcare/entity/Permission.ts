@@ -1,4 +1,4 @@
-export default function permission (bot: any, config: any) {
+export default function Permission (bot: any, config: any) {
   bot.on("packet.entity_status", (packet: any) => {
     if (
       packet.entityId !== bot.entityId

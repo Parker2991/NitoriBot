@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path"
 import readline from 'readline';
-import { createBot } from "./bot";
-import { parseToml } from './util/parseToml';
-import version from './resources/version.json';
+import { Bot } from "./Bot";
+import { ParseToml } from './util/ParseToml';
+import version from './resources/Version.json';
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -18,12 +18,12 @@ if (process.argv[2] === "--debug"?.toLowerCase()) {
 if (debugEnabled) console.log(`Starting FNFBoyfriendBot ${version.codename} ${version.version} Build: ${version.build}`)
 else console.log('Starting FNFBoyfriendBot....');
 
-const config = parseToml('./config.toml');
+const config = ParseToml('./config.toml');
 const bots = [];
 
 for (const options of config.bots) {
-  let bot = new createBot(options, config);
+  let bot = new Bot(options, config, rl);
   bots.push(bot);
   bot.bots = bots;
-  bot.console.interface(rl)
+//  bot?.console?.interface(rl)
 }

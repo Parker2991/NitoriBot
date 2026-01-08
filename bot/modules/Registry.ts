@@ -1,7 +1,7 @@
 import createRegistry from 'prismarine-registry';
-import language from '../resources/language.json';
+import language from '../resources/Language.json';
 
-export class registry {
+export default class Registry {
   constructor(context: any) {
     const bot = context.bot;
 

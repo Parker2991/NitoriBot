@@ -1,6 +1,6 @@
 // taken from FNFBoyfriendBot v8.0.0
 
-export class tabComplete {
+export default class TabComplete {
   constructor(context: any) {
     const bot = context.bot;
     // let aaa cook

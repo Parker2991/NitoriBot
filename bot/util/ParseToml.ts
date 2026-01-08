@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import toml from 'smol-toml';
-export function parseToml (path: any) {
+export function ParseToml (path: any) {
   try {
     const file = readFileSync(join(path), 'utf8');
     const parse = toml.parse(file)

@@ -1,4 +1,4 @@
-import translations from '../../resources/translations.json';
+import translations from '../../resources/Translations.json';
 
 export default function format (
   bot: any,

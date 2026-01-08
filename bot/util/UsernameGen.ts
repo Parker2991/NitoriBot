@@ -1,4 +1,4 @@
-export function usernameGen() {
+export function UsernameGen() {
   const characters =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   let username = "";

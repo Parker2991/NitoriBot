@@ -1,7 +1,7 @@
 import v8 from 'v8';
 const { heap_size_limit } = v8.getHeapStatistics();
 
-export class memUsage {
+export default class MemUsage {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;

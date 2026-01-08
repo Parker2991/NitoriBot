@@ -1,6 +1,6 @@
-import translations from '../resources/translations.json';
+import translations from '../resources/Translations.json';
 import format from '../data/console/format';
-export class Console {
+export default class Console {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;

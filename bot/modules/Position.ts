@@ -1,4 +1,4 @@
-export class position {
+export default class Position {
   constructor (context: any) {
     const bot = context.bot;
     

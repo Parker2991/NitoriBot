@@ -1,6 +1,6 @@
 import { CommandSource } from '../command/CommandSource';
 
-export class commandHandler {
+export default class CommandHandler {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;

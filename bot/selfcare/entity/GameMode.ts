@@ -1,4 +1,4 @@
-export default function gamemode (bot: any, config: any) {
+export default function GameMode (bot: any, config: any) {
   bot.on('packet.game_state_change', (packet: any) => {
     if (packet.reason === "change_game_mode") {
       bot.selfcare.gamemode = packet.gameMode

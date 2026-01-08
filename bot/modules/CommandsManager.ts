@@ -1,7 +1,7 @@
-import { loadCommands } from '../util/loadCommands';
+import { LoadCommands } from '../util/LoadCommands';
 import { CommandError } from '../command/CommandError';
 
-export class commandManager {
+export default class commandManager {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
@@ -78,6 +78,6 @@ export class commandManager {
       },
     }
 
-    loadCommands(bot, config);
+    LoadCommands(bot, config);
   }
 }

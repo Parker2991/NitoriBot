@@ -1,7 +1,7 @@
-import convertNbtComponentToJson from "../util/convertNbtComponentToJson";
+import convertNbtComponentToJson from "../util/ConvertNbtComponentToJson";
 import loadPrismarineChat from 'prismarine-chat';
-import kaboom from '../chatParsers/kaboom';
-import chipmunkmod from '../chatParsers/chipmunkmod';
+import kaboom from '../chatParsers/Kaboom';
+import chipmunkmod from '../chatParsers/ChipmunkMod';
 
 // taken from FNFBoyfriendBot v8.0.0
 
@@ -26,7 +26,7 @@ function parseChatType (chatTypes: any, type: any, sender: any, target: any, mes
   return json
 }
 
-export class chat {
+export default class Chat {
   constructor (context: any) {
     const bot = context.bot;
     const config = context.config;
