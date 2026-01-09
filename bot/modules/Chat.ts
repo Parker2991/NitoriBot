@@ -67,8 +67,6 @@ export default class Chat {
         message: parsed
       })
 
-      if (bot.debugEnabled) bot.emit("disguised", parsed);
-
       parseMessage(parsed, { senderName: sender, players: bot.players, getMessageAsPrismarine: bot.getMessageAsPrismarine, chatType: "minecraft:diguised_chat" })
     });
 
@@ -87,7 +85,6 @@ export default class Chat {
         chatType: "minecraft:player_chat"
       });
 
-      if (bot.debugEnabled) bot.emit("player", unsigned)
     });
 
     bot.on("packet.system_chat", (packet: any) => {
@@ -108,8 +105,6 @@ export default class Chat {
         type: "minecraft:system_chat",
         message: message
       });
-
-     // if (bot.debugEnabled) bot.emit("system", message)
 
       parseMessage(message, {
         players: bot.players,
