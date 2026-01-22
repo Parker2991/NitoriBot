@@ -1,5 +1,7 @@
 {
+  "exclude": ["./build", "config.js", "./convertYaodesHardcode.js", "./bot.old"],
   "compilerOptions": {
+    "useUnknownInCatchVariables": false,
     "rootDir": "./bot",
     "outDir": "./build",
     "module": "commonjs",
@@ -21,5 +23,4 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": false,
   },
-  "exclude": ["./build", "./memoryTest.js"]
 }

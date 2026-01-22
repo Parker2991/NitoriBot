@@ -5,7 +5,7 @@ node_modules
 build
 
 # ignore config
-config.toml
+config.js
 
 # ignore .git folder
 .git
@@ -15,3 +15,5 @@ debug-bridge/.gradle
 
 # ignore the build folder in the debug bridge
 debug-bridge/build
+
+bot.old
