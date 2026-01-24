@@ -1,8 +1,8 @@
 # ignore node_modules
 node_modules
 
-# ignore build folder
-build
+# ignore js build folder
+jsBuild
 
 # ignore config
 config.js
@@ -10,10 +10,10 @@ config.js
 # ignore .git folder
 .git
 
-# ignore the .gradle folder in the debug bridge
-debug-bridge/.gradle
+old
 
-# ignore the build folder in the debug bridge
-debug-bridge/build
+# Ignore Gradle project-specific cache directory
+.gradle
 
-bot.old
+# ignore the gradle build folder
+gradleBuild

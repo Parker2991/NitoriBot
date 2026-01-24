@@ -1,9 +1,9 @@
 {
-  "exclude": ["./build", "config.js", "./convertYaodesHardcode.js", "./bot.old"],
+  "exclude": ["./build", "./config.js", "./convertYaodesHardcode.js", "./old", "./jsBuild"],
   "compilerOptions": {
     "useUnknownInCatchVariables": false,
     "rootDir": "./bot",
-    "outDir": "./build",
+    "outDir": "./jsBuild",
     "module": "commonjs",
     "allowJs": true,
     "target": "es2022",
@@ -22,5 +22,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strictPropertyInitialization": false,
+    "allowSyntheticDefaultImports": true
   },
 }
