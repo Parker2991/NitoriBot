@@ -16,7 +16,7 @@ as of version Night of Nights build 5010 the bot will use the following
 - Htop (keeping it on 24/7)
 - Dtach (killing the process every 24 hours)
 
-hense inexperienced users should not run the bot or even compile it.
+hence inexperienced users should not run the bot or even compile it.
 
 In the future i plan on using gradle to my advantage for compiling the bot, installing packages, and running the bot.
 
