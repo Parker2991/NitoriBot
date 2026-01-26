@@ -13,7 +13,7 @@ as of version Night of Nights build 5010 the bot will use the following
 - NPM (for installing packages)
 - NodeJS (running the compiled build)
 - Bash (running the frame work)
-- Htop (keeping it on 24/7)
+- Tmux (keeping it on 24/7)
 - Dtach (killing the process every 24 hours)
 
 hence inexperienced users should not run the bot or even compile it.
