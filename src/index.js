@@ -36,7 +36,7 @@ try {
 }
 
 const webhook = new WebhookClient({ id: config.bots.testbot.id, token: config.bots.testbot.token });
-webhook.send({ content: "amogus" });
+//webhook.send({ content: "amogus" });
 
 let bot = require('./bot.js')({ config });
 

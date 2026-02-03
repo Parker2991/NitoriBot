@@ -9,7 +9,7 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
-
+    
     let entityId;
     let permission = 2;
     let gameMode;

@@ -9,7 +9,9 @@ module.exports = {
     const bot = context.bot;
 
     bot.on('message', (message) => {
-      bot.console.log(message)
+      try {
+        bot.console.log(message)
+      } catch {}
     })
   }
 }

@@ -11,6 +11,8 @@ module.exports = {
   inject (context) {
     const bot = context.bot;
     const config = context.config;
+    const Item = require("prismarine-item")(bot.server.version);
+
     bot.core = {
       area: {
         start: config.core?.area.start ?? { x: 0, y: 0, z: 0 },
@@ -41,20 +43,17 @@ module.exports = {
 
         if (!pos) return;
 
-        const command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} repeating_command_block{CustomName:'${JSON.stringify(config.core.name)}'} destroy`
+        const command = `minecraft:fill ${pos.x + start.x} ${pos.y + start.y} ${pos.z + start.z} ${pos.x + end.x} ${pos.y + end.y} ${pos.z + end.z} command_block{CustomName:${JSON.stringify(config.core.name)}}`
 
         bot._client.write('set_creative_slot', {
-          slot: 36,
-          item: {
-            present: true,
-            itemId: mcData.itemsByName.repeating_command_block.id,
-            itemCount: 1,
-            nbtData: nbt.comp({
-              BlockEntityTag: nbt.comp({
-                CustomName: nbt.string(JSON.stringify(config.core.itemName))
-              })
-            })
-          }
+            slot: 36,
+            item: Item.toNotch(
+              new Item(
+                bot.registry.itemsByName.repeating_command_block.id,
+                1,
+                0,
+              ),
+            ),
         });
 
         bot._client.write('block_dig', {

@@ -27,7 +27,7 @@ module.exports = {
       case "chomens":
         const time = Math.floor(Date.now() / 5_000)
 
-        const value = bot.uuid + args[1] + time + config.bots.chomens.key
+        const value = bot.uuid + args.slice(1).join(' ') + time + config.bots.chomens.key
 
         hash = crypto.createHash('sha256').update(value).digest('hex').substring(0, 16)
         if (bot.customChat.enabled) {
@@ -53,14 +53,15 @@ module.exports = {
         }
       break;
       case "sbot":
-        const md = crypto.createHash('MD5');
-        const command = args.slice(1).join(' ');
-        const timee = Math.floor(+new Date() / 20000);
-        const raw = config.bots.sbot.prefix+`${command.replace(/&[0-9a-fklmnor]/g, '')};${bot.server.username};${timee};${config.bots.sbot.key}`;
-        md.update(raw);
-        hash = md.digest();
-        const big_int = hash.slice(0, 4).readUInt32BE();
-        bot.chat(`${config.bots.sbot.prefix}${command} ${big_int.toString(36)}`);
+
+    const md = crypto.createHash("md5");
+    const command = args.slice(1).join(' ');
+    const time1 = Math.floor(+new Date() / 20000);
+    const raw = ":"+`${command.replace(/&[0-9a-fklmnor]/g, '')};${bot.server.username};${time1};${config.bots.key}`;
+    md.update(raw);
+    const hash = md.digest();
+    const big_int = hash.slice(0, 4).readUInt32BE();
+      bot.chat(`${config.bots.sbot.prefix}${command} ${big_int.toString(36)}`);
 
       break;
       case "testbot":
