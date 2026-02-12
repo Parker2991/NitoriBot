@@ -1,12 +1,21 @@
 {
-  "exclude": ["./build", "./config.js", "./convertYaodesHardcode.js", "./old", "./jsBuild"],
+  "exclude": [
+    "./build",
+    "./config.js",
+    "./old",
+    "./jsBuild",
+    "./SkiBot",
+    "./extrasRecieving.js",
+    "./Recieving.ts",
+    "./testing/*"
+  ],
   "compilerOptions": {
     "useUnknownInCatchVariables": false,
-    "rootDir": "./bot",
+    "rootDir": "./src",
     "outDir": "./jsBuild",
     "module": "commonjs",
     "allowJs": true,
-    "target": "es2022",
+    "target": "es6",
     "types": ["node"],
     "sourceMap": false,
     "declaration": false,

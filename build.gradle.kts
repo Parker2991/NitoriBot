@@ -16,10 +16,9 @@ repositories {
 
 dependencies {
   implementation("io.github.zucchero-sintattico.typescript-gradle-plugin:io.github.zucchero-sintattico.typescript-gradle-plugin.gradle.plugin:4.5.7")
-  implementation("net.lenni0451.mcstructs:all:3.2.1")
 }
 
 typescript {
   tsConfig = "tsconfig.json"
-  outputDir = "./jsBuild"
+  outputDir = "./jsBuild/"
 }

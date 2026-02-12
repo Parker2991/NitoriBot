@@ -10,10 +10,12 @@
     "prismarine-world": "^3.6.3",
     "smol-toml": "^1.5.2",
     "socket.io-client": "^4.8.1",
+    "ts-mixer": "^6.0.4",
     "undici": "^7.18.2",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
-    "@types/node": "^24.10.9"
+    "@types/node": "^24.10.9",
+    "irc-framework": "^4.14.0"
   }
 }

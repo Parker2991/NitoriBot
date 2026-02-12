@@ -1,8 +1,9 @@
 # ignore node_modules
 node_modules
 
-# ignore js build folder
+# ignore build folders
 jsBuild
+build
 
 # ignore config
 config.js
@@ -17,3 +18,6 @@ old
 
 # ignore the gradle build folder
 gradleBuild
+
+# ignore the testing folder
+testing

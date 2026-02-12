@@ -8,11 +8,11 @@ const BOOLEAN_TYPES = [
   "strikethrough",
   "obfuscated",
 ];
-function convertNbtComponentToJson(key, tag) {
+export = function convertNbtComponentToJson(key: any, tag: any): any {
   if (!tag) {
     return null;
   } else if (tag.type === "compound") {
-    const object = {};
+    const object: any = {};
 
     for (const key of Object.keys(tag.value)) {
       object[key === "" ? "text" : key] = convertNbtComponentToJson(
@@ -62,4 +62,3 @@ function convertNbtComponentToJson(key, tag) {
     return { text: "" };
   }
 }
-module.exports = convertNbtComponentToJson;
