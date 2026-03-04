@@ -1,23 +1,11 @@
-# ignore node_modules
-node_modules
-
-# ignore build folders
-jsBuild
-build
-
-# ignore config
-config.js
-
-# ignore .git folder
-.git
-
-old
-
 # Ignore Gradle project-specific cache directory
 .gradle
 
-# ignore the gradle build folder
-gradleBuild
+# Ignore Gradle build output directory
+build
 
-# ignore the testing folder
-testing
+# Ignore Kotlin plugin data
+.kotlin
+
+# Ignore the bin folder vscode keeps creating
+bin
