@@ -9,3 +9,6 @@ build
 
 # Ignore the bin folder vscode keeps creating
 bin
+
+# Ignore the config
+config.yaml

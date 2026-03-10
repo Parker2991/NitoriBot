@@ -1,0 +1,4 @@
+bots:
+  - host: "localhost"
+    port: 25565
+    username: "meow"

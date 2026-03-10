@@ -31,6 +31,7 @@ kotlin {
     implementation("org.tinylog:tinylog-api-kotlin:2.7.0")
     implementation("org.tinylog:tinylog-impl:2.7.0")
     implementation("org.slf4j:slf4j-api:2.0.12")
+    implementation("org.yaml:snakeyaml:2.2")
   }
 }
 
