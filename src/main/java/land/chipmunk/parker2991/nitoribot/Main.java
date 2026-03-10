@@ -1,5 +1,5 @@
 // Thanks Blackilykat and OptmisticDev and PthePro777 helping me with the client creation
-package land.chipmunk.parker2991.fnfboyfriendbot;
+package land.chipmunk.parker2991.nitoribot;
 
 import org.yaml.snakeyaml.Yaml;
 

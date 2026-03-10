@@ -1,6 +1,6 @@
 version = "v9.0.0"
-group = "fnfboyfriendbot"
-description = "FNFBoyfriendBot"
+group = "nitoribot"
+description = "NitoriBot"
 plugins {// id 'com.gradleup.shadow' version '9.2.2'
   id("com.gradleup.shadow") version "9.2.2"
   kotlin("jvm") version "2.3.10"
@@ -36,5 +36,5 @@ kotlin {
 }
 
 application {
-  mainClass.set("land.chipmunk.parker2991.fnfboyfriendbot.Main")
+  mainClass.set("land.chipmunk.parker2991.nitoribot.Main")
 }

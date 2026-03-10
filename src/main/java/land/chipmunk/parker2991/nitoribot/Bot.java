@@ -1,4 +1,4 @@
-package land.chipmunk.parker2991.fnfboyfriendbot;
+package land.chipmunk.parker2991.nitoribot;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
