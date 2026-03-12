@@ -8,6 +8,8 @@ import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 public class Bot extends SessionAdapter {
   public ClientNetworkSession session;
 
+  //public final Config.bots options;
+
   public String host = "opt.chipmunk.land";
 
   public int port = 25565;
@@ -16,29 +18,24 @@ public class Bot extends SessionAdapter {
   
   public final Object obj = new Object();
 
-  public void Bot () {
-    System.out.println("meow");
-    final MinecraftProtocol protocol = new MinecraftProtocol(this.username);
+  public Bot (Config.Options options, Config config) {
+    System.out.println(options);
+
+    final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
     session = ClientNetworkSessionFactory.factory()
       .setAddress(
-         this.host,
-         this.port
+         options.host,
+         options.port
       )
       .setProtocol(protocol)
       .create();
-    session.addListener(this);
-    session.connect();
-    try {
-      synchronized(obj) {
-        obj.wait();
-      };
-    } catch (final InterruptedException ignored) {
-
-    }
+      session.addListener(this);
+      this.connect();
   };
 
   public void connect () {
+    session.connect();
     try {
       synchronized(obj) {
         obj.wait();

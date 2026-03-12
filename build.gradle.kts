@@ -28,10 +28,14 @@ repositories {
 kotlin {
   dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.11-SNAPSHOT")
-    implementation("org.tinylog:tinylog-api-kotlin:2.7.0")
+    implementation("org.slf4j:slf4j-api:2.0.13")
+    implementation("org.tinylog:slf4j-tinylog:2.7.0")
     implementation("org.tinylog:tinylog-impl:2.7.0")
-    implementation("org.slf4j:slf4j-api:2.0.12")
     implementation("org.yaml:snakeyaml:2.2")
+    implementation("net.kyori:adventure-text-serializer-ansi:4.26.1")
+    implementation("net.kyori:adventure-text-serializer-plain:4.26.1")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
+    implementation("net.kyori:adventure-text-serializer-gson:4.26.1")
   }
 }
 
