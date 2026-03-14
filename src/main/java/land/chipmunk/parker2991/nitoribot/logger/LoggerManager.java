@@ -43,30 +43,30 @@ public class LoggerManager {
       Component.translatable(message).color(NamedTextColor.WHITE)
     ).color(NamedTextColor.DARK_GRAY);
 
-    return ComponentUtil.stringifyAnsi(component);
+    return ComponentUtil.componentToAnsi(component);
   };
 
   public static void LOG (String host, String message) {
     Component type = Component.text("log").color(NamedTextColor.GOLD);
 
-    logger.atInfo().log(prefix(type, host, message));
+    System.out.println(prefix(type, host, message));
   };
 
   public static void INFO (String host, String message) {
     Component type = Component.text("info").color(NamedTextColor.GREEN);
 
-    logger.atInfo().log(prefix(type, host, message));
+    System.out.println(prefix(type, host, message));
   };
 
   public static void COMMAND (String host, String message) {
     Component type = Component.text("command").color(NamedTextColor.YELLOW);
 
-    logger.atInfo().log(prefix(type, host, message));
+    System.out.println(prefix(type, host, message));
   };
 
   public static void WARN (String host, String message) {
     Component type = Component.text("warn").color(NamedTextColor.YELLOW);
-    logger.atInfo().log(prefix(type, host, message));
+    System.out.println(prefix(type, host, message));
   };
 
   public static void ERROR (String host, String message) {

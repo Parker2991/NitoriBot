@@ -1,12 +1,10 @@
 package land.chipmunk.parker2991.nitoribot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Config {
-  //public List Bots = new ArrayList<>();
   
   public Options[] bots = new Options[]{};
+
+  //public ArrayList Bots = new ArrayList<>();
 
   public static class Options {
     public String host;
@@ -14,4 +12,3 @@ public class Config {
     public String username;
   };
 }
-//Configuration.BotOption[] botsOptions = config.bots;

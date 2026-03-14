@@ -1,322 +1,222 @@
 package land.chipmunk.parker2991.nitoribot.util;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.object.PlayerHeadObjectContents;
+import net.kyori.adventure.text.object.SpriteObjectContents;
+import net.kyori.adventure.text.serializer.ComponentEncoder;
+import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.ansi.ColorLevel;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-// credits to chayapak, i ported this from a source of chomens java have because i do not want to write a ansi parser
+// credits to Werkku for letting me use this
 
-// totallynotskidded™ from chipmunkbot and added colors (ignore the ohio code please,..,.)
-public class ComponentUtil {
-    // is this the best way to check?
-    public static boolean isEqual (Component component1, Component component2) {
-        return component1.toString().equals(component2.toString());
-    }
+public final class ComponentUtil {
 
-    // component parsing
-    public static final Map<String, String> language = loadJsonStringMap("language.json");
-    private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
+    private static final Map<String, String> LANGUAGE = loadJsonStringMap("language.json");
+    private static final Map<String, String> KEYBINDINGS = loadJsonStringMap("keybinds.json");
 
-    public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
+    private static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
 
-    public static final Map<String, String> ansiMap = new HashMap<>();
-    static {
-        // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
-        ansiMap.put("0", "\u001b[30m");
-        ansiMap.put("1", "\u001b[34m");
-        ansiMap.put("2", "\u001b[32m");
-        ansiMap.put("3", "\u001b[36m");
-        ansiMap.put("4", "\u001b[31m");
-        ansiMap.put("5", "\u001b[35m");
-        ansiMap.put("6", "\u001b[33m");
-        ansiMap.put("7", "\u001b[37m");
-        ansiMap.put("8", "\u001b[90m");
-        ansiMap.put("9", "\u001b[94m");
-        ansiMap.put("a", "\u001b[92m");
-        ansiMap.put("b", "\u001b[96m");
-        ansiMap.put("c", "\u001b[91m");
-        ansiMap.put("d", "\u001b[95m");
-        ansiMap.put("e", "\u001b[93m");
-        ansiMap.put("f", "\u001b[97m");
-        ansiMap.put("l", "\u001b[1m");
-        ansiMap.put("o", "\u001b[3m");
-        ansiMap.put("n", "\u001b[4m");
-        ansiMap.put("m", "\u001b[9m");
-        ansiMap.put("k", "\u001b[6m");
-        ansiMap.put("r", "\u001b[0m");
-    }
+    private static final ThreadLocal<Integer> TOTAL_DEPTH = ThreadLocal.withInitial(() -> 0); //used to track the depth of translate components
 
-    public record PartiallyStringified(
-        String output,
-        String lastColor
-    ) {}
+    private static final int MAX_DEPTH = 512; //translate depth limit
 
-    private ComponentUtil () {
-    }
-
-    private static Map<String, String> loadJsonStringMap (String name) {
+    private static Map<String, String> loadJsonStringMap(String name) {
         Map<String, String> map = new HashMap<>();
 
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        var is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        if (is == null) throw new IllegalArgumentException("File not found: " + name);
+        var reader = new BufferedReader(new InputStreamReader(is));
+        var json = JsonParser.parseReader(reader).getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            map.put(entry.getKey(), json.get(entry.getKey()).getAsString());
+            map.put(entry.getKey(), entry.getValue().getAsString());
         }
 
         return map;
     }
 
-    private static String getOrReturnFallback (TranslatableComponent component) {
-        final String key = component.key();
+    private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder() // 1.21.5+ gson serializer
+            .build();
 
-        final String minecraftKey = language.get(key);
-        if (minecraftKey != null) return minecraftKey;
-        else return component.fallback() != null ? component.fallback() : key;
+    private static final ANSIComponentSerializer ANSI_COMPONENT_SERIALIZER = ANSIComponentSerializer.builder()
+            .flattener(getFlattener(true))
+            .colorLevel(ColorLevel.TRUE_COLOR)
+            .build();
+
+    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.builder()
+            .flattener(getFlattener(false))
+            .build();
+
+    private static ComponentFlattener getFlattener(boolean parseSectionSigns) {
+        return ComponentFlattener.builder()
+                .mapper(TextComponent.class, component -> mapText(
+                        component, parseSectionSigns
+                ))
+                .mapper(ObjectComponent.class, ComponentUtil::mapObject)
+                .complexMapper(KeybindComponent.class, ComponentUtil::mapKeybind)
+                .mapper(SelectorComponent.class, SelectorComponent::pattern)
+                .complexMapper(TranslatableComponent.class, ComponentUtil::mapTranslatable)
+                .unknownMapper(_ -> "")
+                .nestingLimit(MAX_DEPTH) //max depth for nested mapper calls
+                .build();
     }
 
-    public static String stringify (Component message) { return stringify(message, null); }
-    private static String stringify (Component message, String lastColor) {
+
+    private static String getOrReturnFallback(TranslatableComponent component) {
+        var key = component.key();
+        var fallback = component.fallback();
+
+        return LANGUAGE.getOrDefault(
+                key,
+                fallback == null ? key : fallback
+        );
+    }
+
+    private static String guardedStringify(ComponentEncoder<Component, String> serializer, Component message) {
         try {
-            final StringBuilder builder = new StringBuilder();
-
-            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor, false);
-
-            builder.append(output.output);
-
-            for (Component child : message.children()) builder.append(stringify(child, output.lastColor));
-
-            return builder.toString();
+            return serializer.serialize(message);
         } catch (Exception e) {
-            return "";
+            return serializer.serialize(Component.translatable(
+                    "<Failed to parse component: %s>",
+                    NamedTextColor.RED,
+                    Component.text(e.toString())));
+        } finally {
+            TOTAL_DEPTH.set(0); //set translate depth to 0 after component is parsed
         }
     }
 
-    public static String stringifyMotd (Component message) { return stringifyMotd(message, null); }
-    private static String stringifyMotd (Component message, String lastColor) {
-        try {
-            final StringBuilder builder = new StringBuilder();
+    /**
+     * Convert Component to a JSON string
+     */
+    public static String componentToJSON(Component component) {
+        return GSON_COMPONENT_SERIALIZER.serialize(component);
+    }
 
-            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor, false);
+    /**
+     * Convert JSON string to a Component
+     */
+    public static Component componentFromJSON(String json) {
+        return GSON_COMPONENT_SERIALIZER.deserialize(json);
+    }
 
-            builder.append(output.output);
+    /**
+     * Convert Component to a string
+     */
+    public static String componentToString(Component component) {
+        return guardedStringify(PLAIN_TEXT_COMPONENT_SERIALIZER, component);
+    }
 
-            for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor));
+    /**
+     * Convert Component to an ANSI string
+     */
+    public static String componentToAnsi(Component component) {
+        return guardedStringify(ANSI_COMPONENT_SERIALIZER, component);
+    }
 
-            return builder.toString();
-        } catch (Exception e) {
-            return "";
+    private static String mapObject(ObjectComponent objectComponent) {
+        var content = objectComponent.contents();
+        return switch (content) {
+            case SpriteObjectContents c -> "<Sprite:" + c.sprite() + ">";
+            case PlayerHeadObjectContents c ->
+                    "<PlayerHead:" + componentToString(Component.translatable("block.minecraft.player_head.named").arguments(Component.text((c.name() != null) ? c.name() : "Unknown"))) + ">";
+            default -> "<Unknown Sprite>";
+        };
+    }
+
+    private static String mapText(TextComponent component, boolean parseSectionSigns) {
+        var content = component.content();
+
+        //if no section sign is found, return the original content
+        if (!parseSectionSigns || !content.contains("§")) {
+            return component.content();
+        } else {
+            //TODO: make it parse section signs properly
+            return component.content();
         }
     }
 
-    public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null, false); }
-    public static String stringifyAnsi (Component message, boolean noHex) { return stringifyAnsi(message, null, noHex); }
-    private static String stringifyAnsi (Component message, String lastColor, boolean noHex) {
+    private static void mapKeybind(KeybindComponent component, Consumer<Component> consumer) {
+        consumer.accept(Component.translatable(KEYBINDINGS.getOrDefault(component.keybind(), component.keybind())));
+    }
+
+    private static void mapTranslatable(TranslatableComponent component, Consumer<Component> consumer) {
+        var format = getOrReturnFallback(component);
+        var matcher = ARG_PATTERN.matcher(format);
+        List<Component> result = new ArrayList<>();
+
         try {
-            final StringBuilder builder = new StringBuilder();
+            var i = 0;
+            var lastIndex = 0;
 
-            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor, noHex);
+            while (matcher.find(lastIndex)) {
+                var start = matcher.start();
+                var end = matcher.end();
 
-            builder.append(output.output);
-
-            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor, noHex));
-
-            return builder.toString();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor, noHex);
-
-        return new PartiallyStringified("", null);
-    }
-
-    public static String getStyle (Style textStyle, boolean motd) {
-        if (textStyle == null) return null;
-
-        StringBuilder style = new StringBuilder();
-
-        for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : textStyle.decorations().entrySet()) {
-            final TextDecoration decoration = decorationEntry.getKey();
-            final TextDecoration.State state = decorationEntry.getValue();
-
-            if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
-
-            if (!motd) {
-                switch (decoration) {
-                    case BOLD -> style.append(ansiMap.get("l"));
-                    case ITALIC -> style.append(ansiMap.get("o"));
-                    case OBFUSCATED -> style.append(ansiMap.get("k"));
-                    case UNDERLINED -> style.append(ansiMap.get("n"));
-                    case STRIKETHROUGH -> style.append(ansiMap.get("m"));
+                //add text before the match
+                if (start > lastIndex) {
+                    var formatSegment = format.substring(lastIndex, start);
+                    //ensure that theres no % in the formatSegment (if there is, we have a problem with escaping)
+                    if (formatSegment.indexOf('%') != -1) throw new IllegalArgumentException();
+                    result.add(Component.text(formatSegment));
                 }
-            } else {
-                switch (decoration) {
-                    case BOLD -> style.append("§l");
-                    case ITALIC -> style.append("§o");
-                    case OBFUSCATED -> style.append("§k");
-                    case UNDERLINED -> style.append("§n");
-                    case STRIKETHROUGH -> style.append("§m");
-                }
-            }
-        }
 
-        return style.toString();
-    }
+                var full = format.substring(start, end);
 
-    public static String getColor (TextColor color, boolean motd, boolean ansi, boolean noHex) {
-        if (color == null) return null;
+                //handle the escaped percentage sign '%%'
+                if (full.equals("%%")) {
+                    result.add(Component.text("%"));
+                } else if (Objects.equals(matcher.group(2), "s")) {
+                    //handle placeholders like %s
+                    var idxStr = matcher.group(1);
+                    var idx = (idxStr == null) ? i++ : (Integer.parseInt(idxStr) - 1);
 
-        // map totallynotskidded™ too from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
-        String code;
-        if (color == NamedTextColor.BLACK) code = "0";
-        else if (color == NamedTextColor.DARK_BLUE) code = "1";
-        else if (color == NamedTextColor.DARK_GREEN) code = "2";
-        else if (color == NamedTextColor.DARK_AQUA) code = "3";
-        else if (color == NamedTextColor.DARK_RED) code = "4";
-        else if (color == NamedTextColor.DARK_PURPLE) code = "5";
-        else if (color == NamedTextColor.GOLD) code = "6";
-        else if (color == NamedTextColor.GRAY) code = "7";
-        else if (color == NamedTextColor.DARK_GRAY) code = "8";
-        else if (color == NamedTextColor.BLUE) code = "9";
-        else if (color == NamedTextColor.GREEN) code = "a";
-        else if (color == NamedTextColor.AQUA) code = "b";
-        else if (color == NamedTextColor.RED) code = "c";
-        else if (color == NamedTextColor.LIGHT_PURPLE) code = "d";
-        else if (color == NamedTextColor.YELLOW) code = "e";
-        else if (color == NamedTextColor.WHITE) code = "f";
-        else {
-            try {
-                code = color.asHexString();
-            } catch (NullPointerException e) {
-                code = ""; // mabe...,,.,..,
-            }
-        }
+                    if (idx < 0 || idx > component.arguments().size()) throw new IllegalArgumentException();
 
-        if (motd) {
-            return "§" + code;
-        } else if (ansi) {
-            String ansiCode = ansiMap.get(code);
-            if (ansiCode == null) {
-                if (noHex) {
-                    final int rgb = Integer.parseInt(code.substring(1), 16);
+                    var currentTotalDepth = TOTAL_DEPTH.get();
+                    if (currentTotalDepth > MAX_DEPTH) {
+                        //TODO: make this better
+                        //consumer.accept(Component.text("**Translate Crash**").color(NamedTextColor.DARK_RED))
+                        //return
+                        throw new IllegalArgumentException("Translate too deep");
+                    }
+                    TOTAL_DEPTH.set(currentTotalDepth + 1);
 
-                    final String chatColor = ColorUtil.getClosestChatColor(rgb);
-
-                    ansiCode = ansiMap.get(chatColor);
+                    result.add(component.arguments().get(idx).asComponent());
                 } else {
-                    ansiCode = "\u001b[38;2;" +
-                            color.red() +
-                            ";" +
-                            color.green() +
-                            ";" +
-                            color.blue() +
-                            "m";
+                    //if there are other invalid patterns throw an exception
+                    throw new IllegalArgumentException("Unsupported placeholder format: $full");
                 }
+
+                lastIndex = end;
             }
 
-            return ansiCode;
-        } else return null;
-    }
-
-    public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        if ((motd || ansi) && /* don't color big messages -> */ message.content().length() < 25_000) {
-            final String color = getColor(message.color(), motd, ansi, noHex);
-            final String style = getStyle(message.style(), motd);
-
-            String replacedContent = message.content();
-            // seems very mabe mabe
-            if (ansi && replacedContent.contains("§")) {
-                // is try-catch a great idea?
-                try {
-                    replacedContent = Pattern
-                            .compile("(§.)")
-                            .matcher(message.content())
-                            .replaceAll(m -> ansiMap.get(m.group(0).substring(1)));
-                } catch (Exception ignored) {}
+            //handle any remaining part of the string after the last match
+            if (lastIndex < format.length()) {
+                var remaining = format.substring(lastIndex);
+                if (remaining.indexOf('%') != -1)
+                    throw new IllegalArgumentException(); // Make sure no unescaped '%' remains
+                result.add(Component.text(remaining));
             }
-
-            // messy af
-            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+        } catch (Exception _) {
+            //fallback: clear result and return the original string if any exception occurs
+            result.clear();
+            result.add(Component.text(format));
         }
 
-        return new PartiallyStringified(message.content(), null);
-    }
-
-    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        String format = getOrReturnFallback(message);
-
-        // totallynotskidded™️ from HBot (and changed a bit)
-        Matcher matcher = ARG_PATTERN.matcher(format);
-        StringBuilder sb = new StringBuilder();
-
-        final String style = getStyle(message.style(), motd);
-        final String _color = getColor(message.color(), motd, ansi, noHex);
-        String color;
-        if (_color == null) color = "";
-        else color = _color;
-
-        int i = 0;
-        while (matcher.find()) {
-            if (matcher.group().equals("%%")) {
-                matcher.appendReplacement(sb, "%");
-            } else {
-                String idxStr = matcher.group(1);
-                int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
-                if (idx >= 0 && idx < message.arguments().size()) {
-                    matcher.appendReplacement(
-                            sb,
-                            Matcher.quoteReplacement(
-                                    motd ?
-                                            stringifyMotd(message.arguments().get(idx).asComponent()) + color :
-                                            (
-                                                    ansi ?
-                                                            stringifyAnsi(message.arguments().get(idx).asComponent()) + color :
-                                                            stringify(message.arguments().get(idx).asComponent())
-                                            )
-                            )
-                    );
-                } else {
-                    matcher.appendReplacement(sb, "");
-                }
-            }
-        }
-        matcher.appendTail(sb);
-
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") : ""), _color);
-    }
-
-    public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        final String style = getStyle(message.style(), motd);
-        final String _color = getColor(message.color(), motd, ansi, noHex);
-        String color;
-        if (_color == null) color = "";
-        else color = _color;
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
-    }
-
-    public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        String keybind = message.keybind();
-        Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
-        return stringifyPartially(component, motd, ansi, lastColor, noHex);
+        //join all parts and pass to the consumer
+        consumer.accept(Component.join(JoinConfiguration.noSeparators(), result));
     }
 }
+

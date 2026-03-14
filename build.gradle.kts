@@ -28,6 +28,7 @@ repositories {
 kotlin {
   dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.11-SNAPSHOT")
+    implementation("net.lenni0451:LambdaEvents:2.4.2")
     implementation("org.slf4j:slf4j-api:2.0.13")
     implementation("org.tinylog:slf4j-tinylog:2.7.0")
     implementation("org.tinylog:tinylog-impl:2.7.0")

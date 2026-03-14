@@ -1,26 +1,44 @@
 package land.chipmunk.parker2991.nitoribot;
+
+import land.chipmunk.parker2991.nitoribot.modules.*;
+
+import java.util.List;
+
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
-import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectingEvent;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+
 
 public class Bot extends SessionAdapter {
+//  public final List<Listener> listeners = new ArrayList<>();
+
   public ClientNetworkSession session;
 
-  //public final Config.bots options;
+  public Config config;
 
-  public String host = "opt.chipmunk.land";
+  public Config.Options options;
 
-  public int port = 25565;
+  public List<Bot> bots;
 
-  public String username = "meow";
-  
-  public final Object obj = new Object();
+  public ChatModule chat;
 
-  public Bot (Config.Options options, Config config) {
-    System.out.println(options);
+  public void loadModules () {
+    this.chat = new ChatModule(this);
+  }
 
+  public Bot (Config.Options options, List<Bot> bots, Config config) {
+    this.options = options;
+    this.bots = bots;
+    this.config = config;
+    connect();
+
+  };
+
+  public void connect () {
     final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
     session = ClientNetworkSessionFactory.factory()
@@ -31,21 +49,17 @@ public class Bot extends SessionAdapter {
       .setProtocol(protocol)
       .create();
       session.addListener(this);
-      this.connect();
-  };
-
-  public void connect () {
-    session.connect();
-    try {
-      synchronized(obj) {
-        obj.wait();
-      };
-    } catch (final InterruptedException ignored) {
-
-    }
+    loadModules();
+    session.connect(false);
+    
   }
 
-  public void disconnect (DisconnectedEvent event) {
-    System.out.println(event);
+  @Override
+  public void disconnecting (DisconnectingEvent event) {}
+
+  @Override
+  public void packetReceived(Session session, Packet packet) {
+    session.send(packet);
   }
+
 }
