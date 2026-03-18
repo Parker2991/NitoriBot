@@ -1,8 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.logger.LoggerManager;
-import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +14,12 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 
-import net.lenni0451.lambdaevents.EventHandler;
-import net.lenni0451.lambdaevents.EventManager;
+import net.kyori.adventure.text.Component;
 
 public class ChatModule extends SessionAdapter {
   private Bot bot;
 
-  private SessionAdapter session;
-
-  public void systemChat (ClientboundSystemChatPacket packet) {
-
-  }
-
-  public void diguisedChat (ClientboundDisguisedChatPacket packet) {
-
-  }
+  private final List<Listener> listeners = new ArrayList<>();
 
   @Override
   public void packetReceived (Session session, Packet packet) {
@@ -40,25 +29,44 @@ public class ChatModule extends SessionAdapter {
     else if (packet instanceof ClientboundDisguisedChatPacket) diguisedChat((ClientboundDisguisedChatPacket) packet);
   }
 
-  @EventHandler(events = {EventHandler.class})
-  public void playerChat (ClientboundPlayerChatPacket packet) {
-    EventHandler
-//    System.out.println(ComponentUtil.componentToAnsi(packet.getUnsignedContent()));
-//    String stringify = ComponentUtil.componentToJSON(packet);
-//    System.out.println();
+  public void systemChat (ClientboundSystemChatPacket packet) {
+    final Component message = packet.getContent();
+
+    for (Listener listener : listeners) {
+      final boolean received = listener.systemChatReceived(message);
+    } 
   }
-  //public void packetReceived (ClientboundPlayerChatPacket packet) {
-    //String server = bot.options.host + ':' + bot.options.port;
-    //System.out.println(packet);
- // }
+
+  public void diguisedChat (ClientboundDisguisedChatPacket packet) {
+    Component message = packet.getMessage();
+
+    for (Listener listener : listeners) {
+      final boolean received = listener.disguisedChatReceived(message);
+    }
+  }
+
+  public void playerChat (ClientboundPlayerChatPacket packet) {
+    final Component unsignedContent = packet.getUnsignedContent();
+
+    for (Listener listener : listeners) {
+      final boolean received = listener.playerChatReceived(unsignedContent);
+    }
+  }// session.sendPacket(new ServerboundChatPacket(message, Instant.now().toEpochMilli(), 0, null, 0, new BitSet(), 0));
   
   public ChatModule (Bot bot) {
     this.bot = bot;
     bot.session.addListener(this);
-//    this.packetReceived(null, null);
-    //bot.addListener(this);
-    System.out.println("meow");
-  }
+  };
 
+  public static class Listener {
+    public boolean playerChatReceived (Component message) { return true; };
+
+    public boolean systemChatReceived (Component message) { return true; };
+
+    public boolean disguisedChatReceived (Component message) { return true; };
+  }
   
+  public void addListener (Listener listener) {
+    listeners.add(listener);
+  }
 }

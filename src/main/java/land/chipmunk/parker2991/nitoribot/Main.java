@@ -4,6 +4,8 @@ package land.chipmunk.parker2991.nitoribot;
 import land.chipmunk.parker2991.nitoribot.logger.LoggerManager;
 import land.chipmunk.parker2991.nitoribot.util.ErrorToString;
 
+import net.kyori.adventure.text.Component;
+
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -19,6 +21,8 @@ import java.util.List;
 public class Main {
   public final Object obj = new Object();
 
+  public final Component host = Component.text("Nitori Jar");
+
   public static Config config;
 
   public final List<Bot> Bots = new ArrayList<>();
@@ -29,7 +33,8 @@ public class Main {
     final Yaml yaml = new Yaml(yamlConfig);
     final Path configPath = Path.of("config.yaml");
     if (!Files.exists(configPath)) {
-      LoggerManager.INFO("Nitori Jar", "config not found making config now");
+      
+      LoggerManager.INFO(host, "config not found making config now");
 
       InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");//.getResource("default_config.yaml");//.getResource("default_config.yaml");
       Files.copy(defaultConfig, Paths.get("config.yaml"));
@@ -55,7 +60,7 @@ public class Main {
       };
     } catch (Exception e) {
       String Error = ErrorToString.ErrorToString(e);
-      LoggerManager.ERROR("NitoriBot Jar", Error);
+      LoggerManager.ERROR(host, Error);
     }
   };
 }

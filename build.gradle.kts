@@ -25,6 +25,7 @@ repositories {
 
   maven("https://maven.maxhenkel.de/repository/public/")
 }
+
 kotlin {
   dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.11-SNAPSHOT")
@@ -37,6 +38,8 @@ kotlin {
     implementation("net.kyori:adventure-text-serializer-plain:4.26.1")
     implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
     implementation("net.kyori:adventure-text-serializer-gson:4.26.1")
+    implementation("net.lenni0451:Reflect:1.6.2")
+    implementation("org.ow2.asm:asm:9.9.1")
   }
 }
 

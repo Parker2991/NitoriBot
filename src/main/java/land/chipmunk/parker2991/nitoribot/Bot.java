@@ -2,6 +2,7 @@ package land.chipmunk.parker2991.nitoribot;
 
 import land.chipmunk.parker2991.nitoribot.modules.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
@@ -13,8 +14,10 @@ import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 
 
+// credits to chayapak for the listeners from chomens
+
 public class Bot extends SessionAdapter {
-//  public final List<Listener> listeners = new ArrayList<>();
+  private final List<SessionAdapter> listeners = new ArrayList<>();
 
   public ClientNetworkSession session;
 
@@ -26,8 +29,11 @@ public class Bot extends SessionAdapter {
 
   public ChatModule chat;
 
+  public ConsoleModule console;
+
   public void loadModules () {
     this.chat = new ChatModule(this);
+    this.console = new ConsoleModule(this);
   }
 
   public Bot (Config.Options options, List<Bot> bots, Config config) {
@@ -59,7 +65,10 @@ public class Bot extends SessionAdapter {
 
   @Override
   public void packetReceived(Session session, Packet packet) {
-    session.send(packet);
+   // session.send(packet);
   }
 
+  public void addListener (SessionAdapter event) {
+    listeners.add(event);
+  }
 }

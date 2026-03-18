@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.ansi.ANSIComponentSerializer;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
@@ -20,11 +17,11 @@ import java.time.format.DateTimeFormatter;
 public class LoggerManager {
   private static final Logger logger = LoggerFactory.getLogger(LoggerManager.class);
 
-  private static final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("HH:mm:ss");
+  private static final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm:ss");
 
-  private static final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-  public static String prefix (Component type, String host, String message) {
+  public static String prefix (Component type, Component host, String message) {
     Component component;
     
     ZoneId timezone = ZoneId.of("America/Chicago");
@@ -36,40 +33,40 @@ public class LoggerManager {
 
     component = Component.translatable(
       "[%s %s %s] [%s] %s",
-      Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE),
-      Component.translatable(formatDate.format(date)).color(NamedTextColor.DARK_BLUE),
+      Component.translatable(formatTime.format(time)).color(NamedTextColor.DARK_BLUE),
+      Component.translatable(formatDate.format(date)).color(NamedTextColor.AQUA),
       type,
-      Component.translatable(host).color(NamedTextColor.AQUA),
+      host,
       Component.translatable(message).color(NamedTextColor.WHITE)
     ).color(NamedTextColor.DARK_GRAY);
 
     return ComponentUtil.componentToAnsi(component);
   };
 
-  public static void LOG (String host, String message) {
+  public static void LOG (Component host, String message) {
     Component type = Component.text("log").color(NamedTextColor.GOLD);
 
     System.out.println(prefix(type, host, message));
   };
 
-  public static void INFO (String host, String message) {
+  public static void INFO (Component host, String message) {
     Component type = Component.text("info").color(NamedTextColor.GREEN);
 
     System.out.println(prefix(type, host, message));
   };
 
-  public static void COMMAND (String host, String message) {
+  public static void COMMAND (Component host, String message) {
     Component type = Component.text("command").color(NamedTextColor.YELLOW);
 
     System.out.println(prefix(type, host, message));
   };
 
-  public static void WARN (String host, String message) {
+  public static void WARN (Component host, String message) {
     Component type = Component.text("warn").color(NamedTextColor.YELLOW);
     System.out.println(prefix(type, host, message));
   };
 
-  public static void ERROR (String host, String message) {
+  public static void ERROR (Component host, String message) {
     Component type = Component.text("error").color(NamedTextColor.DARK_RED);
 
     System.out.println(prefix(type, host, message));
