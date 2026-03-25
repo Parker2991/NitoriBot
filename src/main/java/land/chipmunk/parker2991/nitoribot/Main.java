@@ -1,4 +1,3 @@
-// Thanks Blackilykat and OptmisticDev and PthePro777 helping me with the client creation
 package land.chipmunk.parker2991.nitoribot;
 
 import land.chipmunk.parker2991.nitoribot.logger.LoggerManager;
@@ -17,9 +16,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class Main {
   public final Object obj = new Object();
+
+  public static final ExecutorService executorService = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors()
+  );
+
+  public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
+    Runtime.getRuntime().availableProcessors()
+  );
 
   public final Component host = Component.text("Nitori Jar");
 
@@ -28,7 +38,6 @@ public class Main {
   public final List<Bot> Bots = new ArrayList<>();
 
   public Config loadConfig() throws IOException {
-    // Blackilykat helped me with the file coping and PthePro777 helped me with reading the file
     final Constructor yamlConfig = new Constructor(Config.class, new LoaderOptions());
     final Yaml yaml = new Yaml(yamlConfig);
     final Path configPath = Path.of("config.yaml");
@@ -51,6 +60,7 @@ public class Main {
       config = loadConfig();
       Config.Options[] bots = config.bots;
 
+      System.out.println(Thread.currentThread().getName());
       for (Config.Options options : bots) {
         final Bot bot = new Bot(options, Bots, config);
         Bots.add(bot);
@@ -59,7 +69,7 @@ public class Main {
         obj.wait();
       };
     } catch (Exception e) {
-      String Error = ErrorToString.ErrorToString(e);
+      String Error = ErrorToString.errorToString(e);
       LoggerManager.ERROR(host, Error);
     }
   };

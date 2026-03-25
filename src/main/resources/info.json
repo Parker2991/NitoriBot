@@ -5,6 +5,19 @@
       "codename": "Night of Nights",
       "build": "5200"
     }
-  }
+  },
+  "owner": "Parker2991",
+  "credits": [
+    { "name": "_ChipMC_", "reason": "v4.0.0 rewrite" },
+    { "name": "chayapak", "reason": "v4.0.0-rewrite / listeners for v9.0.0" },
+    { "name": "_yfd", "reason": "rewriting the discord logging for v4.x and giving tht version a username gen" },
+    { "name": "aaa/ImFloriz", "reason": "v6.0.3 vanish support" },
+    { "name": "Ploat/ImGloriz/NamespaceDev", "reason": "v7.0.3 command core runTracked function" },
+    { "name": "TurtleKid", "reason": "v5.0.7b file logger rewrite" },
+    { "name": "Blackilykat", "reason": "v9.0.0 client creation / v9.0.0 config creation" },
+    { "name": "OptimisticDev", "reason": "v9.0.0 client creation / v9.0.0 ErrorToString function / v9.0.0 multi-server connecting / v9.0.0 jar creation" },
+    { "name": "PthePro777", "reason": "v9.0.0 client creation / v9.0.0 config yaml parsing" },
+    { "name": "Werkku", "reason": "v9.0.0 ComponentUtil functions / v9.0.0 command sending" }
+  ]
 }
 

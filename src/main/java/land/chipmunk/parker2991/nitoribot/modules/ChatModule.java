@@ -13,27 +13,32 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 
 import net.kyori.adventure.text.Component;
 
+import java.time.Instant;
+import java.util.BitSet;
+import java.util.Collections;
+
 public class ChatModule extends SessionAdapter {
   private Bot bot;
-
+  
   private final List<Listener> listeners = new ArrayList<>();
 
   @Override
   public void packetReceived (Session session, Packet packet) {
-    // totally didnt take this from chomens java
     if (packet instanceof ClientboundSystemChatPacket) systemChat((ClientboundSystemChatPacket) packet);
     else if (packet instanceof ClientboundPlayerChatPacket) playerChat((ClientboundPlayerChatPacket) packet);
     else if (packet instanceof ClientboundDisguisedChatPacket) diguisedChat((ClientboundDisguisedChatPacket) packet);
   }
 
+
   public void systemChat (ClientboundSystemChatPacket packet) {
     final Component message = packet.getContent();
 
     for (Listener listener : listeners) {
-      final boolean received = listener.systemChatReceived(message);
+      listener.systemChatReceived(message);
     } 
   }
 
@@ -41,7 +46,7 @@ public class ChatModule extends SessionAdapter {
     Component message = packet.getMessage();
 
     for (Listener listener : listeners) {
-      final boolean received = listener.disguisedChatReceived(message);
+      listener.disguisedChatReceived(message);
     }
   }
 
@@ -49,10 +54,40 @@ public class ChatModule extends SessionAdapter {
     final Component unsignedContent = packet.getUnsignedContent();
 
     for (Listener listener : listeners) {
-      final boolean received = listener.playerChatReceived(unsignedContent);
+      listener.playerChatReceived(unsignedContent);
     }
   }// session.sendPacket(new ServerboundChatPacket(message, Instant.now().toEpochMilli(), 0, null, 0, new BitSet(), 0));
   
+
+  public void message (String message) {
+    bot.session.send(
+      new ServerboundChatPacket(
+        message,
+        Instant.now().toEpochMilli(),
+        0,
+        null,
+        0,
+        new BitSet(),
+        0
+      )
+    );
+  }
+
+  public void command (String command) {
+    bot.session.send(
+      new ServerboundChatCommandPacket(
+        command
+      )
+    );
+  }
+/*
+                command,
+                Instant.now().toEpochMilli(),
+                0L,
+                Collections.emptyList(),
+                0,
+                new BitSet()
+*/
   public ChatModule (Bot bot) {
     this.bot = bot;
     bot.session.addListener(this);
@@ -66,6 +101,12 @@ public class ChatModule extends SessionAdapter {
     public boolean disguisedChatReceived (Component message) { return true; };
   }
   
+
+  //@Override
+  //public void packetReceived (Session session, Packet packet) {
+
+  //}
+
   public void addListener (Listener listener) {
     listeners.add(listener);
   }

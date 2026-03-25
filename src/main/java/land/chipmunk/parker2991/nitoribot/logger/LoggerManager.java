@@ -2,8 +2,8 @@ package land.chipmunk.parker2991.nitoribot.logger;
 
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class LoggerManager {
-  private static final Logger logger = LoggerFactory.getLogger(LoggerManager.class);
+  //private static final Logger logger = LoggerFactory.getLogger(LoggerManager.class);
 
   private static final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm:ss");
 
@@ -27,18 +27,19 @@ public class LoggerManager {
     ZoneId timezone = ZoneId.of("America/Chicago");
 
     ZonedDateTime ZoneDate = ZonedDateTime.now(timezone);
-
     LocalDate date = ZoneDate.toLocalDate();
     LocalTime time = ZoneDate.toLocalTime();
 
+    System.out.println(Thread.currentThread().getName());
     component = Component.translatable(
-      "[%s %s %s] [%s] %s",
-      Component.translatable(formatTime.format(time)).color(NamedTextColor.DARK_BLUE),
-      Component.translatable(formatDate.format(date)).color(NamedTextColor.AQUA),
+      "[%s %s %s] [%s] [%s] %s",
+      Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE),
+      Component.translatable(formatDate.format(date)).color(NamedTextColor.BLUE),
       type,
+      Component.translatable(Thread.currentThread().getName()).color(NamedTextColor.BLUE),
       host,
       Component.translatable(message).color(NamedTextColor.WHITE)
-    ).color(NamedTextColor.DARK_GRAY);
+    ).color(NamedTextColor.DARK_BLUE);
 
     return ComponentUtil.componentToAnsi(component);
   };
@@ -71,4 +72,10 @@ public class LoggerManager {
 
     System.out.println(prefix(type, host, message));
   };
+
+  public static void RECONNECT (Component host, String message) {
+    Component type = Component.text("reconnect").color(NamedTextColor.AQUA);
+
+    System.out.println(prefix(type, host, message));
+  }
 }

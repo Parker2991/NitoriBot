@@ -5,8 +5,7 @@ import land.chipmunk.parker2991.nitoribot.logger.LoggerManager;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 
 import net.kyori.adventure.text.Component;
-
-import org.geysermc.mcprotocollib.network.Session;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ConsoleModule extends ChatModule.Listener {
   private Bot bot;
@@ -33,7 +32,7 @@ public class ConsoleModule extends ChatModule.Listener {
     final String host = bot.options.host;
     final int port = bot.options.port;
     String parsed = ComponentUtil.componentToAnsi(message);
-    Component component = Component.text(host + ":" + port);
+    Component component = Component.text(host + ":" + port).color(NamedTextColor.BLUE);
     LoggerManager.LOG(component, parsed);
 
   }
