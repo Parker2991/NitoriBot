@@ -80,14 +80,7 @@ public class ChatModule extends SessionAdapter {
       )
     );
   }
-/*
-                command,
-                Instant.now().toEpochMilli(),
-                0L,
-                Collections.emptyList(),
-                0,
-                new BitSet()
-*/
+
   public ChatModule (Bot bot) {
     this.bot = bot;
     bot.session.addListener(this);
