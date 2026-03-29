@@ -106,7 +106,7 @@ public class Bot extends SessionAdapter {
     String reason = ComponentUtil.componentToAnsi(component);
     Component host = Component.text(options.host + ":" + options.port);
     LoggerManager.RECONNECT(host, reason);
-    long reconnectDelay = options.reconnectDelay;
+    int reconnectDelay = options.reconnectDelay;
 
     executor.schedule(() -> connect(), reconnectDelay, TimeUnit.MILLISECONDS);
     /*Timer timer = new Timer();
