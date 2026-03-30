@@ -60,7 +60,6 @@ public class Main {
       config = loadConfig();
       Config.Options[] bots = config.bots;
 
-      System.out.println(Thread.currentThread().getName());
       for (Config.Options options : bots) {
         final Bot bot = new Bot(options, Bots, config);
         Bots.add(bot);

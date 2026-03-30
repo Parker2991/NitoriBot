@@ -30,7 +30,6 @@ public class LoggerManager {
     LocalDate date = ZoneDate.toLocalDate();
     LocalTime time = ZoneDate.toLocalTime();
 
-    System.out.println(Thread.currentThread().getName());
     component = Component.translatable(
       "[%s %s %s] [%s] [%s] %s",
       Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE),
@@ -64,6 +63,7 @@ public class LoggerManager {
 
   public static void WARN (Component host, String message) {
     Component type = Component.text("warn").color(NamedTextColor.YELLOW);
+    
     System.out.println(prefix(type, host, message));
   };
 

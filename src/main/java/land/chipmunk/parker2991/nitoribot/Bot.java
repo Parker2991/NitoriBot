@@ -17,6 +17,7 @@ import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,10 @@ import java.util.concurrent.TimeUnit;
 
 public class Bot extends SessionAdapter {
   private final List<SessionAdapter> listeners = new ArrayList<>();
+
+  public boolean loggedIn = false;
+
+  public int entityId;
 
   public final ScheduledExecutorService executor = Main.executor;
 
@@ -59,7 +64,7 @@ public class Bot extends SessionAdapter {
     this.config = config;
 //    loadModules();
     connect();
-    loadModules();
+   // loadModules();
   };
 
   public void connect () {
@@ -73,9 +78,8 @@ public class Bot extends SessionAdapter {
       .setProtocol(protocol)
       .create();
       session.addListener(this);
-    //loadModules();
+    loadModules();
     session.connect(false); 
-    
     
   }
 
@@ -92,16 +96,24 @@ public class Bot extends SessionAdapter {
 
   @Override
   public void packetReceived (Session session, Packet packet) {
-    if (packet instanceof ClientboundLoginFinishedPacket) packetReceived((ClientboundLoginFinishedPacket) packet);
+    if (packet instanceof ClientboundLoginFinishedPacket) getProfile((ClientboundLoginFinishedPacket) packet);
+    else if (packet instanceof ClientboundLoginPacket) getEntityId((ClientboundLoginPacket) packet);
   }
 
   
-  public void packetReceived (ClientboundLoginFinishedPacket packet) {
+  public void getProfile (ClientboundLoginFinishedPacket packet) {
     profile = packet.getProfile();
+
+    loggedIn = true;
+  }
+
+  public void getEntityId (ClientboundLoginPacket packet) {
+    entityId = packet.getEntityId();
   }
 
   @Override
   public void disconnected (DisconnectedEvent event) {
+    loggedIn = false;
     Component component = event.getReason();
     String reason = ComponentUtil.componentToAnsi(component);
     Component host = Component.text(options.host + ":" + options.port);
@@ -109,14 +121,6 @@ public class Bot extends SessionAdapter {
     int reconnectDelay = options.reconnectDelay;
 
     executor.schedule(() -> connect(), reconnectDelay, TimeUnit.MILLISECONDS);
-    /*Timer timer = new Timer();
-    TimerTask task = new TimerTask() {
-      @Override
-      public void run () {
-        connect();
-      }
-    };
-    timer.schedule(task, reconnectDelay);*/
   }
 
   public void addListener (SessionAdapter event) {

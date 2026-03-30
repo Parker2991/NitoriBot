@@ -3,3 +3,4 @@ bots:
     port: 25565
     username: "meow"
     reconnectDelay: 6000
+    selfcareInterval: 1000
