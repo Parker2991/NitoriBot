@@ -54,8 +54,7 @@ public class ChatModule extends SessionAdapter {
     for (Listener listener : listeners) {
       listener.playerChatReceived(unsignedContent);
     }
-  }// session.sendPacket(new ServerboundChatPacket(message, Instant.now().toEpochMilli(), 0, null, 0, new BitSet(), 0));
-  
+  } 
 
   public void message (String message) {
     bot.session.send(
@@ -92,12 +91,6 @@ public class ChatModule extends SessionAdapter {
     public boolean disguisedChatReceived (Component message) { return true; };
   }
   
-
-  //@Override
-  //public void packetReceived (Session session, Packet packet) {
-
-  //}
-
   public void addListener (Listener listener) {
     listeners.add(listener);
   }

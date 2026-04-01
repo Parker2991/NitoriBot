@@ -52,19 +52,23 @@ public class Bot extends SessionAdapter {
 
   public SelfcareModule selfcare;
 
+  public PositionModule position;
+
+  public CommandCoreModule core;
+
   public void loadModules () {
     this.chat = new ChatModule(this);
     this.console = new ConsoleModule(this);
     this.selfcare = new SelfcareModule(this);
+    this.position = new PositionModule(this);
+    this.core = new CommandCoreModule(this);
   }
 
   public Bot (Config.Options options, List<Bot> bots, Config config) {
     this.options = options;
     this.bots = bots;
     this.config = config;
-//    loadModules();
     connect();
-   // loadModules();
   };
 
   public void connect () {

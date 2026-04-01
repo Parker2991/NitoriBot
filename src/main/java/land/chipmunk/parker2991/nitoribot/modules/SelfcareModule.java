@@ -43,7 +43,6 @@ public class SelfcareModule extends SessionAdapter {
           GameMode.CREATIVE
         )
       );
-      //else if (gamemode.gamemode != 1) bot.chat.command("minecraft:gamemode creative");
     }, 0, bot.options.selfcareInterval, TimeUnit.MILLISECONDS);
   }
 

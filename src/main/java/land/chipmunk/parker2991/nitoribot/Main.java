@@ -45,7 +45,7 @@ public class Main {
       
       LoggerManager.INFO(host, "config not found making config now");
 
-      InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");//.getResource("default_config.yaml");//.getResource("default_config.yaml");
+      InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");
       Files.copy(defaultConfig, Paths.get("config.yaml"));
     }
 
