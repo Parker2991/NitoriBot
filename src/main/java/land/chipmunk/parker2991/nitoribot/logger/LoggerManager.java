@@ -2,9 +2,6 @@ package land.chipmunk.parker2991.nitoribot.logger;
 
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -15,8 +12,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class LoggerManager {
-  //private static final Logger logger = LoggerFactory.getLogger(LoggerManager.class);
-
   private static final DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("hh:mm:ss");
 
   private static final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");

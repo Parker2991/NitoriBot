@@ -3,6 +3,7 @@ package land.chipmunk.parker2991.nitoribot;
 public class Config {
   public static class Core {
     public Area area = new Area();
+    public String coreName;
   }
 
   public static class Area {

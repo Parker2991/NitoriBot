@@ -2,8 +2,8 @@ package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
 import land.chipmunk.parker2991.nitoribot.selfcare.entity.*;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
-import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundChangeGameModePacket;
@@ -14,8 +14,8 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfcareModule extends SessionAdapter {
-  public ScheduledFuture timer;
+public class SelfcareModule extends Listener {
+  public ScheduledFuture<?> timer;
 
   private Bot bot;
 
@@ -52,7 +52,7 @@ public class SelfcareModule extends SessionAdapter {
 
   public SelfcareModule (Bot bot) {
     this.bot = bot;
-    bot.session.addListener(this);
+    bot.ListenerManager.addListener(this);
     loadSelfcare();
   }
 }

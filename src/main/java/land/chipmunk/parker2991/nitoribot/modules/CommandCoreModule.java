@@ -1,24 +1,23 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
-import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.data.CommandCoreAreaData;
-import land.chipmunk.parker2991.nitoribot.data.PositionData;
-
+import org.cloudburstmc.math.vector.Vector3d;
+import org.cloudburstmc.math.vector.Vector3i;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.CommandBlockMode;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 
-import org.cloudburstmc.math.vector.Vector3i;
-import org.cloudburstmc.math.vector.Vector3d;
+import land.chipmunk.parker2991.nitoribot.Bot;
+import land.chipmunk.parker2991.nitoribot.data.CommandCoreAreaData;
+import land.chipmunk.parker2991.nitoribot.data.PositionData;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
-public class CommandCoreModule extends PositionModule.Listener {
+public class CommandCoreModule extends Listener {
   private Bot bot;
 
   public CommandCoreAreaData area;
 
   @Override
-  public boolean botMoved () {
+  public void botMoved () {
     move();
-    return true;
   }
 
   public Vector3i position;
@@ -32,6 +31,7 @@ public class CommandCoreModule extends PositionModule.Listener {
     );
 
     refill();
+    run("say hello world!");
   };
 
   public void refill () {
@@ -46,13 +46,14 @@ public class CommandCoreModule extends PositionModule.Listener {
     int endPosZ = pos.getZ() - coreArea.end.getZ();
 
     String command = String.format(
-      "minecraft:fill %s %s %s %s %s %s command_block destroy",
+      "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} destroy",
       startPosX,
       startPosY,
       startPosZ,
       endPosX,
       endPosY,
-      endPosZ
+      endPosZ,
+      bot.config.core.coreName
     );
 
     bot.chat.command(command);
@@ -119,7 +120,7 @@ public class CommandCoreModule extends PositionModule.Listener {
 
   public CommandCoreModule (Bot bot) {
     this.bot = bot;
-    System.out.println(bot.config.core.area.start.x);
+
     this.area = new CommandCoreAreaData(
       Vector3i.from(
         bot.config.core.area.start.x,
@@ -133,6 +134,6 @@ public class CommandCoreModule extends PositionModule.Listener {
       )
     );
 
-    bot.position.addListener(this);
+    bot.ListenerManager.addListener(this);
   }
 }

@@ -3,29 +3,28 @@ package land.chipmunk.parker2991.nitoribot.modules;
 import land.chipmunk.parker2991.nitoribot.Bot;
 import land.chipmunk.parker2991.nitoribot.logger.LoggerManager;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class ConsoleModule extends ChatModule.Listener {
+public class ConsoleModule extends Listener {
   private Bot bot;
 
   @Override
-  public boolean playerChatReceived (Component message) {
+  public void playerChatReceived (Component message) {
     handleMessages(message);
-    return true;
   };
 
   @Override
-  public boolean disguisedChatReceived (Component message) {
+  public void disguisedChatReceived (Component message) {
     handleMessages(message);
-    return true;
+
   }
 
   @Override
-  public boolean systemChatReceived (Component message) {
+  public void systemChatReceived (Component message) {
     handleMessages(message);
-    return true;
   }
 
   public void handleMessages (Component message) {
@@ -40,6 +39,6 @@ public class ConsoleModule extends ChatModule.Listener {
   public ConsoleModule (Bot bot) {
     this.bot = bot;
 
-    bot.chat.addListener(this);
+    bot.ListenerManager.addListener(this);
   }
 }

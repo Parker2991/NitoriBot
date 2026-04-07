@@ -3,5 +3,6 @@
     "java.compile.nullAnalysis.mode": "disabled",
     "java.refactoring.askBeforeRefactoring": true,
     "java.autobuild.enabled": false,
-    "java.import.projectSelection": "manual"
+    "java.import.projectSelection": "manual",
+    "java.server.launchMode": "Standard"
 }

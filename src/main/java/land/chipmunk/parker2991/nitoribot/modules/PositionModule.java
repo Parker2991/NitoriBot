@@ -2,23 +2,17 @@ package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
 import land.chipmunk.parker2991.nitoribot.data.PositionData;
-import net.kyori.adventure.text.Component;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
-import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cloudburstmc.math.vector.Vector3d;
 
-public class PositionModule extends SessionAdapter {
+public class PositionModule extends Listener {
   private Bot bot;
-
-  private final List<Listener> listeners = new ArrayList<>();
 
   public Vector3d positionAsVector = null;
 
@@ -45,21 +39,14 @@ public class PositionModule extends SessionAdapter {
       )
     );
 
-    for (Listener listener : listeners) {
+    for (Listener listener : bot.ListenerManager.listeners) {
       listener.botMoved();
     }
-  } 
-
-  public static class Listener {
-    public boolean botMoved () { return true; };
-  }
-  
-  public void addListener (Listener listener) {
-    listeners.add(listener);
   }
   
   public PositionModule (Bot bot) {
     this.bot = bot;
-    bot.session.addListener(this);
+
+    bot.ListenerManager.addListener(this);
   }
 }

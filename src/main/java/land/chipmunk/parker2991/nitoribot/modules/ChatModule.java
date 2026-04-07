@@ -1,12 +1,9 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-
-import java.util.ArrayList;
-import java.util.List;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerChatPacket;
@@ -19,10 +16,8 @@ import net.kyori.adventure.text.Component;
 import java.time.Instant;
 import java.util.BitSet;
 
-public class ChatModule extends SessionAdapter {
+public class ChatModule extends Listener {
   private Bot bot;
-  
-  private final List<Listener> listeners = new ArrayList<>();
 
   @Override
   public void packetReceived (Session session, Packet packet) {
@@ -31,19 +26,41 @@ public class ChatModule extends SessionAdapter {
     else if (packet instanceof ClientboundDisguisedChatPacket) diguisedChat((ClientboundDisguisedChatPacket) packet);
   }
 
+  public String parseChatTypes (int chatType) {
+    String getTranslation = bot.registry.chatTypes.get(chatType);
+
+    return getTranslation;
+  }
 
   public void systemChat (ClientboundSystemChatPacket packet) {
     final Component message = packet.getContent();
 
-    for (Listener listener : listeners) {
+    for (Listener listener : bot.ListenerManager.listeners) {
       listener.systemChatReceived(message);
-    } 
+    }
   }
 
   public void diguisedChat (ClientboundDisguisedChatPacket packet) {
-    Component message = packet.getMessage();
+    Component getMessage = packet.getMessage();
+    Component targetUsername = packet.getName();
+    Component message;
 
-    for (Listener listener : listeners) {
+    final String parseChatTypes = parseChatTypes(packet.getChatType().id());
+
+    if (packet.getChatType().id() == 4) {
+      message = Component.translatable(
+        parseChatTypes,
+        getMessage
+      );
+    } else {
+      message = Component.translatable(
+        parseChatTypes,
+        targetUsername,
+        getMessage
+      );
+    }
+
+    for (Listener listener : bot.ListenerManager.listeners) {
       listener.disguisedChatReceived(message);
     }
   }
@@ -51,7 +68,7 @@ public class ChatModule extends SessionAdapter {
   public void playerChat (ClientboundPlayerChatPacket packet) {
     final Component unsignedContent = packet.getUnsignedContent();
 
-    for (Listener listener : listeners) {
+    for (Listener listener : bot.ListenerManager.listeners) {
       listener.playerChatReceived(unsignedContent);
     }
   } 
@@ -80,18 +97,7 @@ public class ChatModule extends SessionAdapter {
 
   public ChatModule (Bot bot) {
     this.bot = bot;
-    bot.session.addListener(this);
+
+    bot.ListenerManager.addListener(this);
   };
-
-  public static class Listener {
-    public boolean playerChatReceived (Component message) { return true; };
-
-    public boolean systemChatReceived (Component message) { return true; };
-
-    public boolean disguisedChatReceived (Component message) { return true; };
-  }
-  
-  public void addListener (Listener listener) {
-    listeners.add(listener);
-  }
 }

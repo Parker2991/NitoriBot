@@ -1,8 +1,8 @@
 package land.chipmunk.parker2991.nitoribot.selfcare.entity;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
+import land.chipmunk.parker2991.nitoribot.listeners.*;
 
-import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEventValue;
@@ -10,9 +10,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.network.Session;
 
-public class GamemodeSelfcare extends SessionAdapter {
-  private Bot bot;
-
+public class GamemodeSelfcare extends Listener {
   public int gamemode = 1;
 
   @Override
@@ -44,7 +42,6 @@ public class GamemodeSelfcare extends SessionAdapter {
   }
 
   public GamemodeSelfcare (Bot bot) {
-    this.bot = bot;
-    bot.session.addListener(this);
+    bot.ListenerManager.addListener(this);
   }
 }
