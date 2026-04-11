@@ -18,21 +18,3 @@ public class PlayerMessageData {
    // return this;
   }
 }
-
-/*
-package land.chipmunk.chipmunkbot.data.chat;
-
-import land.chipmunk.chipmunkbot.data.MutablePlayerListEntry;
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import net.kyori.adventure.text.Component;
-
-@Data
-@AllArgsConstructor
-public class PlayerMessage {
-  private MutablePlayerListEntry sender;
-  private Component contents;
-  private String chatType;
-  private Component senderName;
-}
-*/

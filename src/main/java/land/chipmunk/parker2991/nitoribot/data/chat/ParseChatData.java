@@ -11,12 +11,3 @@ public interface ParseChatData {
 
  // PlayerProfileData parse (PlayerMessageData data);
 }
-/*
-package land.chipmunk.chipmunkbot.data.chat;
-
-import net.kyori.adventure.text.Component;
-
-public interface SystemChatParser {
-  PlayerMessage parse (Component message);
-}
-*/

@@ -8,8 +8,8 @@
   },
   "owner": "Parker2991",
   "credits": [
-    { "name": "_ChipMC_", "reason": "v4.0.0 rewrite" },
-    { "name": "chayapak", "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads" },
+    { "name": "_ChipMC_", "reason": "v4.0.0 rewrite / v9.0.0 entity uuid / v9.0.0 chat command parsing" },
+    { "name": "chayapak", "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads / v9.0.0 entity uuid" },
     { "name": "_yfd", "reason": "rewriting the discord logging for v4.x and giving tht version a username gen" },
     { "name": "aaa/ImFloriz", "reason": "v6.0.3 vanish support" },
     { "name": "Ploat/ImGloriz/NamespaceDev", "reason": "v7.0.3 command core runTracked function" },
