@@ -26,7 +26,7 @@ repositories {
 
   maven("https://maven.maxhenkel.de/repository/public/")
 
-//  maven("https://libraries.minecraft.net")
+  maven("https://libraries.minecraft.net")
 
  /* maven("https://code.optmstc.dev/api/packages/kso/maven") {
     content {
@@ -50,7 +50,7 @@ dependencies {
   implementation("net.kyori:adventure-text-serializer-plain:4.26.1")
   implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
   implementation("net.kyori:adventure-text-serializer-gson:4.26.1")
- // implementation("com.mojang:brigadier:1.3.10")
+  implementation("com.mojang:brigadier:1.3.10")
   //implementation("land.chipmunk.code.kaboomstandardsorganization.messaginglib:mcprotocollib:3.1.1-SNAPSHOT")
 //  implementation("land.chipmunk.code.kaboomstandardsorganization.messaginglib:3.1.1-SNAPSHOT")
 }

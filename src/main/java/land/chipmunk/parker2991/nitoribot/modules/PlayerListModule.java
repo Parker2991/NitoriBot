@@ -3,6 +3,7 @@ package land.chipmunk.parker2991.nitoribot.modules;
 import land.chipmunk.parker2991.nitoribot.Bot;
 import land.chipmunk.parker2991.nitoribot.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.listeners.*;
+import net.kyori.adventure.text.Component;
 
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
@@ -51,6 +52,16 @@ public class PlayerListModule extends Listener {
         return player;
       }
     };
+
+    return null;
+  }
+
+  public final PlayerProfileData getDisplayName (Component displayName) {
+    for (PlayerProfileData candidate : list) {
+      if (candidate.displayName != null && candidate.displayName.equals(displayName)) {
+        return candidate;
+      }
+    }
 
     return null;
   }

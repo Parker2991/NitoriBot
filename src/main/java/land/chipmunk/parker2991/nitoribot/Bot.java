@@ -55,9 +55,12 @@ public class Bot extends SessionAdapter {
 
   public CommandCoreModule core;
 
-  public PlayerListModule player;
+  public PlayerListModule players;
 
   public RegistryModule registry;
+
+  public CommandManagerModule commandManager;
+  //private ChatCommandHandlerModule ChatCommandHandler;
 
   public void loadModules () {
     this.chat = new ChatModule(this);
@@ -66,7 +69,9 @@ public class Bot extends SessionAdapter {
     this.position = new PositionModule(this);
     this.core = new CommandCoreModule(this);
     this.registry = new RegistryModule(this);
-    this.player = new PlayerListModule(this);
+    this.players = new PlayerListModule(this);
+    new ChatCommandHandlerModule(this);
+    this.commandManager = new CommandManagerModule(this);
   }
 
   public Bot (Config.Options options, List<Bot> bots, Config config) {
@@ -107,7 +112,7 @@ public class Bot extends SessionAdapter {
 
   @Override
   public void packetError (PacketErrorEvent error) {
-
+    System.out.println(error.getCause());
   }
 
   @Override
@@ -122,7 +127,7 @@ public class Bot extends SessionAdapter {
 
   
   public void getProfile (ClientboundLoginFinishedPacket packet) {
-    profile = packet.getProfile();
+    //profile = packet.getProfile();
 
     loggedIn = true;
   }
@@ -133,6 +138,10 @@ public class Bot extends SessionAdapter {
 
   @Override
   public void disconnected (DisconnectedEvent event) {
+    ListenerManager.clearListener();
+    //final Throwable cause = disconnectedEvent.getCause();
+    Throwable cause = event.getCause();
+    System.out.println(cause);
     loggedIn = false;
     Component component = event.getReason();
     String reason = ComponentUtil.componentToAnsi(component);

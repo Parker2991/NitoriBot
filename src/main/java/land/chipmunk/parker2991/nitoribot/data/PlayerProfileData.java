@@ -1,5 +1,7 @@
 package land.chipmunk.parker2991.nitoribot.data;
 
+import land.chipmunk.parker2991.nitoribot.util.UUIDUtil;
+
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 
@@ -9,7 +11,8 @@ import java.util.UUID;
 
 public class PlayerProfileData {
   public UUID uuid;
-  public GameProfile profile;
+  public String entityUUID;
+  public final GameProfile profile;
   public boolean listed;
   public int latency;
   public GameMode gameMode;
@@ -26,6 +29,7 @@ public class PlayerProfileData {
     Component displayName
   ) {
     this.uuid = uuid;
+    this.entityUUID = UUIDUtil.snbt(uuid);
     this.profile = profile;
     this.listed = listed;
     this.latency = latency;

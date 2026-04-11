@@ -1,6 +1,10 @@
 package land.chipmunk.parker2991.nitoribot;
 
+import java.util.List;
+
 public class Config {
+  public List<String> prefixes;
+
   public static class Core {
     public Area area = new Area();
     public String coreName;

@@ -31,7 +31,6 @@ public class CommandCoreModule extends Listener {
     );
 
     refill();
-    run("say hello world!");
   };
 
   public void refill () {
