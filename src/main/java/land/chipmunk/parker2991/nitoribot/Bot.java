@@ -138,14 +138,6 @@ public class Bot extends SessionAdapter {
     this.bots = bots;
     this.config = config;
 
-    /*Main.services.put(
-      "bot build information",
-      executorService.submit(() -> {
-        this.botBuildInfo = Main.getBuildInfo();
-        this.repoCommitInfo = Main.getRepoInfo();
-      })
-    );*/
-
     try {
       connect();
     } catch (Exception e) {
