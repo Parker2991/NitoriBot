@@ -23,7 +23,7 @@ public class HelpCommand extends CommandInfo {
     super(
       "help",
       CommandTrustLevels.PUBLIC,
-      new String[] { "heko", "hell", "?", "cmds"},
+      new String[]{ "heko", "hell", "?", "cmds" },
       "see the list of commands"
     );
   }
@@ -42,20 +42,20 @@ public class HelpCommand extends CommandInfo {
           Public.add(
             Component.text(commands.name + " ").color(NamedTextColor.BLUE)
           );
-        break;
+          break;
         case CommandTrustLevels.TRUSTED:
           Trusted.add(
             Component.text(commands.name + " ").color(NamedTextColor.DARK_AQUA)
           );
-        break;
+          break;
       }
     }
-    
+
     Component component = Component.empty()
       .append(Public)
       .append(Component.text("\n"))
       .append(Trusted);
-     // .append(Component.text("\n"));
+    // .append(Component.text("\n"));
 
     return component;
   }
@@ -66,52 +66,54 @@ public class HelpCommand extends CommandInfo {
     Component component = null;
 
     for (CommandInfo commands : bot.commandManager.commands) {
-      if (commands.name.equals(command[0])) component = Component.empty()
-        .append(
-          TranslationsUtil.customTranslations(
-            "command.help.info.layout",
-            List.of(
-              TranslationsUtil.customTranslations("command.help.info.command", null).color(NamedTextColor.BLUE),
-              Component.text(commands.name).color(NamedTextColor.AQUA)
+      for (String aliases : commands.aliases) {
+        if (commands.name.equals(command[0]) || aliases.equals(command[0])) component = Component.empty()
+          .append(
+            TranslationsUtil.customTranslations(
+              "command.help.info.layout",
+              List.of(
+                TranslationsUtil.customTranslations("command.help.info.command", null).color(NamedTextColor.BLUE),
+                Component.text(commands.name).color(NamedTextColor.AQUA)
+              )
             )
           )
-        )
-        .append(
-          TranslationsUtil.customTranslations(
-            "command.help.info.layout",
-            List.of(
-              TranslationsUtil.customTranslations("command.help.info.aliases", null).color(NamedTextColor.BLUE),
-              Component.text(Arrays.toString(commands.aliases)).color(NamedTextColor.AQUA)
+          .append(
+            TranslationsUtil.customTranslations(
+              "command.help.info.layout",
+              List.of(
+                TranslationsUtil.customTranslations("command.help.info.aliases", null).color(NamedTextColor.BLUE),
+                Component.text(Arrays.toString(commands.aliases)).color(NamedTextColor.AQUA)
+              )
             )
           )
-        )
-        .append(
-          TranslationsUtil.customTranslations(
-            "command.help.info.layout",
-            List.of(
-              TranslationsUtil.customTranslations("command.help.info.description", null).color(NamedTextColor.BLUE),
-              Component.text(commands.description).color(NamedTextColor.AQUA)
+          .append(
+            TranslationsUtil.customTranslations(
+              "command.help.info.layout",
+              List.of(
+                TranslationsUtil.customTranslations("command.help.info.description", null).color(NamedTextColor.BLUE),
+                Component.text(commands.description).color(NamedTextColor.AQUA)
+              )
             )
           )
-        )
-        .append(
-          TranslationsUtil.customTranslations(
-            "command.help.info.layout",
-            List.of(
-              TranslationsUtil.customTranslations("command.help.info.trust_level", null).color(NamedTextColor.BLUE),
-              Component.text(commands.trustlevel + "").color(NamedTextColor.AQUA)
+          .append(
+            TranslationsUtil.customTranslations(
+              "command.help.info.layout",
+              List.of(
+                TranslationsUtil.customTranslations("command.help.info.trust_level", null).color(NamedTextColor.BLUE),
+                Component.text(commands.trustlevel + "").color(NamedTextColor.AQUA)
+              )
             )
           )
-        )
-        .append(
-          TranslationsUtil.customTranslations(
-            "command.help.info.layout",
-            List.of(
-              TranslationsUtil.customTranslations("command.help.info.usages", null).color(NamedTextColor.BLUE),
-              Component.text("DUMMY String").color(NamedTextColor.AQUA)
+          .append(
+            TranslationsUtil.customTranslations(
+              "command.help.info.layout",
+              List.of(
+                TranslationsUtil.customTranslations("command.help.info.usages", null).color(NamedTextColor.BLUE),
+                Component.text("DUMMY String").color(NamedTextColor.AQUA)
+              )
             )
-          )
-        );
+          );
+      }
     }
     return component;
   }
@@ -127,7 +129,7 @@ public class HelpCommand extends CommandInfo {
 
     if (args.length != 0) {
       source.sendFeedback(getCommand(bot, args));
-      //return null;
+      return;
     }
 
     list = List.of(

@@ -1,25 +1,26 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
+import com.mojang.brigadier.CommandDispatcher;
 import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.command.CommandError;
 import land.chipmunk.parker2991.nitoribot.command.CommandContext;
+import land.chipmunk.parker2991.nitoribot.command.CommandError;
 import land.chipmunk.parker2991.nitoribot.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.commands.Public.*;
 import land.chipmunk.parker2991.nitoribot.commands.trusted.ReconnectCommand;
 import land.chipmunk.parker2991.nitoribot.logger.Logger;
 import land.chipmunk.parker2991.nitoribot.util.ErrorToString;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.List;
 
 public class CommandManagerModule {
   private Bot bot;
+
+  public CommandDispatcher <CommandSource> dispatcher = new CommandDispatcher<>();
 
   public List<CommandInfo> commands = new ArrayList<>();
 
@@ -54,7 +55,6 @@ public class CommandManagerModule {
       CommandContext context = new CommandContext(bot, args, source, command);
 
       command.execute(context);
-
     } catch (CommandError error) {
       source.sendFeedback(error.message());
     } catch (Exception error) {
@@ -82,5 +82,7 @@ public class CommandManagerModule {
     registerCommand(new ReconnectCommand());
     registerCommand(new RCCommand());
     registerCommand(new MCServerCommand());
+    registerCommand(new TestCommand());
+    registerCommand(new InfoCommand());
   }
 }

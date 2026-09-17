@@ -1,23 +1,13 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.listeners.*;
+import land.chipmunk.parker2991.nitoribot.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
-
-import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.MetadataType;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.MetadataTypes;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.ByteMetadataType;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.EntityMetadata;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.type.EntityType;
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundAddEntityPacket;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.EntityMetadata;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundSetEntityDataPacket;
-
-import net.kyori.adventure.text.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TextDisplayModule extends Listener {
   private Bot bot;

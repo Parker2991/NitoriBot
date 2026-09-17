@@ -10,13 +10,13 @@ public class EchoCommand extends CommandInfo {
     super(
       "echo",
       CommandTrustLevels.PUBLIC,
-      new String[] { "say" },
+      new String[]{ "say" },
       "make the bot say a message"
     );
   }
 
   @Override
-  public void execute(CommandContext context) {
+  public void execute (CommandContext context) {
     Bot bot = context.bot;
     String args = String.join(" ", context.args);
     if (args.startsWith("/")) {

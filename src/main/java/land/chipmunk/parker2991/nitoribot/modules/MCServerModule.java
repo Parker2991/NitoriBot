@@ -56,17 +56,6 @@ public class MCServerModule {
     client.setFlag(MinecraftConstants.SESSION_SERVICE_KEY, sessionService);
 
     client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (Session session, ServerStatusInfo info) -> {
-      //System.out.println(info.getVersionInfo().getVersionName());
-      //System.out.println(info.getPlayerInfo().getOnlinePlayers());
-      //assert info.getVersionInfo() != null;
-      //assert info.getPlayerInfo() != null;
-      /*
-        String versionName,
-  long protocolVersion,
-  int playersOnline,
-  int maxPlayers,
-  Component description
-       */
       assert info.getVersionInfo() != null;
       assert info.getPlayerInfo() != null;
 

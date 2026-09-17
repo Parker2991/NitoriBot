@@ -1,5 +1,7 @@
 package land.chipmunk.parker2991.nitoribot;
 
+import land.chipmunk.parker2991.nitoribot.data.buildstring.BotBuildInfo;
+import land.chipmunk.parker2991.nitoribot.data.buildstring.RepoCommitInfo;
 import land.chipmunk.parker2991.nitoribot.logger.Logger;
 import land.chipmunk.parker2991.nitoribot.modules.*;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
@@ -20,21 +22,14 @@ import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundPlayerLoadedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundPlayerLoadedPacket;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.*;
 import java.nio.file.Paths;
-import java.util.Map;
 
 public class Bot extends SessionAdapter {
   public final ListenerManager listenerManager = new ListenerManager();
@@ -46,6 +41,12 @@ public class Bot extends SessionAdapter {
   public final ScheduledExecutorService executor = Main.executor;
 
   public final ExecutorService executorService = Main.executorService;
+
+  public final ConcurrentMap<String, Future<?>> services = Main.services;
+
+  public BotBuildInfo botBuildInfo = Main.botBuildInfo;
+
+  public RepoCommitInfo repoCommitInfo;
 
   public ClientNetworkSession session;
 
@@ -78,8 +79,6 @@ public class Bot extends SessionAdapter {
   public MCServerModule mcServer;
 
   public ProxyInfo randomProxyIp () throws IOException {
-    String result = null; // stub
-
     Path proxiesPath = Paths.get("proxies.txt");
 
     int countLines = Math.round(
@@ -90,18 +89,22 @@ public class Bot extends SessionAdapter {
 
     int randomIndex = random.nextInt(countLines);
 
-    String[] getIp = Files.lines(proxiesPath)
+    List<String> lines = Files.lines(proxiesPath).toList();//.toList();
+
+    String[] ip = lines.stream()
       .skip(randomIndex)
       .findAny()
       .get()
       .split(":");
 
-    String ip = getIp[0];
-    int port = new Integer(getIp[1]);
+    InetSocketAddress address = new InetSocketAddress(
+      ip[0],
+      Integer.parseInt(ip[1])
+    );
 
     return new ProxyInfo(
       ProxyInfo.Type.SOCKS5,
-      new InetSocketAddress(ip, port)
+      address
     );
   }
 
@@ -119,7 +122,9 @@ public class Bot extends SessionAdapter {
       this.extrasMessaging = new ExtrasMessagingModule(this);
       new TextDisplayModule(this);
       this.mcServer = new MCServerModule(this);
-    } catch (Exception e) {}
+      new CommandSpyModule(this);
+    } catch (Exception e) {
+    }
   }
 
   public Bot (Config.Options options, List<Bot> bots, Config config) {
@@ -127,9 +132,40 @@ public class Bot extends SessionAdapter {
     this.bots = bots;
     this.config = config;
 
+    Main.services.put(
+      "bot build information",
+      executorService.submit(() -> {
+        this.botBuildInfo = Main.getBuildInfo();
+        this.repoCommitInfo = Main.getRepoInfo();
+      })
+    );
+
     try {
       connect();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      e.printStackTrace(System.err);
+    }
+
+    Future<?> botBuildThread = services.get("bot build information");
+    if (botBuildThread != null) {
+      try {
+        executorService.submit(() -> {
+          try {
+            Thread.sleep(5000);
+          } catch (InterruptedException e) {
+
+          }
+          botBuildThread.cancel(true);
+        }).cancel(true);
+         /*
+          i counted how long it takes to get the repo info via https
+          which is approximately 2 - 3 seconds
+          so clear the thread after 3 seconds
+         */
+      } catch (Exception e) {
+
+      }
+    }
   };
 
   public void connect () throws IOException {
@@ -137,8 +173,8 @@ public class Bot extends SessionAdapter {
 
     if (options.useProxy) session = ClientNetworkSessionFactory.factory()
       .setAddress(
-         options.host,
-         options.port
+        options.host,
+        options.port
       )
       .setProxy(randomProxyIp())
       .setProtocol(protocol)
@@ -151,7 +187,7 @@ public class Bot extends SessionAdapter {
       )
       .setProtocol(protocol)
       .create();
-      session.addListener(this);
+    session.addListener(this);
     loadModules();
     session.connect(false);
   }
@@ -161,8 +197,6 @@ public class Bot extends SessionAdapter {
     String reason = event + "";
     session.disconnect(reason);
   }
-
- // ServerboundPlayerLoadedPacket
 
   @Override
   public void packetSent (Session session, Packet packet) {
@@ -174,6 +208,7 @@ public class Bot extends SessionAdapter {
   @Override
   public void packetError (PacketErrorEvent error) {
     error.setSuppress(true);
+    //System.out.println(error);
   }
 
   @Override
@@ -193,7 +228,8 @@ public class Bot extends SessionAdapter {
 
       if (packet instanceof ClientboundLoginFinishedPacket) getProfile((ClientboundLoginFinishedPacket) packet);
       else if (packet instanceof ClientboundLoginPacket) getEntityId((ClientboundLoginPacket) packet);
-    } catch (Exception e) { }
+    } catch (Exception e) {
+    }
   }
 
 

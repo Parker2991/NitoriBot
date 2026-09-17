@@ -15,6 +15,6 @@ public class PlayerMessageData {
     this.contents = contents;
     this.chatType = chatType;
     this.senderName = senderName;
-   // return this;
+    // return this;
   }
 }

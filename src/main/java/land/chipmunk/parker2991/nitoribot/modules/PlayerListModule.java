@@ -1,10 +1,10 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
-
+import land.chipmunk.parker2991.nitoribot.Bot;
+import land.chipmunk.parker2991.nitoribot.data.PlayerPositionData;
+import land.chipmunk.parker2991.nitoribot.data.PlayerProfileData;
+import land.chipmunk.parker2991.nitoribot.listeners.Listener;
+import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -13,21 +13,14 @@ import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntryAction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.type.EntityType;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosRotPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundAddEntityPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundRemoveEntitiesPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundTeleportEntityPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundRotateHeadPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityPositionSyncPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundEntityTagQuery;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
+import org.jetbrains.annotations.Nullable;
 
-import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.data.PlayerPositionData;
-import land.chipmunk.parker2991.nitoribot.data.PlayerProfileData;
-import land.chipmunk.parker2991.nitoribot.listeners.Listener;
-import net.kyori.adventure.text.Component;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
 
 public class PlayerListModule extends Listener {
   private Bot bot;
@@ -101,23 +94,42 @@ public class PlayerListModule extends Listener {
     return null;
   }
 
+
+
+  @Nullable
   public final PlayerProfileData getPlayerUUID (UUID uuid) {
     PlayerProfileData playerInfo = null;
 
-    for (PlayerProfileData player : list) {
-      if (player.profile.getId().equals(uuid)) {
-        playerInfo = player;
+    try {
+      // lazy ass fix for the bot erroring when a player is null
+      for (PlayerProfileData player : list) {
+        //if (player.profile.getId() == null) {}
+
+        UUID playerUUID = player.profile.getId();
+
+        if (playerUUID == null) return playerInfo;
+        else if (player.profile.getId().equals(uuid)) {
+          playerInfo = player;
+        }
       }
-    };
-
-    if (playerInfo == null) {};
-
+    } catch (Exception e) {
+    }
     return playerInfo;
   }
 
   public final PlayerProfileData getDisplayName (Component displayName) {
     for (PlayerProfileData candidate : list) {
       if (candidate.displayName != null && candidate.displayName.equals(displayName)) {
+        return candidate;
+      }
+    }
+
+    return null;
+  }
+
+  public final PlayerProfileData getPlayerByUsername (String username) {
+    for (PlayerProfileData candidate : list) {
+      if (candidate.profile.getName().equals(username)) {
         return candidate;
       }
     }
@@ -138,7 +150,7 @@ public class PlayerListModule extends Listener {
 
     if (getPlayer == null) return;
 
-    getPlayer.gameMode = player.getGameMode();
+    else getPlayer.gameMode = player.getGameMode();
   }
 
   public void updateLatency (PlayerListEntry player) {
@@ -146,7 +158,7 @@ public class PlayerListModule extends Listener {
 
     if (getPlayer == null) return;
 
-    getPlayer.latency = player.getLatency();
+    else getPlayer.latency = player.getLatency();
   }
 
   public void updateDisplayName (PlayerListEntry player) {
@@ -154,7 +166,7 @@ public class PlayerListModule extends Listener {
 
     if (getPlayer == null) return;
 
-    getPlayer.displayName = player.getDisplayName();
+    else getPlayer.displayName = player.getDisplayName();
   }
 
   public void addPlayer (PlayerListEntry player) {
@@ -177,6 +189,8 @@ public class PlayerListModule extends Listener {
   public void playerRemove (ClientboundPlayerInfoRemovePacket packet) {
     for (UUID uuid : packet.getProfileIds()) {
       PlayerProfileData getPlayer = getPlayerUUID(uuid);
+
+      if (getPlayer == null) return;
       list.remove(getPlayer);
     }
   }

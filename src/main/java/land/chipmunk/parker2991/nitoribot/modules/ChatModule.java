@@ -6,6 +6,7 @@ import land.chipmunk.parker2991.nitoribot.chatparsers.*;
 import land.chipmunk.parker2991.nitoribot.data.chat.*;
 import land.chipmunk.parker2991.nitoribot.data.PlayerProfileData;
 
+import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
@@ -52,6 +53,7 @@ public class ChatModule extends Listener {
   public void diguisedChat (ClientboundDisguisedChatPacket packet) {
     Component getMessage = packet.getMessage();
     Component targetUsername = packet.getName();
+
     Component message;
 
     final String parseChatTypes = parseChatTypes(packet.getChatType().id());
@@ -69,12 +71,23 @@ public class ChatModule extends Listener {
     for (Listener listener : bot.listenerManager.listeners) {
       listener.disguisedChatReceived(message);
     }
+
+    TextComponent textComponent = (TextComponent) targetUsername;
+
+    parseMessage(
+      message,
+      new PlayerMessageData(
+        bot.players.getPlayerByUsername(textComponent.content()),
+        packet.getMessage(),
+        "minecraft:chat",
+        bot.players.getPlayerByUsername(textComponent.content()).displayName
+      )
+    );
   }
 
   public void playerChat (ClientboundPlayerChatPacket packet) {
     final Component unsignedContent = packet.getUnsignedContent();
     final Component content = Component.text(packet.getContent());
-
 
     for (Listener listener : bot.listenerManager.listeners) {
       listener.playerChatReceived(unsignedContent);
@@ -138,13 +151,21 @@ public class ChatModule extends Listener {
   }
 
   public void tellraw (String selector, Component message) {
-    bot.core.run("minecraft:tellraw " + selector + " " + GsonComponentSerializer.gson().serialize(message));
+    bot.core.run(
+      String.format(
+        "%s %s %s",
+        "minecraft:tellraw",
+        selector,
+        GsonComponentSerializer.gson().serialize(message).trim()
+      )
+    );
   }
 
   public ChatModule (Bot bot) {
     this.bot = bot;
-  
+
     chatParsers.add(new KaboomChatParser(bot));
+    chatParsers.add(new TotalFreedomChatParser(bot));
 
     bot.listenerManager.addListener(this);
   };

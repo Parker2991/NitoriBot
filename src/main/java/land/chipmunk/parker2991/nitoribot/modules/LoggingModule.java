@@ -32,7 +32,7 @@ public class LoggingModule extends Listener {
     
     String message = ComponentUtil.componentToAnsi(_message);
     //if (host.equals("kaboom.pw")) return;
-   // Logger.LOG(bot, message);
+    Logger.LOG(bot, message);
   }
 
   public LoggingModule (Bot bot) {

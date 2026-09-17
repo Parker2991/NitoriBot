@@ -1,6 +1,12 @@
 package land.chipmunk.parker2991.nitoribot;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import land.chipmunk.parker2991.nitoribot.data.buildstring.BotBuildInfo;
+import land.chipmunk.parker2991.nitoribot.data.buildstring.RepoCommitInfo;
 import land.chipmunk.parker2991.nitoribot.modules.ConsoleModule;
+import land.chipmunk.parker2991.nitoribot.logger.Logger;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -8,14 +14,19 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.Objects;
+import java.util.concurrent.*;
 
 public class Main {
   public final Object obj = new Object();
@@ -28,6 +39,51 @@ public class Main {
     Runtime.getRuntime().availableProcessors()
   );
 
+  public static final ConcurrentMap<String, Future<?>> services = new ConcurrentHashMap<>();
+
+  private static final Gson GSON = new Gson();
+
+  public static BotBuildInfo getBuildInfo () {
+    Reader reader = new InputStreamReader(
+      Objects.requireNonNull(Main.class
+        .getResourceAsStream("/info.json"))
+    );
+
+    return GSON.fromJson(reader, BotBuildInfo.class);
+  }
+
+  public static RepoCommitInfo getRepoInfo () {
+    final String repo = "https://code.chipmunk.land/api/v1/repos/Parker2991/NitoriBot/commits?sha=main";
+    HttpClient client = HttpClient.newBuilder()
+      .followRedirects(HttpClient.Redirect.NORMAL)
+      .connectTimeout(Duration.ofSeconds(20))
+      .build();
+
+    HttpRequest request = HttpRequest.newBuilder()
+      .uri(URI.create(repo))
+      .timeout(Duration.ofSeconds(20))
+      .header("accept", "application/json")
+      .build();
+
+    RepoCommitInfo info = null;
+    try {
+      HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+      String body = response.body();
+      JsonElement e = JsonParser.parseString(response.body());
+
+      info = GSON.fromJson(e.getAsJsonArray().get(1), RepoCommitInfo.class);
+
+    } catch (Exception e) {
+      e.printStackTrace(System.err);
+    }
+
+    return info;
+  }
+
+  public static RepoCommitInfo repoCommitInfo = null;// = getRepoInfo();
+
+  public static BotBuildInfo botBuildInfo = null;// = getBuildInfo();
+
   public static Config config;
 
   public static final List<Bot> Bots = new ArrayList<>();
@@ -38,10 +94,10 @@ public class Main {
     final Path configPath = Path.of("config.yaml");
     if (!Files.exists(configPath)) {
       
-      //LoggerManager.INFO(null, "config not found making config now");
+      Logger.INFO(null, "config not found making config now");
 
       InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");
-      Files.copy(defaultConfig, Paths.get("config.yaml"));
+      Files.copy(defaultConfig, configPath);
     }
 
     InputStream configFile = Files.newInputStream(configPath);
@@ -58,14 +114,12 @@ public class Main {
       Config.Options[] bots = config.bots;
 
       console = new ConsoleModule(config);
+
       for (Config.Options options : bots) {
         final Bot bot = new Bot(options, Bots, config);
         Bots.add(bot);
       }
 
-      synchronized(obj) {
-        obj.wait();
-      };
     } catch (Exception e) {
 
     }

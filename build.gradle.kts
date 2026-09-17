@@ -1,11 +1,9 @@
-version = "v9.0.0"
+version = "v9.0.0-alpha"
 group = "nitoribot"
 description = "NitoriBot"
 plugins {
-  id("com.gradleup.shadow") version "9.2.2"
   kotlin("jvm") version "2.3.10"
   id("maven-publish")
-  application
 }
 
 kotlin {
@@ -26,15 +24,7 @@ repositories {
 
   maven("https://maven.maxhenkel.de/repository/public/")
 
- // maven("https://libraries.minecraft.net")
-
- /* maven("https://code.optmstc.dev/api/packages/kso/maven") {
-    content {
-      includeGroupAndSubgroups("land.chipmunk.code")
-    }
-  }*/
-
-  //maven("https://libraries.minecraft.net")
+  maven("https://libraries.minecraft.net")
 
   maven("https://code.chipmunk.land/api/packages/kaboomstandardsorganization/maven/")
 }
@@ -45,18 +35,38 @@ dependencies {
   implementation("org.tinylog:slf4j-tinylog:2.7.0")
   implementation("org.tinylog:tinylog-impl:2.7.0")
   implementation("org.yaml:snakeyaml:2.2")
-  implementation("net.kyori:adventure-text-serializer-ansi:4.26.1")
-  implementation("net.kyori:adventure-text-serializer-plain:4.26.1")
-  implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
-  implementation("net.kyori:adventure-text-serializer-gson:4.26.1")
+  implementation("net.kyori:adventure-text-serializer-ansi:5.2.0")
+  implementation("net.kyori:adventure-text-serializer-plain:5.2.0")
+  implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
+  implementation("net.kyori:adventure-text-serializer-gson:5.2.0")
+  implementation("net.kyori:adventure-text-minimessage:5.2.0")
   implementation("net.dv8tion:JDA:6.4.1")
-  implementation("de.connect2x.trixnity:trixnity-client:5.0.0")
-  implementation("org.pircbotx:pircbotx:2.1")
   implementation("org.jline:jline:4.1.0")
   implementation("land.chipmunk.code.kaboomstandardsorganization.messaginglib:mcprotocollib:3.1.2")
+  implementation("com.mojang:brigadier:1.0.500")
 }
 
-application {
-  mainClass.set("land.chipmunk.parker2991.nitoribot.Main")
-}
+tasks.jar {
+  manifest {
+    attributes["Main-Class"] = "land.chipmunk.parker2991.nitoribot.Main"
+    attributes("Enable-Native-Access" to "ALL-UNNAMED")
+  }
 
+  archiveClassifier.set("all")
+
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  from(sourceSets.main.get().output)
+
+  dependsOn(configurations.runtimeClasspath)
+
+  from(
+    {
+      configurations.runtimeClasspath.get().filter {
+        it.name.endsWith("jar")
+      }.map {
+        zipTree(it)
+      }
+    }
+  )
+}

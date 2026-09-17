@@ -1,15 +1,10 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-
-//import org.jline
 import land.chipmunk.parker2991.nitoribot.Config;
 import land.chipmunk.parker2991.nitoribot.Main;
 import org.jline.reader.*;
-import org.jline.terminal.*;
 
-import javax.sound.sampled.Line;
-import java.io.IOException;
 import java.util.List;
 
 public class ConsoleModule implements Completer {

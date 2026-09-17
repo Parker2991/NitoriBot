@@ -64,7 +64,7 @@ public class CommandCoreModule extends Listener {
       botPos.getZ()
     );
 
-    itemRefill();
+    chatRefill();
   };
 
   public void chatRefill () {
@@ -79,7 +79,7 @@ public class CommandCoreModule extends Listener {
     int endPosZ = pos.getZ() - coreArea.end.getZ();
 
     String command = String.format(
-      "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s}",
+      "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} destroy",
       startPosX,
       startPosY,
       startPosZ,
@@ -200,6 +200,7 @@ public class CommandCoreModule extends Listener {
     Vector3i relativePosition = currentBlockRelative;
     Vector3i corePosition = position;
 
+    if (corePosition == null) return null;
     return new PositionData(
       relativePosition.getX() + corePosition.getX(),
       relativePosition.getY() + corePosition.getY(),
@@ -235,7 +236,7 @@ public class CommandCoreModule extends Listener {
   }
 
   public void commandBlock (String command, boolean doesTrackOutput, boolean conditional, boolean automatic) {
-    if (command.length() > 32767) return;
+    if (command.length() > 32767 || position == null) return;
     bot.session.send(
       new ServerboundSetCommandBlockPacket(
         position,
@@ -249,6 +250,7 @@ public class CommandCoreModule extends Listener {
   }
 
   public void run (String command) {
+
     commandBlock(command, true, false, true);
 
     incrementCurrentBlock();

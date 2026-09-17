@@ -1,16 +1,14 @@
 package land.chipmunk.parker2991.nitoribot.data;
 
 import land.chipmunk.parker2991.nitoribot.util.UUIDUtil;
-
-import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
-import org.geysermc.mcprotocollib.auth.GameProfile;
-
 import net.kyori.adventure.text.Component;
-
-import org.cloudburstmc.math.vector.Vector3d;
+import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import org.jspecify.annotations.Nullable;
 
 import java.util.UUID;
 
+@Nullable
 public class PlayerProfileData {
   public UUID uuid;
   public String entityUUID;

@@ -61,5 +61,6 @@ public class Config {
     public String username;
     public int reconnectDelay;
     public int selfcareInterval;
+    public String mode;
   };
 }
