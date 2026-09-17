@@ -2,34 +2,30 @@ package land.chipmunk.parker2991.nitoribot;
 
 import land.chipmunk.parker2991.nitoribot.data.buildstring.BotBuildInfo;
 import land.chipmunk.parker2991.nitoribot.data.buildstring.RepoCommitInfo;
+import land.chipmunk.parker2991.nitoribot.listeners.Listener;
+import land.chipmunk.parker2991.nitoribot.listeners.ListenerManager;
 import land.chipmunk.parker2991.nitoribot.logger.Logger;
+import land.chipmunk.parker2991.nitoribot.boot.GetProxiesList;
 import land.chipmunk.parker2991.nitoribot.modules.*;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
-import land.chipmunk.parker2991.nitoribot.listeners.*;
 import net.kyori.adventure.text.Component;
-
-import org.geysermc.mcprotocollib.network.ProxyInfo;
-import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
+import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.DisconnectingEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectingEvent;
 import org.geysermc.mcprotocollib.network.event.session.PacketErrorEvent;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
-import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
+import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundPlayerLoadedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
+import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.*;
-import java.nio.file.Paths;
 
 public class Bot extends SessionAdapter {
   public final ListenerManager listenerManager = new ListenerManager();
@@ -82,36 +78,6 @@ public class Bot extends SessionAdapter {
 
   public MCServerModule mcServer;
 
-  public ProxyInfo randomProxyIp () throws IOException {
-    Path proxiesPath = Paths.get("proxies.txt");
-
-    int countLines = Math.round(
-      Files.lines(proxiesPath).count()
-    );
-
-    Random random = new Random();
-
-    int randomIndex = random.nextInt(countLines);
-
-    List<String> lines = Files.lines(proxiesPath).toList();//.toList();
-
-    String[] ip = lines.stream()
-      .skip(randomIndex)
-      .findAny()
-      .get()
-      .split(":");
-
-    InetSocketAddress address = new InetSocketAddress(
-      ip[0],
-      Integer.parseInt(ip[1])
-    );
-
-    return new ProxyInfo(
-      ProxyInfo.Type.SOCKS5,
-      address
-    );
-  }
-
   public void loadModules () {
     try {
       modules = List.of(
@@ -153,7 +119,7 @@ public class Bot extends SessionAdapter {
         options.host,
         options.port
       )
-      .setProxy(randomProxyIp())
+      .setProxy(new GetProxiesList().randomProxyIp())
       .setProtocol(protocol)
       .create();
 
