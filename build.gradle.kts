@@ -1,3 +1,12 @@
+/*
+    ZoneId timezone = ZoneId.of("America/Chicago");
+    ZonedDateTime zoneDate = ZonedDateTime.now(timezone);
+    LocalDate date = zoneDate.toLocalDate();
+    LocalTime time = zoneDate.toLocalTime();
+ */
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 version = "v9.0.0-alpha"
 group = "nitoribot"
 description = "NitoriBot"
@@ -47,11 +56,16 @@ dependencies {
 }
 
 tasks.jar {
+  val dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss a")
+  val dateTimeInfo = LocalDateTime.now();
+
   manifest {
     attributes["Main-Class"] = "land.chipmunk.parker2991.nitoribot.Main"
+    attributes("Build-Time" to dateTimeFormatter.format(dateTimeInfo))
+    //attributes["Build-Time"] = dateTimeFormatter.format(dateTimeInfo);
     attributes("Enable-Native-Access" to "ALL-UNNAMED")
   }
-
+//"Custom-Attribute-Name" to "YourCustomValue"
   archiveClassifier.set("all")
 
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE

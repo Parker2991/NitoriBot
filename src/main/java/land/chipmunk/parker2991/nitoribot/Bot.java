@@ -34,6 +34,10 @@ import java.nio.file.Paths;
 public class Bot extends SessionAdapter {
   public final ListenerManager listenerManager = new ListenerManager();
 
+  //public static final List modulesList = new ArrayList<>();
+
+  public List<?> modules;
+
   public boolean loggedIn = false;
 
   public int entityId;
@@ -46,7 +50,7 @@ public class Bot extends SessionAdapter {
 
   public BotBuildInfo botBuildInfo = Main.botBuildInfo;
 
-  public RepoCommitInfo repoCommitInfo;
+  public RepoCommitInfo repoCommitInfo = Main.repoCommitInfo;
 
   public ClientNetworkSession session;
 
@@ -110,19 +114,21 @@ public class Bot extends SessionAdapter {
 
   public void loadModules () {
     try {
-      this.chat = new ChatModule(this);
-      this.selfcare = new SelfcareModule(this);
-      this.position = new PositionModule(this);
-      this.core = new CommandCoreModule(this);
-      this.registry = new RegistryModule(this);
-      this.players = new PlayerListModule(this);
-      new LoggingModule(this);
-      new ChatCommandHandlerModule(this);
-      this.commandManager = new CommandManagerModule(this);
-      this.extrasMessaging = new ExtrasMessagingModule(this);
-      new TextDisplayModule(this);
-      this.mcServer = new MCServerModule(this);
-      new CommandSpyModule(this);
+      modules = List.of(
+        this.chat = new ChatModule(this),
+        this.selfcare = new SelfcareModule(this),
+        this.position = new PositionModule(this),
+        this.core = new CommandCoreModule(this),
+        this.registry = new RegistryModule(this),
+        this.players = new PlayerListModule(this),
+        new LoggingModule(this),
+        new ChatCommandHandlerModule(this),
+        this.commandManager = new CommandManagerModule(this),
+        this.extrasMessaging = new ExtrasMessagingModule(this),
+        new TextDisplayModule(this),
+        this.mcServer = new MCServerModule(this),
+        new CommandSpyModule(this)
+      );
     } catch (Exception e) {
     }
   }
@@ -132,41 +138,20 @@ public class Bot extends SessionAdapter {
     this.bots = bots;
     this.config = config;
 
-    Main.services.put(
+    /*Main.services.put(
       "bot build information",
       executorService.submit(() -> {
         this.botBuildInfo = Main.getBuildInfo();
         this.repoCommitInfo = Main.getRepoInfo();
       })
-    );
+    );*/
 
     try {
       connect();
     } catch (Exception e) {
       e.printStackTrace(System.err);
     }
-
-    Future<?> botBuildThread = services.get("bot build information");
-    if (botBuildThread != null) {
-      try {
-        executorService.submit(() -> {
-          try {
-            Thread.sleep(5000);
-          } catch (InterruptedException e) {
-
-          }
-          botBuildThread.cancel(true);
-        }).cancel(true);
-         /*
-          i counted how long it takes to get the repo info via https
-          which is approximately 2 - 3 seconds
-          so clear the thread after 3 seconds
-         */
-      } catch (Exception e) {
-
-      }
-    }
-  };
+  }
 
   public void connect () throws IOException {
     final MinecraftProtocol protocol = new MinecraftProtocol(options.username);

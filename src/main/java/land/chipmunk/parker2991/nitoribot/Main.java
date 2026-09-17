@@ -71,7 +71,7 @@ public class Main {
       String body = response.body();
       JsonElement e = JsonParser.parseString(response.body());
 
-      info = GSON.fromJson(e.getAsJsonArray().get(1), RepoCommitInfo.class);
+      info = GSON.fromJson(e.getAsJsonArray().get(0), RepoCommitInfo.class);
 
     } catch (Exception e) {
       e.printStackTrace(System.err);
@@ -84,7 +84,7 @@ public class Main {
 
   public static BotBuildInfo botBuildInfo = null;// = getBuildInfo();
 
-  public static Config config;
+  public Config config;
 
   public static final List<Bot> Bots = new ArrayList<>();
 
@@ -114,6 +114,9 @@ public class Main {
       Config.Options[] bots = config.bots;
 
       console = new ConsoleModule(config);
+
+      repoCommitInfo = getRepoInfo();
+      botBuildInfo = getBuildInfo();
 
       for (Config.Options options : bots) {
         final Bot bot = new Bot(options, Bots, config);

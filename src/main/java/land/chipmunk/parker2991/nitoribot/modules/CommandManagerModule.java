@@ -13,6 +13,7 @@ import land.chipmunk.parker2991.nitoribot.util.ErrorToString;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +75,7 @@ public class CommandManagerModule {
     this.execute(source, commandName, args);
   }
 
-  public CommandManagerModule (Bot bot) {
+  public CommandManagerModule (Bot bot) throws IOException {
     this.bot = bot;
 
     registerCommand(new EchoCommand());
