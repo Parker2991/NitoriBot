@@ -9,14 +9,14 @@ import java.io.Reader;
 import java.util.Objects;
 
 public class GetBotBuildInfo {
-  private static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
-  public BotBuildInfo getBuildInfo () {
-    Reader reader = new InputStreamReader(
-      Objects.requireNonNull(Main.class
-        .getResourceAsStream("/info.json"))
-    );
+    public BotBuildInfo getBuildInfo () {
+        Reader reader = new InputStreamReader(
+            Objects.requireNonNull(Main.class
+                .getResourceAsStream("/info.json"))
+        );
 
-    return GSON.fromJson(reader, BotBuildInfo.class);
-  }
+        return GSON.fromJson(reader, BotBuildInfo.class);
+    }
 }

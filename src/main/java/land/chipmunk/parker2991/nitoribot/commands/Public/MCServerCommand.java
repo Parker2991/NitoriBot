@@ -3,30 +3,28 @@ package land.chipmunk.parker2991.nitoribot.commands.Public;
 import land.chipmunk.parker2991.nitoribot.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.command.CommandTrustLevels;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MCServerCommand extends CommandInfo {
-  public MCServerCommand () {
-    super(
-      "mcserver",
-      CommandTrustLevels.PUBLIC,
-      new String[] { "minecraftserver" },
-      "ping a minecraft server"
-    );
-  }
+    public MCServerCommand () {
+        super(
+            "mcserver",
+            CommandTrustLevels.PUBLIC,
+            new String[]{ "minecraftserver" },
+            "ping a minecraft server"
+        );
+    }
 
-  @Override
-  public void execute (CommandContext context) {
-    var bot = context.bot;
-    var source = context.source;
-    String args = String.join(" ", context.args);
+    @Override
+    public void execute (CommandContext context) {
+        var bot = context.bot();
+        var source = context.source();
+        String args = String.join(" ", context.args());
 
-    var ip = args.split(":");
+        var ip = args.split(":");
 
-    var info = bot.mcServer.pingServer(ip);
+        var info = bot.mcServer.pingServer(ip);
 
-    System.out.println(info);
+        System.out.println(info);
 
     /*source.sendFeedback(
       Component.translatable(
@@ -46,8 +44,8 @@ public class MCServerCommand extends CommandInfo {
       )
     );*/
 
-    //source.sendFeedback(info.description());
-  }
+        //source.sendFeedback(info.description());
+    }
 }
 /*
 [logs] [System Chat] Ip: kaboom.pw:25565

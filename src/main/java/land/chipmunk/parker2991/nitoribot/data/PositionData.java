@@ -1,3 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.data;
 
-public record PositionData (int x, int y, int z) {}
+import org.cloudburstmc.math.vector.Vector3d;
+
+public record PositionData(float pitch, float yaw, Vector3d position) {
+}

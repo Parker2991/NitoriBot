@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ListenerManager {
-  public final List<Listener> listeners = new CopyOnWriteArrayList<>();
+    public final List<Listener> listeners = new CopyOnWriteArrayList<>();
 
-  public void addListener (Listener listener) {
-    listeners.add(listener);
-  }
+    public void addListener (Listener listener) {
+        listeners.add(listener);
+    }
 
-  public void removeListener (Listener listener) {
-    listeners.remove(listener);
-  }
+    public void removeListener (Listener listener) {
+        listeners.remove(listener);
+    }
 
-  public void clearListener () {
-    listeners.clear();
-  }
+    public void clearListener () {
+        listeners.clear();
+    }
 }

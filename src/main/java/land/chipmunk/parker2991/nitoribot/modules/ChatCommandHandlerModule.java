@@ -6,54 +6,55 @@ import land.chipmunk.parker2991.nitoribot.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.data.ParsedChatType;
 import land.chipmunk.parker2991.nitoribot.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.data.chat.PlayerMessageData;
-import land.chipmunk.parker2991.nitoribot.listeners.*;
+import land.chipmunk.parker2991.nitoribot.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
-
-import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ChatCommandHandlerModule extends Listener {
-  private Bot bot;
+    private @NotNull final Bot bot;
+    private @NotNull final Config config;
 
-  @Override
-  public void parsedMessage (Component message, PlayerMessageData data) {
-    if (data.chatType != "minecraft:chat") return;
+    @Override
+    public void parsedMessage ( PlayerMessageData data) {
+        if (!data.chatType().equals("minecraft:chat")) return;
 
-    List<String> prefixes = bot.config.prefixes;
+        List<String> prefixes = config.prefixes;
 
-    for (String prefix : prefixes) {
-      String plainMessage = ComponentUtil.componentToString(data.contents);
+        for (String prefix : prefixes) {
+            String plainMessage = ComponentUtil.componentToString(data.contents());
 
-      if (!plainMessage.startsWith(prefix)) return;
+            if (!plainMessage.startsWith(prefix)) return;
 
-      String command = plainMessage.substring(prefix.length());
+            String command = plainMessage.substring(prefix.length());
 
-      CommandSource source = new CommandSource(bot, ParsedChatType.NORMAL, data.sender);
+            CommandSource source = new CommandSource(bot, ParsedChatType.NORMAL, data.sender());
 
-      bot.commandManager.executeString(source, command);
+            bot.commandManager.executeString(source, command);
 
+        }
     }
-  }
 
-  @Override
-  public void commandSpyReceived (PlayerProfileData player, String message) {
-    List<String> prefixes = bot.config.prefixes;
+    @Override
+    public void commandSpyReceived (PlayerProfileData player, String message) {
+        List<String> prefixes = config.prefixes;
 
-    for (String prefix : prefixes) {
-      if (!message.startsWith(prefix)) return;
+        for (String prefix : prefixes) {
+            if (!message.startsWith(prefix)) return;
 
-      String command = message.substring(prefix.length());
+            String command = message.substring(prefix.length());
 
-      CommandSource source = new CommandSource(bot, ParsedChatType.COMMANDSPY, player);
+            CommandSource source = new CommandSource(bot, ParsedChatType.COMMANDSPY, player);
 
-      bot.commandManager.executeString(source, command);
+            bot.commandManager.executeString(source, command);
+        }
     }
-  }
 
-  public ChatCommandHandlerModule (Bot bot) {
-    this.bot = bot;
+    public ChatCommandHandlerModule (Bot bot) {
+        this.bot = bot;
+        this.config = bot.config;
 
-    bot.listenerManager.addListener(this);
-  }
+        bot.listenerManager.addListener(this);
+    }
 }

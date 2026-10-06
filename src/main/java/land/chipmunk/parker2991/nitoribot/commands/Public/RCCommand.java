@@ -9,22 +9,22 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RCCommand extends CommandInfo {
-  public RCCommand () {
-    super(
-      "rc",
-      CommandTrustLevels.PUBLIC,
-      new String[] { "refill", "refillcore" },
-      "refill the bot's core"
-    );
-  }
+    public RCCommand () {
+        super(
+            "rc",
+            CommandTrustLevels.PUBLIC,
+            new String[]{ "refill", "refillcore" },
+            "refill the bot's core"
+        );
+    }
 
-  @Override
-  public void execute (CommandContext context) {
-    Bot bot = context.bot;
-    CommandSource source = context.source;
+    @Override
+    public void execute (CommandContext context) {
+        Bot bot = context.bot();
+        CommandSource source = context.source();
 
-    bot.core.move();
+        bot.core.move();
 
-    source.sendFeedback(Component.text("Refilling core").color(NamedTextColor.BLUE));
-  }
+        source.sendFeedback(Component.text("Refilling core").color(NamedTextColor.BLUE));
+    }
 }

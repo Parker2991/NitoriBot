@@ -1,46 +1,46 @@
 package land.chipmunk.parker2991.nitoribot.modules;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.Config;
 import land.chipmunk.parker2991.nitoribot.Main;
 import org.jline.reader.*;
 
 import java.util.List;
 
 public class ConsoleModule implements Completer {
-  private static final List<Bot> servers = Main.Bots;
+    private static final List<Bot> servers = Main.Bots;
 
-  public LineReader reader;
+    public final LineReader reader;
 
-  public String server = "all";
+    public final String server = "all";
 
-  @Override
-  public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
+    @Override
+    public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
 
-  }
-
-  private void handleLine (String line) {
-    for (Bot bot : servers) {
-      if (line.equals("c.kill")) System.exit(0);
-      bot.chat.send(line);
     }
-  }
 
-  public ConsoleModule (Config config) {
-    this.reader = LineReaderBuilder.builder()
-      .completer(this)
-      .build();
+    private void handleLine (String line) {
+        for (Bot bot : servers) {
+            if (line.equals(bot.config.console.prefix + "kill")) System.exit(0);
+            bot.chat.send(line);
+        }
+    }
 
-    Main.executorService.submit(() -> {
-      while (true) {
-        try {
-          String line = null;
+    public ConsoleModule () {
+        this.reader = LineReaderBuilder.builder()
+            .completer(this)
+            .build();
 
-          line = reader.readLine(String.format("[%s] > ", this.server));
+        Main.executorService.submit(() -> {
+            while (true) {
+                try {
+                    String line;
 
-          handleLine(line);
-        } catch (Exception e) {}
-      }
-    }, "Console Thread");
-  }
+                    line = reader.readLine(String.format("[%s] > ", this.server));
+
+                    handleLine(line);
+                } catch (Exception _) {
+                }
+            }
+        }, "Console Thread");
+    }
 }

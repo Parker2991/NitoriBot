@@ -10,50 +10,44 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.util.List;
 
 public class CommandSpyModule extends Listener {
-  private Bot bot;
+    private final Bot bot;
 
-  private static final String COLON = ":";
+    private static final String SLASH = "/";
 
-  private static final String SLASH = "/";
+    @Override
+    public void systemChatReceived (Component data) {
+        @Unmodifiable List<Component> children = data.children();
 
-  @Override
-  public void systemChatReceived (Component data) {
-    @Unmodifiable List<Component> children = data.children();
+        if (!(children.get(1) instanceof final TextComponent commandComponent)) return;
 
-    TextComponent userComponent = null;
+        if (!(data instanceof final TextComponent userComponent)) return;
 
-    TextComponent commandComponent = null;
+        PlayerProfileData sender = null;
 
-    if (children.get(1) instanceof final TextComponent textComponent) commandComponent = textComponent;
+        for (PlayerProfileData player : bot.players.list) {
+            String username = player.profile().getName();
 
-    if (data instanceof final TextComponent textComponent) userComponent = textComponent;
+            if (username.equals(userComponent.content())) sender = player;
+        }
 
-    PlayerProfileData sender = null;
+        String command = commandComponent.content().substring(SLASH.length());
 
-    for (PlayerProfileData player : bot.players.list) {
-      String username = player.profile.getName();
-
-      if (username.equals(userComponent.content())) sender = player;
+        if (
+            (
+                commandComponent.content().contains(SLASH + command)
+                    &&
+                    sender != null
+            )
+        ) {
+            for (Listener listener : bot.listenerManager.listeners) {
+                listener.commandSpyReceived(sender, command);
+            }
+        }
     }
 
-    String command = commandComponent.content().substring(SLASH.length());
+    public CommandSpyModule (Bot bot) {
+        this.bot = bot;
 
-    if (
-      (
-        commandComponent.content().contains(SLASH + command)
-          &&
-          sender != null
-      )
-    ) {
-      for (Listener listener : bot.listenerManager.listeners) {
-        listener.commandSpyReceived(sender, command);
-      }
+        bot.listenerManager.addListener(this);
     }
-  }
-
-  public CommandSpyModule (Bot bot) {
-    this.bot = bot;
-
-    bot.listenerManager.addListener(this);
-  }
 }
