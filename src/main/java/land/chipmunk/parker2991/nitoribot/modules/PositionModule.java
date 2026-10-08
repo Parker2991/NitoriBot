@@ -43,17 +43,19 @@ public class PositionModule implements Listener {
         positionData = new PositionData(packet.getXRot(), packet.getYRot(), packet.getPosition());
 
         if (bot.options.mode.equals("totalfreedom")) {
-            if (i < 5) timer = bot.executor.scheduleAtFixedRate(() -> {
-                System.out.println(i);
-                x += 1;
-                z += 1;
+            if (i < 5) timer = bot.executor.scheduleAtFixedRate(
+                () -> {
+                    System.out.println(i);
+                    x += 1;
+                    z += 1;
 
-                bot.session.send(new ServerboundMovePlayerPosPacket(false, false, x, y, z));
-                System.out.println("moved");
-                System.out.println(x);
-                i++;
-                if (i > 5) timer.cancel(true);
-            }, 5000, 5000, TimeUnit.MILLISECONDS);
+                    bot.session.send(new ServerboundMovePlayerPosPacket(false, false, x, y, z));
+                    System.out.println("moved");
+                    System.out.println(x);
+                    i++;
+                    if (i > 5) timer.cancel(true);
+                }, 5000, 5000, TimeUnit.MILLISECONDS
+            );
         }
 
         bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));

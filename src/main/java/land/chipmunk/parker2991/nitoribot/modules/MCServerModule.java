@@ -38,20 +38,41 @@ public class MCServerModule {
             //.setAddress(host[0], Integer.parseInt(host[1]))
             .setProtocol(protocol).create();
 
-        client.send(new ServerboundClientInformationPacket("en_us", 1, ChatVisibility.FULL, true, skinParts, HandPreference.RIGHT_HAND, false, true, ParticleStatus.ALL));
+        client.send(new ServerboundClientInformationPacket(
+            "en_us",
+            1,
+            ChatVisibility.FULL,
+            true,
+            skinParts,
+            HandPreference.RIGHT_HAND,
+            false,
+            true,
+            ParticleStatus.ALL
+        ));
 
         client.setFlag(MinecraftConstants.SESSION_SERVICE_KEY, sessionService);
 
-        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (Session session, ServerStatusInfo info) -> {
-            assert info.getVersionInfo() != null;
-            assert info.getPlayerInfo() != null;
+        client.setFlag(
+            MinecraftConstants.SERVER_INFO_HANDLER_KEY, (Session session, ServerStatusInfo info) -> {
+                assert info.getVersionInfo() != null;
+                assert info.getPlayerInfo() != null;
 
-            serverData.set(new PingServerData(info.getVersionInfo().getVersionName(), info.getVersionInfo().getProtocolVersion(), info.getPlayerInfo().getOnlinePlayers(), info.getPlayerInfo().getMaxPlayers(), info.getDescription()));
-        });
+                serverData.set(new PingServerData(
+                    info.getVersionInfo().getVersionName(),
+                    info.getVersionInfo().getProtocolVersion(),
+                    info.getPlayerInfo().getOnlinePlayers(),
+                    info.getPlayerInfo().getMaxPlayers(),
+                    info.getDescription()
+                ));
+            }
+        );
 
         System.out.println(serverData);
 
-        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, (session, pingTime) -> serverData.get().latency(pingTime));
+        client.setFlag(
+            MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY,
+            (session, pingTime) -> serverData.get().latency(pingTime)
+        );
         bot.executor.submit(() -> client.connect());
 
         return serverData.get();

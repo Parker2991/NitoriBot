@@ -58,8 +58,19 @@ public class HelpCommand implements CommandInfo {
 
         for (CommandInfo commands : bot.commandManager.commands) {
             for (String aliases : commands.getAliases()) {
-                if (aliases.equals(command[0]))
-                    component = Component.translatable("%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s", Component.text("Command").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getAliases().getFirst()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Aliases").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getAliases().toString()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Description").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getDescription()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Trust Level").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getTrustLevel().toString()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Usages").color(convertColorString(bot.config.colors.commands.primary)), Component.text("DUMMY STRING").color(convertColorString(bot.config.colors.commands.secondary))).color(convertColorString(bot.config.colors.commands.tertiary));
+                if (aliases.equals(command[0])) component = Component.translatable(
+                    "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
+                    Component.text("Command").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(commands.getAliases().getFirst()).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Aliases").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(commands.getAliases().toString()).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Description").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(commands.getDescription()).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Trust Level").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(commands.getTrustLevel().toString()).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Usages").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text("DUMMY STRING").color(convertColorString(bot.config.colors.commands.secondary))
+                ).color(convertColorString(bot.config.colors.commands.tertiary));
             }
         }
         return component;
@@ -76,9 +87,20 @@ public class HelpCommand implements CommandInfo {
             return;
         }
 
-        Component helpLayout = Component.translatable("%s: (%s) (%s | %s | %s | %s) ›\n", Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)), Component.text(String.valueOf(bot.commandManager.commands.size())).color(convertColorString(bot.config.colors.integer)), Component.text("Public").color(convertColorString(bot.config.colors.help.Public)), Component.text("Trusted").color(convertColorString(bot.config.colors.help.trusted)), Component.text("Admin").color(convertColorString(bot.config.colors.help.admin)), Component.text("Owner").color(convertColorString(bot.config.colors.help.owner)));
+        Component helpLayout = Component.translatable(
+            "%s: (%s) (%s | %s | %s | %s) ›\n",
+            Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)),
+            Component.text(String.valueOf(bot.commandManager.commands.size())).color(convertColorString(bot.config.colors.integer)),
+            Component.text("Public").color(convertColorString(bot.config.colors.help.Public)),
+            Component.text("Trusted").color(convertColorString(bot.config.colors.help.trusted)),
+            Component.text("Admin").color(convertColorString(bot.config.colors.help.admin)),
+            Component.text("Owner").color(convertColorString(bot.config.colors.help.owner))
+        );
 
-        Component component = Component.empty().append(helpLayout).append(Component.join(JoinConfiguration.separator(Component.space()), getCommands(bot))).color(convertColorString(bot.config.colors.commands.tertiary));
+        Component component = Component.empty().append(helpLayout).append(Component.join(
+            JoinConfiguration.separator(Component.space()),
+            getCommands(bot)
+        )).color(convertColorString(bot.config.colors.commands.tertiary));
 
         source.sendFeedback(bot, component);
     }

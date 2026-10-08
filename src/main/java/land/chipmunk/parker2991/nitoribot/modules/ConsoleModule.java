@@ -16,18 +16,20 @@ public class ConsoleModule implements Completer {
     public ConsoleModule () {
         this.reader = LineReaderBuilder.builder().completer(this).build();
 
-        Main.executorService.submit(() -> {
-            while (true) {
-                try {
-                    String line;
+        Main.executorService.submit(
+            () -> {
+                while (true) {
+                    try {
+                        String line;
 
-                    line = reader.readLine(String.format("[%s] > ", this.server));
+                        line = reader.readLine(String.format("[%s] > ", this.server));
 
-                    handleLine(line);
-                } catch (Exception _) {
+                        handleLine(line);
+                    } catch (Exception _) {
+                    }
                 }
-            }
-        }, "Console Thread");
+            }, "Console Thread"
+        );
     }
 
     @Override

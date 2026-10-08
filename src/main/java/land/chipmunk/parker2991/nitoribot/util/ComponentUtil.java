@@ -32,8 +32,10 @@ public final class ComponentUtil {
     private static final int MAX_DEPTH = 512; //translate depth limit
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder() // 1.21.5+ gson serializer
         .build();
-    private static final ANSIComponentSerializer ANSI_COMPONENT_SERIALIZER = ANSIComponentSerializer.builder().flattener(getFlattener(true)).colorLevel(ColorLevel.TRUE_COLOR).build();
-    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.builder().flattener(getFlattener(false)).build();
+    private static final ANSIComponentSerializer ANSI_COMPONENT_SERIALIZER = ANSIComponentSerializer.builder().flattener(
+        getFlattener(true)).colorLevel(ColorLevel.TRUE_COLOR).build();
+    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.builder().flattener(
+        getFlattener(false)).build();
 
     public static NamedTextColor convertColorString (String color) {
         return NamedTextColor.NAMES.value(color);
@@ -55,7 +57,16 @@ public final class ComponentUtil {
     }
 
     private static ComponentFlattener getFlattener (boolean parseSectionSigns) {
-        return ComponentFlattener.builder().mapper(TextComponent.class, component -> mapText(component, parseSectionSigns)).mapper(ObjectComponent.class, ComponentUtil::mapObject).complexMapper(KeybindComponent.class, ComponentUtil::mapKeybind).mapper(SelectorComponent.class, SelectorComponent::pattern).complexMapper(TranslatableComponent.class, ComponentUtil::mapTranslatable).unknownMapper(_ -> "").nestingLimit(MAX_DEPTH) //max depth for nested mapper calls
+        return ComponentFlattener.builder().mapper(
+                TextComponent.class,
+                component -> mapText(component, parseSectionSigns)
+            ).mapper(ObjectComponent.class, ComponentUtil::mapObject).complexMapper(
+                KeybindComponent.class,
+                ComponentUtil::mapKeybind
+            ).mapper(SelectorComponent.class, SelectorComponent::pattern).complexMapper(
+                TranslatableComponent.class,
+                ComponentUtil::mapTranslatable
+            ).unknownMapper(_ -> "").nestingLimit(MAX_DEPTH) //max depth for nested mapper calls
             .build();
     }
 
@@ -71,7 +82,11 @@ public final class ComponentUtil {
         try {
             return serializer.serialize(message);
         } catch (Exception e) {
-            return serializer.serialize(Component.translatable("<Failed to parse component: %s>", NamedTextColor.RED, Component.text(e.toString())));
+            return serializer.serialize(Component.translatable(
+                "<Failed to parse component: %s>",
+                NamedTextColor.RED,
+                Component.text(e.toString())
+            ));
         } finally {
             TOTAL_DEPTH.set(0); //set translate depth to 0 after component is parsed
         }
@@ -110,7 +125,8 @@ public final class ComponentUtil {
         return switch (content) {
             case SpriteObjectContents c -> "<Sprite:" + c.sprite() + ">";
             case PlayerHeadObjectContents c ->
-                "<PlayerHead:" + componentToString(Component.translatable("block.minecraft.player_head.named").arguments(Component.text((c.name() != null) ? Objects.requireNonNull(c.name()) : "Unknown"))) + ">";
+                "<PlayerHead:" + componentToString(Component.translatable("block.minecraft.player_head.named").arguments(
+                    Component.text((c.name() != null) ? Objects.requireNonNull(c.name()) : "Unknown"))) + ">";
         };
     }
 

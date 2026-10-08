@@ -37,6 +37,9 @@ public class RCCommand implements CommandInfo {
 
         bot.core.move();
 
-        source.sendFeedback(bot, Component.text("Refilling core").color(convertColorString(bot.config.colors.commands.primary)));
+        source.sendFeedback(
+            bot,
+            Component.text("Refilling core").color(convertColorString(bot.config.colors.commands.primary))
+        );
     }
 }

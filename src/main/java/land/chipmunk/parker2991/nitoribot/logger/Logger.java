@@ -78,7 +78,15 @@ public class Logger {
         if (bot == null) host = Component.text("NitoriBot Jar").color(NamedTextColor.BLUE);
         else host = Component.text(bot.options.host + ":" + bot.options.port).color(NamedTextColor.BLUE);
 
-        component = Component.translatable("[%s %s %s] [%s] [%s] %s", Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE), Component.translatable(formatDate.format(date)).color(NamedTextColor.BLUE), type, Component.translatable(Thread.currentThread().getName()).color(NamedTextColor.BLUE), host, Component.translatable(message).color(NamedTextColor.WHITE)).color(NamedTextColor.DARK_BLUE);
+        component = Component.translatable(
+            "[%s %s %s] [%s] [%s] %s",
+            Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE),
+            Component.translatable(formatDate.format(date)).color(NamedTextColor.BLUE),
+            type,
+            Component.translatable(Thread.currentThread().getName()).color(NamedTextColor.BLUE),
+            host,
+            Component.translatable(message).color(NamedTextColor.WHITE)
+        ).color(NamedTextColor.DARK_BLUE);
 
         String log = ComponentUtil.componentToAnsi(component);
 

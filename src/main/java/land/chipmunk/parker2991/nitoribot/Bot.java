@@ -57,7 +57,21 @@ public class Bot extends SessionAdapter {
         this.bots = bots;
         this.config = config;
 
-        this.modules = List.of(this.chat = new ChatModule(this), new SelfcareModule(this), this.position = new PositionModule(this), this.core = new CommandCoreModule(this), this.registry = new RegistryModule(this), this.players = new PlayerListModule(this), new LoggingModule(this), new ChatCommandHandlerModule(this), this.commandManager = new CommandManagerModule(this), new TextDisplayModule(this), this.mcServer = new MCServerModule(this), new CommandSpyModule(this), this.world = new WorldModule(this));
+        this.modules = List.of(
+            this.chat = new ChatModule(this),
+            new SelfcareModule(this),
+            this.position = new PositionModule(this),
+            this.core = new CommandCoreModule(this),
+            this.registry = new RegistryModule(this),
+            this.players = new PlayerListModule(this),
+            new LoggingModule(this),
+            new ChatCommandHandlerModule(this),
+            this.commandManager = new CommandManagerModule(this),
+            new TextDisplayModule(this),
+            this.mcServer = new MCServerModule(this),
+            new CommandSpyModule(this),
+            this.world = new WorldModule(this)
+        );
 
         try {
             connect();
@@ -69,11 +83,15 @@ public class Bot extends SessionAdapter {
     public void connect () throws IOException {
         final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
-        if (options.useProxy)
-            session = ClientNetworkSessionFactory.factory().setAddress(options.host, options.port).setProxy(new GetProxiesList().randomProxyIp()).setProtocol(protocol).create();
+        if (options.useProxy) session = ClientNetworkSessionFactory.factory().setAddress(
+            options.host,
+            options.port
+        ).setProxy(new GetProxiesList().randomProxyIp()).setProtocol(protocol).create();
 
-        else
-            session = ClientNetworkSessionFactory.factory().setAddress(options.host, options.port).setProtocol(protocol).create();
+        else session = ClientNetworkSessionFactory.factory().setAddress(
+            options.host,
+            options.port
+        ).setProtocol(protocol).create();
         session.addListener(this);
         session.connect(false);
     }
@@ -136,12 +154,16 @@ public class Bot extends SessionAdapter {
 
         if (services.get("reconnect") != null) services.get("reconnect").cancel(true);
 
-        services.put("reconnect", executor.schedule(() -> {
-            try {
-                connect();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }, options.reconnectDelay, TimeUnit.MILLISECONDS));
+        services.put(
+            "reconnect", executor.schedule(
+                () -> {
+                    try {
+                        connect();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, options.reconnectDelay, TimeUnit.MILLISECONDS
+            )
+        );
     }
 }

@@ -44,9 +44,18 @@ public class TestCommand implements CommandInfo {
 
         var source = context.source();
 
-        var component = MINI_MESSAGE.deserialize(String.format("%s%s %s %s %s %s %s%s%s", "<gradient:dark_aqua:aqua:blue:dark_blue:light_purple:dark_purple>", // gradient shenanigans
-            "Hello World! User:", source.sender().profile().getName(), "UUID:", source.sender().uuid(), "Args:", "<rainbow>", // we gotta turn the arguments gay!
-            args, "</gradient>"));
+        var component = MINI_MESSAGE.deserialize(String.format(
+            "%s%s %s %s %s %s %s%s%s",
+            "<gradient:dark_aqua:aqua:blue:dark_blue:light_purple:dark_purple>", // gradient shenanigans
+            "Hello World! User:",
+            source.sender().profile().getName(),
+            "UUID:",
+            source.sender().uuid(),
+            "Args:",
+            "<rainbow>", // we gotta turn the arguments gay!
+            args,
+            "</gradient>"
+        ));
 
         source.sendFeedback(bot, component);
     }

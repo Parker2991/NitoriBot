@@ -76,7 +76,15 @@ public class ChatModule implements Listener {
 
         TextComponent textComponent = (TextComponent) targetUsername;
 
-        parseMessage(message, new PlayerMessageData(bot.players.getPlayerByUsername(textComponent.content()), packet.getMessage(), "minecraft:chat", Objects.requireNonNull(bot.players.getPlayerByUsername(textComponent.content())).displayName()));
+        parseMessage(
+            message,
+            new PlayerMessageData(
+                bot.players.getPlayerByUsername(textComponent.content()),
+                packet.getMessage(),
+                "minecraft:chat",
+                Objects.requireNonNull(bot.players.getPlayerByUsername(textComponent.content())).displayName()
+            )
+        );
     }
 
     public void playerChat (ClientboundPlayerChatPacket packet) {
@@ -87,7 +95,15 @@ public class ChatModule implements Listener {
             listener.playerChatReceived(unsignedContent);
         }
 
-        parseMessage(unsignedContent, new PlayerMessageData(bot.players.getPlayerUUID(packet.getSender()), content, "minecraft:chat", Objects.requireNonNull(bot.players.getPlayerUUID(packet.getSender())).displayName()));
+        parseMessage(
+            unsignedContent,
+            new PlayerMessageData(
+                bot.players.getPlayerUUID(packet.getSender()),
+                content,
+                "minecraft:chat",
+                Objects.requireNonNull(bot.players.getPlayerUUID(packet.getSender())).displayName()
+            )
+        );
     }
 
     public void parseMessage (Component message, PlayerMessageData data) {
@@ -124,7 +140,12 @@ public class ChatModule implements Listener {
     }
 
     public void tellraw (String selector, Component message) {
-        bot.core.run(String.format("%s %s %s", "minecraft:tellraw", selector, GsonComponentSerializer.gson().serialize(message).trim()));
+        bot.core.run(String.format(
+            "%s %s %s",
+            "minecraft:tellraw",
+            selector,
+            GsonComponentSerializer.gson().serialize(message).trim()
+        ));
     }
 
 }

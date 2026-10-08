@@ -143,7 +143,20 @@ public class PlayerListModule implements Listener {
 
         if (findDuplicatePlayer != null) list.remove(findDuplicatePlayer);
 
-        PlayerProfileData formatPlayerData = new PlayerProfileData(player.getProfileId(), null, player.getProfile(), player.isListed(), player.getLatency(), player.getGameMode(), player.getDisplayName(), player.isShowHat(), player.getListOrder(), null, null, null);
+        PlayerProfileData formatPlayerData = new PlayerProfileData(
+            player.getProfileId(),
+            null,
+            player.getProfile(),
+            player.isListed(),
+            player.getLatency(),
+            player.getGameMode(),
+            player.getDisplayName(),
+            player.isShowHat(),
+            player.getListOrder(),
+            null,
+            null,
+            null
+        );
 
         list.add(formatPlayerData);
     }

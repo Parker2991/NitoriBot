@@ -50,8 +50,13 @@ public class CommandManagerModule {
         try {
             CommandInfo command = getCommand(commandName.toLowerCase());
 
-            if (command == null)
-                throw new CommandError(Component.translatable("%s%s%s %s", Component.translatable("command.unknown.command"), Component.text("\n"), Component.text(commandName).color(NamedTextColor.GRAY), Component.translatable("command.context.here")).color(NamedTextColor.RED));
+            if (command == null) throw new CommandError(Component.translatable(
+                "%s%s%s %s",
+                Component.translatable("command.unknown.command"),
+                Component.text("\n"),
+                Component.text(commandName).color(NamedTextColor.GRAY),
+                Component.translatable("command.context.here")
+            ).color(NamedTextColor.RED));
 
             CommandContext context = new CommandContext(bot, args, source);
 

@@ -57,8 +57,15 @@ public class InfoCommand implements CommandInfo {
         GsonComponentSerializer gson = GsonComponentSerializer.gson();
 
         switch (args[0].toLowerCase()) {
-            case "loaded" ->
-                component = Component.translatable("%s: %s\n%s: %s\n%s: %s", Component.text("Modules").color(convertColorString(bot.config.colors.commands.primary)), Component.text(bot.modules.size()).color(convertColorString(bot.config.colors.integer)), Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)), Component.text(bot.commandManager.commands.size()).color(convertColorString(bot.config.colors.integer)), Component.text("Chat Parsers").color(convertColorString(bot.config.colors.commands.primary)), Component.text(bot.chat.chatParsers.size()).color(convertColorString(bot.config.colors.integer)));
+            case "loaded" -> component = Component.translatable(
+                "%s: %s\n%s: %s\n%s: %s",
+                Component.text("Modules").color(convertColorString(bot.config.colors.commands.primary)),
+                Component.text(bot.modules.size()).color(convertColorString(bot.config.colors.integer)),
+                Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)),
+                Component.text(bot.commandManager.commands.size()).color(convertColorString(bot.config.colors.integer)),
+                Component.text("Chat Parsers").color(convertColorString(bot.config.colors.commands.primary)),
+                Component.text(bot.chat.chatParsers.size()).color(convertColorString(bot.config.colors.integer))
+            );
 
             case "version" -> {
                 BotBuildInfo info = bot.botBuildInfo;
@@ -69,7 +76,25 @@ public class InfoCommand implements CommandInfo {
 
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:ss a");
 
-                component = Component.translatable("%s-%s-%s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s", gson.deserialize(info.buildstring.botName.toString()), Component.text(info.buildstring.version).color(convertColorString(bot.config.colors.commands.secondary)), gson.deserialize(info.buildstring.codename.toString()), Component.text("Build").color(convertColorString(bot.config.colors.commands.primary)), Component.text(info.buildstring.build).color(convertColorString(bot.config.colors.integer)), Component.text("Commit").color(convertColorString(bot.config.colors.commands.primary)), Component.text(repoCommitInfo.sha.substring(0, 8)).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Version release Date").color(convertColorString(bot.config.colors.commands.primary)), Component.text(dateTime.format(dateTimeFormatter)).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Initial Bot Release").color(convertColorString(bot.config.colors.commands.primary)), Component.text(info.buildstring.initialBotRelease).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Jar Compile Date").color(convertColorString(bot.config.colors.commands.primary)), Component.text(buildTime).color(convertColorString(bot.config.colors.commands.secondary))).color(convertColorString(bot.config.colors.commands.tertiary));
+                component = Component.translatable(
+                    "%s-%s-%s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
+                    gson.deserialize(info.buildstring.botName.toString()),
+                    Component.text(info.buildstring.version).color(convertColorString(bot.config.colors.commands.secondary)),
+                    gson.deserialize(info.buildstring.codename.toString()),
+                    Component.text("Build").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(info.buildstring.build).color(convertColorString(bot.config.colors.integer)),
+                    Component.text("Commit").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(repoCommitInfo.sha.substring(
+                        0,
+                        8
+                    )).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Version release Date").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(dateTime.format(dateTimeFormatter)).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Initial Bot Release").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(info.buildstring.initialBotRelease).color(convertColorString(bot.config.colors.commands.secondary)),
+                    Component.text("Jar Compile Date").color(convertColorString(bot.config.colors.commands.primary)),
+                    Component.text(buildTime).color(convertColorString(bot.config.colors.commands.secondary))
+                ).color(convertColorString(bot.config.colors.commands.tertiary));
             }
         }
 

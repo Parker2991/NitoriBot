@@ -48,6 +48,7 @@ public class KaboomChatParser implements ParseChatData {
     }
 
     private boolean isSeperatorAt (List<Component> children, int start) {
-        return (children.get(start).equals(SEPERATOR_COLON) || children.get(start).equals(SEPERATOR_COLON_RACCOON)) && children.get(start + 1).equals(SEPERATOR_SPACE);
+        return (children.get(start).equals(SEPERATOR_COLON) || children.get(start).equals(SEPERATOR_COLON_RACCOON)) && children.get(
+            start + 1).equals(SEPERATOR_SPACE);
     }
 }

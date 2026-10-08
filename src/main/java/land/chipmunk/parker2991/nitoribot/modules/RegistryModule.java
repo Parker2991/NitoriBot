@@ -41,7 +41,11 @@ public class RegistryModule implements Listener {
                     if (entry.getId().toString().equals("minecraft:overworld_caves"))
                         dimension = "minecraft:world_flatlands";
                     else dimension = String.valueOf(entry.getId());
-                    this.dimensions.add(new DimensionData(dimension, Integer.parseInt(entry.getData().get("height").toString().replace("i", "")), Integer.parseInt(entry.getData().get("min_y").toString().replace("i", ""))));
+                    this.dimensions.add(new DimensionData(
+                        dimension,
+                        Integer.parseInt(entry.getData().get("height").toString().replace("i", "")),
+                        Integer.parseInt(entry.getData().get("min_y").toString().replace("i", ""))
+                    ));
                 }
             }
         }
