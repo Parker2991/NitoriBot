@@ -13,22 +13,8 @@ public class ConsoleModule implements Completer {
 
     public final String server = "all";
 
-    @Override
-    public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
-
-    }
-
-    private void handleLine (String line) {
-        for (Bot bot : servers) {
-            if (line.equals(bot.config.console.prefix + "kill")) System.exit(0);
-            bot.chat.send(line);
-        }
-    }
-
     public ConsoleModule () {
-        this.reader = LineReaderBuilder.builder()
-            .completer(this)
-            .build();
+        this.reader = LineReaderBuilder.builder().completer(this).build();
 
         Main.executorService.submit(() -> {
             while (true) {
@@ -42,5 +28,17 @@ public class ConsoleModule implements Completer {
                 }
             }
         }, "Console Thread");
+    }
+
+    @Override
+    public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
+
+    }
+
+    private void handleLine (String line) {
+        for (Bot bot : servers) {
+            if (line.equals(bot.config.console.prefix + "kill")) System.exit(0);
+            bot.chat.send(line);
+        }
     }
 }

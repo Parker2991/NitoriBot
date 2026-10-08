@@ -13,15 +13,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class LoadConfig {
+    private static final String XDG_CONFIG_HOME = System.getenv("XDG_CONFIG_HOME");
+    private final Constructor yamlConfig = new Constructor(Config.class, new LoaderOptions());
+    private final Yaml yaml = new Yaml(yamlConfig);
+    private final String homeDirectory = System.getProperty("user.home");
+
     public Config loadConfig () throws IOException {
-        final Constructor yamlConfig = new Constructor(Config.class, new LoaderOptions());
-        final Yaml yaml = new Yaml(yamlConfig);
-        final Path configPath = Path.of("config.yaml");
-        if (! Files.exists(configPath)) {
+        Path configDirectory;
 
-            Logger.INFO(null, "config not found making config now");
+        if (XDG_CONFIG_HOME == null) configDirectory = Path.of(homeDirectory, ".config/NitoriBot");
+        else configDirectory = Path.of(XDG_CONFIG_HOME, "NitoriBot");
 
-            InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");
+        final Path configPath = Path.of(String.valueOf(configDirectory), "config.yml");
+        if (!Files.exists(configPath)) {
+            Logger.INFO(null, "config not found, creating config in " + configPath);
+
+            if (!Files.exists(configDirectory)) Files.createDirectory(configDirectory);
+
+            InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yml");
             if (defaultConfig != null) {
                 Files.copy(defaultConfig, configPath);
             }

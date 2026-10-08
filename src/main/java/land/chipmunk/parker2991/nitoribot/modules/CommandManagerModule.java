@@ -18,59 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandManagerModule {
-    private final Bot bot;
-
     public final List<CommandInfo> commands = new ArrayList<>();
-
-    public void registerCommand (CommandInfo command) {
-        commands.add(command);
-    }
-
-    public CommandInfo getCommand (String getCommand) {
-        for (CommandInfo command : commands) {
-            for (String aliases : command.aliases) {
-                if (getCommand.equals(aliases)) return command;
-            }
-            if (getCommand.equals(command.name)) return command;
-        }
-        return null;
-    }
-
-    public void execute (CommandSource source, String commandName, String[] args) {
-        try {
-            CommandInfo command = getCommand(commandName.toLowerCase());
-
-            if (command == null) throw new CommandError(
-                Component.translatable(
-                    "%s%s%s %s",
-                    Component.translatable("command.unknown.command"),
-                    Component.text("\n"),
-                    Component.text(commandName).color(NamedTextColor.GRAY),
-                    Component.translatable("command.context.here")
-                ).color(NamedTextColor.RED)
-            );
-
-            CommandContext context = new CommandContext(bot, args, source);
-
-            command.execute(context);
-        } catch (CommandError error) {
-            source.sendFeedback(error.message());
-        } catch (Exception error) {
-            source.sendFeedback(
-                Component.translatable("command.failed").color(NamedTextColor.DARK_RED)
-            );
-            String Error = ErrorToString.errorToString(error);
-            Logger.ERROR(bot, Error);
-        }
-    }
-
-    public void executeString (CommandSource source, String command) {
-        String[] splitArguments = command.split(" ");
-        String commandName = splitArguments[0];
-        final String[] args = Arrays.copyOfRange(splitArguments, 1, splitArguments.length);
-
-        this.execute(source, commandName, args);
-    }
+    private final Bot bot;
 
     public CommandManagerModule (Bot bot) throws IOException {
         this.bot = bot;
@@ -82,5 +31,45 @@ public class CommandManagerModule {
         registerCommand(new MCServerCommand());
         registerCommand(new TestCommand());
         registerCommand(new InfoCommand());
+    }
+
+    public void registerCommand (CommandInfo command) {
+        commands.add(command);
+    }
+
+    public CommandInfo getCommand (String getCommand) {
+        for (CommandInfo command : commands) {
+            for (String aliases : command.getAliases()) {
+                if (getCommand.equals(aliases)) return command;
+            }
+        }
+        return null;
+    }
+
+    public void execute (CommandSource source, String commandName, String[] args) {
+        try {
+            CommandInfo command = getCommand(commandName.toLowerCase());
+
+            if (command == null)
+                throw new CommandError(Component.translatable("%s%s%s %s", Component.translatable("command.unknown.command"), Component.text("\n"), Component.text(commandName).color(NamedTextColor.GRAY), Component.translatable("command.context.here")).color(NamedTextColor.RED));
+
+            CommandContext context = new CommandContext(bot, args, source);
+
+            command.execute(context);
+        } catch (CommandError error) {
+            source.sendFeedback(bot, error.message());
+        } catch (Exception error) {
+            source.sendFeedback(bot, Component.translatable("command.failed").color(NamedTextColor.DARK_RED));
+            String Error = ErrorToString.errorToString(error);
+            Logger.ERROR(bot, Error);
+        }
+    }
+
+    public void executeString (CommandSource source, String command) {
+        String[] splitArguments = command.split(" ");
+        String commandName = splitArguments[0];
+        final String[] args = Arrays.copyOfRange(splitArguments, 1, splitArguments.length);
+
+        this.execute(source, commandName, args);
     }
 }

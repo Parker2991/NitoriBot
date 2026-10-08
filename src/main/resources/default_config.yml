@@ -17,8 +17,8 @@ colors:
   integer: "gold"
   commands:
     primary: "blue"
-    secondary: "aqua"
-    tertiary: "dark_aqua"
+    secondary: "dark_aqua"
+    tertiary: "aqua"
   help:
     Public: "blue"
     trusted: "dark_aqua"
@@ -28,9 +28,6 @@ colors:
 
 console:
   prefix: "c."
-
-chatAttestation:
-  url: "https://optmstc.dev/key-manifest-v1.json"
 
 bots:
   - host: "localhost"

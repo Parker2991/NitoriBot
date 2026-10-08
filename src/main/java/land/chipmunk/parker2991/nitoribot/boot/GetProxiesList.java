@@ -14,9 +14,7 @@ public class GetProxiesList {
     public ProxyInfo randomProxyIp () throws IOException {
         Path proxiesPath = Paths.get("proxies.txt");
 
-        int countLines = Math.round(
-            Files.lines(proxiesPath).count()
-        );
+        int countLines = Math.round(Files.lines(proxiesPath).count());
 
         Random random = new Random();
 
@@ -24,20 +22,10 @@ public class GetProxiesList {
 
         List<String> lines = Files.lines(proxiesPath).toList();
 
-        String[] ip = lines.stream()
-            .skip(randomIndex)
-            .findAny()
-            .get()
-            .split(":");
+        String[] ip = lines.stream().skip(randomIndex).findAny().get().split(":");
 
-        InetSocketAddress address = new InetSocketAddress(
-            ip[0],
-            Integer.parseInt(ip[1])
-        );
+        InetSocketAddress address = new InetSocketAddress(ip[0], Integer.parseInt(ip[1]));
 
-        return new ProxyInfo(
-            ProxyInfo.Type.SOCKS5,
-            address
-        );
+        return new ProxyInfo(ProxyInfo.Type.SOCKS5, address);
     }
 }

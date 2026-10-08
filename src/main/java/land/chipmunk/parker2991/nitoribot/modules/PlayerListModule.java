@@ -20,9 +20,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class PlayerListModule extends Listener {
+public class PlayerListModule implements Listener {
 
     public final List<PlayerProfileData> list = new ArrayList<>();
+
+    public PlayerListModule (Bot bot) {
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
@@ -30,7 +34,8 @@ public class PlayerListModule extends Listener {
             case ClientboundPlayerInfoUpdatePacket p -> playerInfo(p);
             case ClientboundPlayerInfoRemovePacket p -> playerRemove(p);
             case ClientboundAddEntityPacket p -> getPlayerPosition(p);
-            default -> {}
+            default -> {
+            }
         }
     }
 
@@ -40,10 +45,8 @@ public class PlayerListModule extends Listener {
         for (PlayerListEntryAction action : actions) {
             for (PlayerListEntry entry : packet.getEntries()) {
                 switch (action) {
-                    case PlayerListEntryAction.UPDATE_LIST_ORDER,
-                         PlayerListEntryAction.UPDATE_HAT,
-                         PlayerListEntryAction.INITIALIZE_CHAT,
-                         PlayerListEntryAction.ADD_PLAYER -> addPlayer(entry);
+                    case PlayerListEntryAction.UPDATE_LIST_ORDER, PlayerListEntryAction.UPDATE_HAT,
+                         PlayerListEntryAction.INITIALIZE_CHAT, PlayerListEntryAction.ADD_PLAYER -> addPlayer(entry);
                     case PlayerListEntryAction.UPDATE_LISTED -> updateListed(entry);
                     case PlayerListEntryAction.UPDATE_GAME_MODE -> updateGamemode(entry);
                     case PlayerListEntryAction.UPDATE_LATENCY -> updateLatency(entry);
@@ -66,7 +69,6 @@ public class PlayerListModule extends Listener {
             player.position(new PositionData(pitch, yaw, playerPosition));
         }
     }
-
 
     @Nullable
     public final PlayerProfileData getPlayerUUID (UUID uuid) {
@@ -119,27 +121,21 @@ public class PlayerListModule extends Listener {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        }
-
-        else getPlayer.gameMode(player.getGameMode());
+        } else getPlayer.gameMode(player.getGameMode());
     }
 
     public void updateLatency (PlayerListEntry player) {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        }
-
-        else getPlayer.latency(player.getLatency());
+        } else getPlayer.latency(player.getLatency());
     }
 
     public void updateDisplayName (PlayerListEntry player) {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        }
-
-        else getPlayer.displayName(player.getDisplayName());
+        } else getPlayer.displayName(player.getDisplayName());
     }
 
     public void addPlayer (PlayerListEntry player) {
@@ -147,20 +143,7 @@ public class PlayerListModule extends Listener {
 
         if (findDuplicatePlayer != null) list.remove(findDuplicatePlayer);
 
-        PlayerProfileData formatPlayerData = new PlayerProfileData(
-            player.getProfileId(),
-            null,
-            player.getProfile(),
-            player.isListed(),
-            player.getLatency(),
-            player.getGameMode(),
-            player.getDisplayName(),
-            player.isShowHat(),
-            player.getListOrder(),
-            null,
-            null,
-            null
-        );
+        PlayerProfileData formatPlayerData = new PlayerProfileData(player.getProfileId(), null, player.getProfile(), player.isListed(), player.getLatency(), player.getGameMode(), player.getDisplayName(), player.isShowHat(), player.getListOrder(), null, null, null);
 
         list.add(formatPlayerData);
     }
@@ -172,9 +155,5 @@ public class PlayerListModule extends Listener {
             if (getPlayer == null) return;
             list.remove(getPlayer);
         }
-    }
-
-    public PlayerListModule (Bot bot) {
-        bot.listenerManager.addListener(this);
     }
 }

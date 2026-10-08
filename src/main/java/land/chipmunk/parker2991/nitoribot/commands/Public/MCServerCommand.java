@@ -4,14 +4,26 @@ import land.chipmunk.parker2991.nitoribot.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.command.CommandTrustLevels;
 
-public class MCServerCommand extends CommandInfo {
+import java.util.List;
+
+public class MCServerCommand implements CommandInfo {
     public MCServerCommand () {
-        super(
-            "mcserver",
-            CommandTrustLevels.PUBLIC,
-            new String[]{ "minecraftserver" },
-            "ping a minecraft server"
-        );
+
+    }
+
+    @Override
+    public CommandTrustLevels getTrustLevel () {
+        return CommandTrustLevels.PUBLIC;
+    }
+
+    @Override
+    public List<String> getAliases () {
+        return List.of("mcserver");
+    }
+
+    @Override
+    public String getDescription () {
+        return "ping minecraft servers";
     }
 
     @Override
@@ -26,25 +38,6 @@ public class MCServerCommand extends CommandInfo {
 
         System.out.println(info);
 
-    /*source.sendFeedback(
-      Component.translatable(
-        "%s: (%s / %s)",
-        Component.text("Players").color(NamedTextColor.BLUE),
-        Component.text(info.playersOnline()).color(NamedTextColor.GOLD),
-        Component.text(info.maxPlayers()).color(NamedTextColor.GOLD)
-      )
-    );*/
-
-    /*source.sendFeedback(
-      Component.translatable(
-        "Server Version %s %s %s",
-        Component.text(":").color(NamedTextColor.GRAY),
-        Component.text(info.versionName()),
-        Component.text(info.protocolVersion())
-      )
-    );*/
-
-        //source.sendFeedback(info.description());
     }
 }
 /*

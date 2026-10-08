@@ -25,33 +25,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandCoreModule extends Listener {
-    private @NotNull final Bot bot;
-
+public class CommandCoreModule implements Listener {
     public final CommandCoreAreaData area;
+    private @NotNull final Bot bot;
+    public Vector3i position;
+    public Vector3i itemPosition;
+    public Vector3d currentBlockRelative = Vector3d.from(0, 0, 0);
+
+    public CommandCoreModule (Bot bot) {
+        this.bot = bot;
+
+        this.area = new CommandCoreAreaData(Vector3d.from(bot.config.core.area.start.x, bot.config.core.area.start.y, bot.config.core.area.start.z), Vector3d.from(bot.config.core.area.end.x, bot.config.core.area.end.y, bot.config.core.area.end.z));
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void botMoved () {
         move();
     }
 
-    public Vector3i position;
-
-    public Vector3i itemPosition;
-
     public void move () {
         Vector3d botPos = bot.position.positionData.position();
-        position = Vector3i.from(
-            Math.floor(botPos.getX() / 16) * 16,
-            0,
-            Math.floor(botPos.getZ() / 16) * 16
-        );
+        position = Vector3i.from(Math.floor(botPos.getX() / 16) * 16, 0, Math.floor(botPos.getZ() / 16) * 16);
 
-        itemPosition = Vector3i.from(
-            botPos.getX(),
-            botPos.getY() - 1,
-            botPos.getZ()
-        );
+        itemPosition = Vector3i.from(botPos.getX(), botPos.getY() - 1, botPos.getZ());
 
         chatRefill();
     }
@@ -67,16 +64,7 @@ public class CommandCoreModule extends Listener {
         int endPosY = (int) Math.floor(pos.getY() - coreArea.end().getY());
         int endPosZ = (int) Math.floor(pos.getZ() - coreArea.end().getZ());
 
-        String command = String.format(
-            "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} destroy",
-            startPosX,
-            startPosY,
-            startPosZ,
-            endPosX,
-            endPosY,
-            endPosZ,
-            bot.config.core.coreName
-        );
+        String command = String.format("minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} destroy", startPosX, startPosY, startPosZ, endPosX, endPosY, endPosZ, bot.config.core.coreName);
 
         bot.chat.command(command);
     }
@@ -86,82 +74,25 @@ public class CommandCoreModule extends Listener {
 
         String command = getCommand();
 
-        blockEntityTagBuilder.putString("Command", command)
-            .putByte("auto", (byte) 1)
-            .putByte("TrackOutput", (byte) 1);
+        blockEntityTagBuilder.putString("Command", command).putByte("auto", (byte) 1).putByte("TrackOutput", (byte) 1);
 
         final NbtMap blockEntityTag = blockEntityTagBuilder.build();
 
         final Map<DataComponentType<?>, DataComponent<?, ?>> map = new HashMap<>();
 
-        map.put(
-            DataComponentTypes.BLOCK_ENTITY_DATA,
-            DataComponentTypes.BLOCK_ENTITY_DATA
-                .getDataComponentFactory()
-                .create(
-                    DataComponentTypes.BLOCK_ENTITY_DATA,
-                    TypedEntityData.<BlockEntityType>builder()
-                        .type(BlockEntityType.COMMAND_BLOCK)
-                        .tag(blockEntityTag)
-                        .build()
-                )
-        );
+        map.put(DataComponentTypes.BLOCK_ENTITY_DATA, DataComponentTypes.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentTypes.BLOCK_ENTITY_DATA, TypedEntityData.<BlockEntityType>builder().type(BlockEntityType.COMMAND_BLOCK).tag(blockEntityTag).build()));
 
-        map.put(
-            DataComponentTypes.ITEM_NAME,
-            DataComponentTypes.ITEM_NAME
-                .getDataComponentFactory()
-                .create(
-                    DataComponentTypes.ITEM_NAME,
-                    ComponentUtil.componentFromJSON(bot.config.core.coreName)
-                )
-        );
+        map.put(DataComponentTypes.ITEM_NAME, DataComponentTypes.ITEM_NAME.getDataComponentFactory().create(DataComponentTypes.ITEM_NAME, ComponentUtil.componentFromJSON(bot.config.core.coreName)));
 
-        map.put(
-            DataComponentTypes.CUSTOM_NAME,
-            DataComponentTypes.CUSTOM_NAME
-                .getDataComponentFactory()
-                .create(
-                    DataComponentTypes.CUSTOM_NAME,
-                    ComponentUtil.componentFromJSON(bot.config.core.coreName)
-                )
-        );
+        map.put(DataComponentTypes.CUSTOM_NAME, DataComponentTypes.CUSTOM_NAME.getDataComponentFactory().create(DataComponentTypes.CUSTOM_NAME, ComponentUtil.componentFromJSON(bot.config.core.coreName)));
 
         final DataComponents dataComponents = new DataComponents(map);
 
-        bot.session.send(
-            new ServerboundSetCreativeModeSlotPacket(
-                (short) 36,
-                new ItemStack(
-                    482,
-                    64,
-                    dataComponents
-                )
-            )
-        );
+        bot.session.send(new ServerboundSetCreativeModeSlotPacket((short) 36, new ItemStack(482, 64, dataComponents)));
 
-        bot.session.send(
-            new ServerboundPlayerActionPacket(
-                PlayerAction.START_DIGGING,
-                itemPosition,
-                Direction.NORTH,
-                0
-            )
-        );
+        bot.session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, itemPosition, Direction.NORTH, 0));
 
-        bot.session.send(
-            new ServerboundUseItemOnPacket(
-                itemPosition,
-                Direction.NORTH,
-                Hand.MAIN_HAND,
-                0.5f,
-                0.5f,
-                0.5f,
-                false,
-                false,
-                1
-            )
-        );
+        bot.session.send(new ServerboundUseItemOnPacket(itemPosition, Direction.NORTH, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, false, 1));
     }
 
     private String getCommand () {
@@ -175,29 +106,14 @@ public class CommandCoreModule extends Listener {
         int endPosY = (int) Math.round(pos.getY() - coreArea.end().getY());
         int endPosZ = (int) Math.round(pos.getZ() - coreArea.end().getZ());
 
-        return String.format(
-            "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} replace",
-            startPosX,
-            startPosY,
-            startPosZ,
-            endPosX,
-            endPosY,
-            endPosZ,
-            bot.config.core.coreName
-        );
+        return String.format("minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} replace", startPosX, startPosY, startPosZ, endPosX, endPosY, endPosZ, bot.config.core.coreName);
     }
-
-    public Vector3d currentBlockRelative = Vector3d.from(0, 0, 0);
 
     public PositionData currentBlock () {
         Vector3d relativePosition = currentBlockRelative;
         Vector3i corePosition = position;
 
-        return new PositionData(
-            (float) (relativePosition.getX() + corePosition.getX()),
-            (float) (relativePosition.getY() + corePosition.getY()),
-            Vector3d.from(relativePosition.getZ(), relativePosition.getY(), relativePosition.getZ())
-        );
+        return new PositionData((float) (relativePosition.getX() + corePosition.getX()), (float) (relativePosition.getY() + corePosition.getY()), Vector3d.from(relativePosition.getZ(), relativePosition.getY(), relativePosition.getZ()));
     }
 
     public void incrementCurrentBlock () {
@@ -231,16 +147,7 @@ public class CommandCoreModule extends Listener {
 
     public void commandBlock (String command, boolean doesTrackOutput, boolean conditional, boolean automatic) {
         if (command.length() > 32767 || position == null) return;
-        bot.session.send(
-            new ServerboundSetCommandBlockPacket(
-                position,
-                command,
-                CommandBlockMode.AUTO,
-                doesTrackOutput,
-                conditional,
-                automatic
-            )
-        );
+        bot.session.send(new ServerboundSetCommandBlockPacket(position, command, CommandBlockMode.AUTO, doesTrackOutput, conditional, automatic));
     }
 
     public void run (String command) {
@@ -248,23 +155,5 @@ public class CommandCoreModule extends Listener {
         commandBlock(command, true, false, true);
 
         incrementCurrentBlock();
-    }
-
-    public CommandCoreModule (Bot bot) {
-        this.bot = bot;
-
-        this.area = new CommandCoreAreaData(
-            Vector3d.from(
-                bot.config.core.area.start.x,
-                bot.config.core.area.start.y,
-                bot.config.core.area.start.z
-            ),
-            Vector3d.from(
-                bot.config.core.area.end.x,
-                bot.config.core.area.end.y,
-                bot.config.core.area.end.z
-            )
-        );
-        bot.listenerManager.addListener(this);
     }
 }

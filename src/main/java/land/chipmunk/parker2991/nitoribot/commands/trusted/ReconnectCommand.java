@@ -5,14 +5,26 @@ import land.chipmunk.parker2991.nitoribot.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.command.CommandTrustLevels;
 
-public class ReconnectCommand extends CommandInfo {
+import java.util.List;
+
+public class ReconnectCommand implements CommandInfo {
     public ReconnectCommand () {
-        super(
-            "reconnect",
-            CommandTrustLevels.TRUSTED,
-            new String[]{ },
-            "reconnect the bot"
-        );
+
+    }
+
+    @Override
+    public CommandTrustLevels getTrustLevel () {
+        return CommandTrustLevels.TRUSTED;
+    }
+
+    @Override
+    public List<String> getAliases () {
+        return List.of("end");
+    }
+
+    @Override
+    public String getDescription () {
+        return "reconnect the bot";
     }
 
     @Override

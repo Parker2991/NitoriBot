@@ -8,9 +8,12 @@ import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.metadata.EntityMetadata;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundSetEntityDataPacket;
 
-public class TextDisplayModule extends Listener {
-
+public class TextDisplayModule implements Listener {
     private static final int TEXT_DISPLAY_ENTITY_ID = 32;
+
+    public TextDisplayModule (Bot bot) {
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
@@ -24,9 +27,5 @@ public class TextDisplayModule extends Listener {
                 System.out.println(ComponentUtil.componentToAnsi(value));
             }
         }
-    }
-
-    public TextDisplayModule (Bot bot) {
-        bot.listenerManager.addListener(this);
     }
 }

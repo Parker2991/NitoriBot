@@ -6,8 +6,14 @@ import land.chipmunk.parker2991.nitoribot.logger.Logger;
 import land.chipmunk.parker2991.nitoribot.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 
-public class LoggingModule extends Listener {
+public class LoggingModule implements Listener {
     private final Bot bot;
+
+    public LoggingModule (Bot bot) {
+        this.bot = bot;
+
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void playerChatReceived (Component message) {
@@ -29,11 +35,5 @@ public class LoggingModule extends Listener {
         String message = ComponentUtil.componentToAnsi(_message);
         //if (host.equals("kaboom.pw")) return;
         Logger.LOG(bot, message);
-    }
-
-    public LoggingModule (Bot bot) {
-        this.bot = bot;
-
-        bot.listenerManager.addListener(this);
     }
 }

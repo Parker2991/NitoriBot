@@ -8,8 +8,12 @@ import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEventValue;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
 
-public class GamemodeSelfcare extends Listener {
+public class GamemodeSelfcare implements Listener {
     public int gamemode = 1;
+
+    public GamemodeSelfcare (Bot bot) {
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
@@ -37,9 +41,5 @@ public class GamemodeSelfcare extends Listener {
                 default:
             }
         }
-    }
-
-    public GamemodeSelfcare (Bot bot) {
-        bot.listenerManager.addListener(this);
     }
 }

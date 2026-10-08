@@ -1,25 +1,15 @@
 package land.chipmunk.parker2991.nitoribot.command;
 
-public abstract class CommandInfo {
-    // probably could make this a record or interface
-    public final String name;
-    public final CommandTrustLevels trustlevel;
-    public final String[] aliases;
-    public final String description;
+import java.util.List;
 
-    public CommandInfo (
-        String name,
-        CommandTrustLevels trustlevel,
-        String[] aliases,
-        String description
-    ) {
-        this.name = name;
-        this.trustlevel = trustlevel;
-        this.aliases = aliases;
-        this.description = description;
-    }
+public interface CommandInfo {
+    //String getCommandName ();
 
-    public abstract void execute (CommandContext context);
+    CommandTrustLevels getTrustLevel ();
 
+    List<String> getAliases ();
 
+    String getDescription ();
+
+    void execute (CommandContext context);
 }

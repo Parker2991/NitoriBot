@@ -13,17 +13,20 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class PositionModule extends Listener {
+public class PositionModule implements Listener {
     private final Bot bot;
 
     public ScheduledFuture<?> timer;
-
-    private int i = 0;
-
     public PositionData positionData;
-
+    private int i = 0;
     private int x;
     private int z;
+
+    public PositionModule (Bot bot) {
+        this.bot = bot;
+
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
@@ -37,11 +40,7 @@ public class PositionModule extends Listener {
         int y = (int) Math.round(getPosition.getY());
         z = (int) Math.round(getPosition.getZ());
 
-        positionData = new PositionData(
-            packet.getXRot(),
-            packet.getYRot(),
-            packet.getPosition()
-        );
+        positionData = new PositionData(packet.getXRot(), packet.getYRot(), packet.getPosition());
 
         if (bot.options.mode.equals("totalfreedom")) {
             if (i < 5) timer = bot.executor.scheduleAtFixedRate(() -> {
@@ -49,15 +48,7 @@ public class PositionModule extends Listener {
                 x += 1;
                 z += 1;
 
-                bot.session.send(
-                    new ServerboundMovePlayerPosPacket(
-                        false,
-                        false,
-                        x,
-                        y,
-                        z
-                    )
-                );
+                bot.session.send(new ServerboundMovePlayerPosPacket(false, false, x, y, z));
                 System.out.println("moved");
                 System.out.println(x);
                 i++;
@@ -65,21 +56,11 @@ public class PositionModule extends Listener {
             }, 5000, 5000, TimeUnit.MILLISECONDS);
         }
 
-        bot.session.send(
-            new ServerboundAcceptTeleportationPacket(
-                packet.getId()
-            )
-        );
+        bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         for (Listener listener : bot.listenerManager.listeners) {
-            if (! Objects.equals(bot.options.mode, "kaboom")) return;
+            if (!Objects.equals(bot.options.mode, "kaboom")) return;
             listener.botMoved();
         }
-    }
-
-    public PositionModule (Bot bot) {
-        this.bot = bot;
-
-        bot.listenerManager.addListener(this);
     }
 }

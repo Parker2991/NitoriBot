@@ -20,17 +20,27 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Objects;
 
-public class ChatModule extends Listener {
+public class ChatModule implements Listener {
+    public final List<ParseChatData> chatParsers;
     private final Bot bot;
 
-    public final List<ParseChatData> chatParsers;
+    public ChatModule (Bot bot) {
+        this.bot = bot;
+
+        this.chatParsers = List.of(new KaboomChatParser(bot));
+
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundSystemChatPacket) systemChat((ClientboundSystemChatPacket) packet);
-        else if (packet instanceof ClientboundPlayerChatPacket) playerChat((ClientboundPlayerChatPacket) packet);
-        else if (packet instanceof ClientboundDisguisedChatPacket)
-            diguisedChat((ClientboundDisguisedChatPacket) packet);
+        switch (packet) {
+            case ClientboundSystemChatPacket p -> systemChat(p);
+            case ClientboundPlayerChatPacket p -> playerChat(p);
+            case ClientboundDisguisedChatPacket p -> disguisedChat(p);
+            default -> {
+            }
+        }
     }
 
     public String parseChatTypes (int chatType) {
@@ -46,7 +56,7 @@ public class ChatModule extends Listener {
         }
     }
 
-    public void diguisedChat (ClientboundDisguisedChatPacket packet) {
+    public void disguisedChat (ClientboundDisguisedChatPacket packet) {
         Component getMessage = packet.getMessage();
         Component targetUsername = packet.getName();
 
@@ -57,11 +67,7 @@ public class ChatModule extends Listener {
         if (packet.getChatType().id() == 4) {
             message = getMessage;
         } else {
-            message = Component.translatable(
-                parseChatTypes,
-                targetUsername,
-                getMessage
-            );
+            message = Component.translatable(parseChatTypes, targetUsername, getMessage);
         }
 
         for (Listener listener : bot.listenerManager.listeners) {
@@ -70,15 +76,7 @@ public class ChatModule extends Listener {
 
         TextComponent textComponent = (TextComponent) targetUsername;
 
-        parseMessage(
-            message,
-            new PlayerMessageData(
-                bot.players.getPlayerByUsername(textComponent.content()),
-                packet.getMessage(),
-                "minecraft:chat",
-                Objects.requireNonNull(bot.players.getPlayerByUsername(textComponent.content())).displayName()
-            )
-        );
+        parseMessage(message, new PlayerMessageData(bot.players.getPlayerByUsername(textComponent.content()), packet.getMessage(), "minecraft:chat", Objects.requireNonNull(bot.players.getPlayerByUsername(textComponent.content())).displayName()));
     }
 
     public void playerChat (ClientboundPlayerChatPacket packet) {
@@ -89,15 +87,7 @@ public class ChatModule extends Listener {
             listener.playerChatReceived(unsignedContent);
         }
 
-        parseMessage(
-            unsignedContent,
-            new PlayerMessageData(
-                bot.players.getPlayerUUID(packet.getSender()),
-                content,
-                "minecraft:chat",
-                Objects.requireNonNull(bot.players.getPlayerUUID(packet.getSender())).displayName()
-            )
-        );
+        parseMessage(unsignedContent, new PlayerMessageData(bot.players.getPlayerUUID(packet.getSender()), content, "minecraft:chat", Objects.requireNonNull(bot.players.getPlayerUUID(packet.getSender())).displayName()));
     }
 
     public void parseMessage (Component message, PlayerMessageData data) {
@@ -120,25 +110,11 @@ public class ChatModule extends Listener {
     }
 
     public void message (String message) {
-        bot.session.send(
-            new ServerboundChatPacket(
-                message,
-                Instant.now().toEpochMilli(),
-                0,
-                null,
-                0,
-                new BitSet(),
-                0
-            )
-        );
+        bot.session.send(new ServerboundChatPacket(message, Instant.now().toEpochMilli(), 0, null, 0, new BitSet(), 0));
     }
 
     public void command (String command) {
-        bot.session.send(
-            new ServerboundChatCommandPacket(
-                command
-            )
-        );
+        bot.session.send(new ServerboundChatCommandPacket(command));
     }
 
     public void send (String message) {
@@ -148,24 +124,7 @@ public class ChatModule extends Listener {
     }
 
     public void tellraw (String selector, Component message) {
-        bot.core.run(
-            String.format(
-                "%s %s %s",
-                "minecraft:tellraw",
-                selector,
-                GsonComponentSerializer.gson().serialize(message).trim()
-            )
-        );
-    }
-
-    public ChatModule (Bot bot) {
-        this.bot = bot;
-
-        this.chatParsers = List.of(
-            new KaboomChatParser(bot)
-        );
-
-        bot.listenerManager.addListener(this);
+        bot.core.run(String.format("%s %s %s", "minecraft:tellraw", selector, GsonComponentSerializer.gson().serialize(message).trim()));
     }
 
 }

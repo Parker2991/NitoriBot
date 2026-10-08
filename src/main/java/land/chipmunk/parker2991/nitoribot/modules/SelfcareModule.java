@@ -13,16 +13,20 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundL
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfcareModule extends Listener {
-    public ScheduledFuture<?> timer;
-
+public class SelfcareModule implements Listener {
     private final Bot bot;
-
+    public ScheduledFuture<?> timer;
     public PermissionSelfcare permission;
 
     public GamemodeSelfcare gamemode;
 
     public int entityId;
+
+    public SelfcareModule (Bot bot) {
+        this.bot = bot;
+        bot.listenerManager.addListener(this);
+        loadSelfcare();
+    }
 
     public void loadSelfcare () {
         this.permission = new PermissionSelfcare(bot);
@@ -34,7 +38,8 @@ public class SelfcareModule extends Listener {
         switch (packet) {
             case ClientboundLoginFinishedPacket p -> login(p);
             case ClientboundDisconnectPacket p -> disconnect(p);
-            default -> {}
+            default -> {
+            }
         }
     }
 
@@ -42,22 +47,11 @@ public class SelfcareModule extends Listener {
         if (bot.options.mode.equals("totalfreedom")) return;
         timer = bot.executor.scheduleAtFixedRate(() -> {
             if (permission.level < 2 && bot.loggedIn) bot.chat.command("minecraft:op @s[type=player]");
-            else if (gamemode.gamemode != 1) bot.session.send(
-                new ServerboundChangeGameModePacket(
-                    GameMode.CREATIVE
-                )
-            );
+            else if (gamemode.gamemode != 1) bot.session.send(new ServerboundChangeGameModePacket(GameMode.CREATIVE));
         }, 0, bot.options.selfcareInterval, TimeUnit.MILLISECONDS);
     }
 
-
     public void disconnect (ClientboundDisconnectPacket event) {
         timer.cancel(true);
-    }
-
-    public SelfcareModule (Bot bot) {
-        this.bot = bot;
-        bot.listenerManager.addListener(this);
-        loadSelfcare();
     }
 }

@@ -9,10 +9,15 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 
-public class CommandSpyModule extends Listener {
+public class CommandSpyModule implements Listener {
+    private static final String SLASH = "/";
     private final Bot bot;
 
-    private static final String SLASH = "/";
+    public CommandSpyModule (Bot bot) {
+        this.bot = bot;
+
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void systemChatReceived (Component data) {
@@ -32,22 +37,10 @@ public class CommandSpyModule extends Listener {
 
         String command = commandComponent.content().substring(SLASH.length());
 
-        if (
-            (
-                commandComponent.content().contains(SLASH + command)
-                    &&
-                    sender != null
-            )
-        ) {
+        if ((commandComponent.content().contains(SLASH + command) && sender != null)) {
             for (Listener listener : bot.listenerManager.listeners) {
                 listener.commandSpyReceived(sender, command);
             }
         }
-    }
-
-    public CommandSpyModule (Bot bot) {
-        this.bot = bot;
-
-        bot.listenerManager.addListener(this);
     }
 }

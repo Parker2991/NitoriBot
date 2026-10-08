@@ -10,10 +10,10 @@ import net.kyori.adventure.text.TextComponent;
 import java.util.List;
 
 public class KaboomChatParser implements ParseChatData {
-    private final Bot bot;
     private static final Component SEPERATOR_COLON = Component.text(":");
     private static final Component SEPERATOR_COLON_RACCOON = Component.text("§f:"); // https://github.com/raccoonserver/extras/commit/315f704075db2f00e3e1bfbf55f858469c22880f
     private static final Component SEPERATOR_SPACE = Component.space();
+    private final Bot bot;
 
     public KaboomChatParser (Bot bot) {
         this.bot = bot;
@@ -28,8 +28,7 @@ public class KaboomChatParser implements ParseChatData {
     public PlayerMessageData parse (TextComponent message) {
         List<Component> children = message.children();
 
-        if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3)
-            return null;
+        if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3) return null;
 
         final Component prefix = children.getFirst();
         Component displayName = Component.empty();

@@ -18,6 +18,38 @@ public class Logger {
 
     private final DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
+    public Logger () {
+
+    }
+
+    public static void LOG (Bot bot, String message) {
+        new Logger().prefix(LoggerType.LOG, bot, message);
+    }
+
+    public static void DEBUG (Bot bot, String message) {
+        new Logger().prefix(LoggerType.DEBUG, bot, message);
+    }
+
+    public static void ERROR (Bot bot, String message) {
+        new Logger().prefix(LoggerType.ERROR, bot, message);
+    }
+
+    public static void WARN (Bot bot, String message) {
+        new Logger().prefix(LoggerType.WARN, bot, message);
+    }
+
+    public static void COMMAND (Bot bot, String message) {
+        new Logger().prefix(LoggerType.COMMAND, bot, message);
+    }
+
+    public static void RECONNECT (Bot bot, String message) {
+        new Logger().prefix(LoggerType.RECONNECT, bot, message);
+    }
+
+    public static void INFO (Bot bot, String message) {
+        new Logger().prefix(LoggerType.INFO, bot, message);
+    }
+
     public Component getLoggerType (LoggerType type) {
         Component logType = null;
         switch (type) {
@@ -46,78 +78,11 @@ public class Logger {
         if (bot == null) host = Component.text("NitoriBot Jar").color(NamedTextColor.BLUE);
         else host = Component.text(bot.options.host + ":" + bot.options.port).color(NamedTextColor.BLUE);
 
-        component = Component.translatable(
-            "[%s %s %s] [%s] [%s] %s",
-            Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE),
-            Component.translatable(formatDate.format(date)).color(NamedTextColor.BLUE),
-            type,
-            Component.translatable(Thread.currentThread().getName()).color(NamedTextColor.BLUE),
-            host,
-            Component.translatable(message).color(NamedTextColor.WHITE)
-        ).color(NamedTextColor.DARK_BLUE);
+        component = Component.translatable("[%s %s %s] [%s] [%s] %s", Component.translatable(formatTime.format(time)).color(NamedTextColor.BLUE), Component.translatable(formatDate.format(date)).color(NamedTextColor.BLUE), type, Component.translatable(Thread.currentThread().getName()).color(NamedTextColor.BLUE), host, Component.translatable(message).color(NamedTextColor.WHITE)).color(NamedTextColor.DARK_BLUE);
 
         String log = ComponentUtil.componentToAnsi(component);
 
-        Main.console.reader.printAbove(log);
-    }
-
-    public static void LOG (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.LOG,
-            bot,
-            message
-        );
-    }
-
-    public static void DEBUG (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.DEBUG,
-            bot,
-            message
-        );
-    }
-
-    public static void ERROR (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.ERROR,
-            bot,
-            message
-        );
-    }
-
-    public static void WARN (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.WARN,
-            bot,
-            message
-        );
-    }
-
-    public static void COMMAND (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.COMMAND,
-            bot,
-            message
-        );
-    }
-
-    public static void RECONNECT (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.RECONNECT,
-            bot,
-            message
-        );
-    }
-
-    public static void INFO (Bot bot, String message) {
-        new Logger().prefix(
-            LoggerType.INFO,
-            bot,
-            message
-        );
-    }
-
-    public Logger () {
-
+        if (bot == null) System.out.println(log);
+        else Main.console.reader.printAbove(log);
     }
 }

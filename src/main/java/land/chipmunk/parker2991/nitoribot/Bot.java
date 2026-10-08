@@ -30,15 +30,11 @@ import java.util.concurrent.*;
 
 public class Bot extends SessionAdapter {
     public final ListenerManager listenerManager = new ListenerManager();
-    public boolean loggedIn = false;
-    public int entityId;
     public final ScheduledExecutorService executor = Main.executor;
     public final ExecutorService executorService = Main.executorService;
     public final ConcurrentMap<String, Future<?>> services = Main.services;
     public final BotBuildInfo botBuildInfo = Main.botBuildInfo;
     public final RepoCommitInfo repoCommitInfo = Main.repoCommitInfo;
-    public ClientNetworkSession session;
-    public GameProfile profile;
     public final @NotNull Config config;
     public final Config.Options options;
     public final List<Bot> bots;
@@ -47,8 +43,13 @@ public class Bot extends SessionAdapter {
     public final CommandCoreModule core;
     public final PlayerListModule players;
     public final RegistryModule registry;
+    public boolean loggedIn = false;
+    public int entityId;
+    public ClientNetworkSession session;
+    public GameProfile profile;
     public CommandManagerModule commandManager;
     public MCServerModule mcServer;
+    public WorldModule world;
     public List<?> modules;
 
     public Bot (Config.Options options, List<Bot> bots, @NotNull Config config) throws IOException {
@@ -56,20 +57,7 @@ public class Bot extends SessionAdapter {
         this.bots = bots;
         this.config = config;
 
-        this.modules = List.of(
-            this.chat = new ChatModule(this),
-            new SelfcareModule(this),
-            this.position = new PositionModule(this),
-            this.core = new CommandCoreModule(this),
-            this.registry = new RegistryModule(this),
-            this.players = new PlayerListModule(this),
-            new LoggingModule(this),
-            new ChatCommandHandlerModule(this),
-            this.commandManager = new CommandManagerModule(this),
-            new TextDisplayModule(this),
-            this.mcServer = new MCServerModule(this),
-            new CommandSpyModule(this)
-        );
+        this.modules = List.of(this.chat = new ChatModule(this), new SelfcareModule(this), this.position = new PositionModule(this), this.core = new CommandCoreModule(this), this.registry = new RegistryModule(this), this.players = new PlayerListModule(this), new LoggingModule(this), new ChatCommandHandlerModule(this), this.commandManager = new CommandManagerModule(this), new TextDisplayModule(this), this.mcServer = new MCServerModule(this), new CommandSpyModule(this), this.world = new WorldModule(this));
 
         try {
             connect();
@@ -81,22 +69,11 @@ public class Bot extends SessionAdapter {
     public void connect () throws IOException {
         final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
-        if (options.useProxy) session = ClientNetworkSessionFactory.factory()
-            .setAddress(
-                options.host,
-                options.port
-            )
-            .setProxy(new GetProxiesList().randomProxyIp())
-            .setProtocol(protocol)
-            .create();
+        if (options.useProxy)
+            session = ClientNetworkSessionFactory.factory().setAddress(options.host, options.port).setProxy(new GetProxiesList().randomProxyIp()).setProtocol(protocol).create();
 
-        else session = ClientNetworkSessionFactory.factory()
-            .setAddress(
-                options.host,
-                options.port
-            )
-            .setProtocol(protocol)
-            .create();
+        else
+            session = ClientNetworkSessionFactory.factory().setAddress(options.host, options.port).setProtocol(protocol).create();
         session.addListener(this);
         session.connect(false);
     }
@@ -122,9 +99,7 @@ public class Bot extends SessionAdapter {
     @Override
     public void packetReceived (Session session, Packet packet) {
         try {
-            if (packet instanceof ClientboundLoginPacket) this.session.send(
-                ServerboundPlayerLoadedPacket.INSTANCE
-            );
+            if (packet instanceof ClientboundLoginPacket) this.session.send(ServerboundPlayerLoadedPacket.INSTANCE);
 
             if (packet instanceof ServerboundPlayerLoadedPacket) {
                 System.out.println(packet);
@@ -161,15 +136,12 @@ public class Bot extends SessionAdapter {
 
         if (services.get("reconnect") != null) services.get("reconnect").cancel(true);
 
-        services.put(
-            "reconnect",
-            executor.schedule(() -> {
-                try {
-                    connect();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }, options.reconnectDelay, TimeUnit.MILLISECONDS)
-        );
+        services.put("reconnect", executor.schedule(() -> {
+            try {
+                connect();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, options.reconnectDelay, TimeUnit.MILLISECONDS));
     }
 }

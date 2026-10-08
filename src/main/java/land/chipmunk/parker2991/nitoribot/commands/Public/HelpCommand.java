@@ -1,110 +1,65 @@
 package land.chipmunk.parker2991.nitoribot.commands.Public;
 
 import land.chipmunk.parker2991.nitoribot.Bot;
-import land.chipmunk.parker2991.nitoribot.Config;
 import land.chipmunk.parker2991.nitoribot.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.command.CommandTrustLevels;
-import land.chipmunk.parker2991.nitoribot.util.TranslationsUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class HelpCommand extends CommandInfo {
+import static land.chipmunk.parker2991.nitoribot.util.ComponentUtil.convertColorString;
+
+public class HelpCommand implements CommandInfo {
     public HelpCommand () {
-        super(
-            "help",
-            CommandTrustLevels.PUBLIC,
-            new String[]{ "heko", "hell", "?", "cmds" },
-            "see the list of commands"
-        );
+
     }
 
+    @Override
+    public CommandTrustLevels getTrustLevel () {
+        return CommandTrustLevels.PUBLIC;
+    }
+
+    @Override
+    public List<String> getAliases () {
+        return List.of("help", "hell", "?", "heko", "cmds", "commands");
+    }
+
+    @Override
+    public String getDescription () {
+        return "see the list of commands the bot has";
+    }
 
     public Component getCommands (Bot bot) {
         List<Component> Public = new ArrayList<>();
         List<Component> Trusted = new ArrayList<>();
 
         for (CommandInfo commands : bot.commandManager.commands) {
-            switch (commands.trustlevel) {
-                case CommandTrustLevels.PUBLIC:
-                    Public.add(
-                        Component.text(commands.name + " ").color(NamedTextColor.BLUE)
-                    );
-                    break;
-                case CommandTrustLevels.TRUSTED:
-                    Trusted.add(
-                        Component.text(commands.name + " ").color(NamedTextColor.DARK_AQUA)
-                    );
-                    break;
+            switch (commands.getTrustLevel()) {
+                case CommandTrustLevels.PUBLIC -> {
+                    Public.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.Public)));
+                }
+                case CommandTrustLevels.TRUSTED -> {
+                    Trusted.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.trusted)));
+                }
+                default -> {
+                }
             }
         }
 
-        // .append(Component.text("\n"));
-
-        return Component.empty()
-            .append(Public)
-            .append(Component.text("\n"))
-            .append(Trusted);
+        return Component.empty().append(Public).append(Component.text("\n")).append(Trusted);
     }
 
     private Component getCommand (Bot bot, String[] command) {
-
         Component component = null;
 
         for (CommandInfo commands : bot.commandManager.commands) {
-            for (String aliases : commands.aliases) {
-                if (commands.name.equals(command[0]) || aliases.equals(command[0])) component = Component.empty()
-                    .append(
-                        TranslationsUtil.customTranslations(
-                            "command.help.info.layout",
-                            List.of(
-                                TranslationsUtil.customTranslations("command.help.info.command", null).color(NamedTextColor.BLUE),
-                                Component.text(commands.name).color(NamedTextColor.AQUA)
-                            )
-                        )
-                    )
-                    .append(
-                        TranslationsUtil.customTranslations(
-                            "command.help.info.layout",
-                            List.of(
-                                TranslationsUtil.customTranslations("command.help.info.aliases", null).color(NamedTextColor.BLUE),
-                                Component.text(Arrays.toString(commands.aliases)).color(NamedTextColor.AQUA)
-                            )
-                        )
-                    )
-                    .append(
-                        TranslationsUtil.customTranslations(
-                            "command.help.info.layout",
-                            List.of(
-                                TranslationsUtil.customTranslations("command.help.info.description", null).color(NamedTextColor.BLUE),
-                                Component.text(commands.description).color(NamedTextColor.AQUA)
-                            )
-                        )
-                    )
-                    .append(
-                        TranslationsUtil.customTranslations(
-                            "command.help.info.layout",
-                            List.of(
-                                TranslationsUtil.customTranslations("command.help.info.trust_level", null).color(NamedTextColor.BLUE),
-                                Component.text(commands.trustlevel + "").color(NamedTextColor.AQUA)
-                            )
-                        )
-                    )
-                    .append(
-                        TranslationsUtil.customTranslations(
-                            "command.help.info.layout",
-                            List.of(
-                                TranslationsUtil.customTranslations("command.help.info.usages", null).color(NamedTextColor.BLUE),
-                                Component.text("DUMMY String").color(NamedTextColor.AQUA)
-                            )
-                        )
-                    );
+            for (String aliases : commands.getAliases()) {
+                if (aliases.equals(command[0]))
+                    component = Component.translatable("%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s", Component.text("Command").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getAliases().getFirst()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Aliases").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getAliases().toString()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Description").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getDescription()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Trust Level").color(convertColorString(bot.config.colors.commands.primary)), Component.text(commands.getTrustLevel().toString()).color(convertColorString(bot.config.colors.commands.secondary)), Component.text("Usages").color(convertColorString(bot.config.colors.commands.primary)), Component.text("DUMMY STRING").color(convertColorString(bot.config.colors.commands.secondary))).color(convertColorString(bot.config.colors.commands.tertiary));
             }
         }
         return component;
@@ -115,34 +70,16 @@ public class HelpCommand extends CommandInfo {
         Bot bot = context.bot();
         String[] args = context.args();
         CommandSource source = context.source();
-        Config config = bot.config;
-        Config.Colors colors;
-        colors = config.colors;
-        List<Component> list;
 
         if (args.length != 0) {
-            source.sendFeedback(getCommand(bot, args));
+            source.sendFeedback(bot, getCommand(bot, args));
             return;
         }
 
-        list = List.of(
-            Component.text("Commands").color(NamedTextColor.NAMES.value(colors.commands.primary)),
-            Component.text(bot.commandManager.commands.size()).color(NamedTextColor.NAMES.value(colors.integer)),
-            TranslationsUtil.customTranslations("command.help.trust_level.public", null).color(NamedTextColor.NAMES.value(colors.help.Public)),
-            TranslationsUtil.customTranslations("command.help.trust_level.trusted", null).color(NamedTextColor.NAMES.value(colors.help.trusted)),
-            TranslationsUtil.customTranslations("command.help.trust_level.admin", null).color(NamedTextColor.NAMES.value(colors.help.admin)),
-            TranslationsUtil.customTranslations("command.help.trust_level.owner", null).color(NamedTextColor.NAMES.value(colors.help.owner))
-        );
+        Component helpLayout = Component.translatable("%s: (%s) (%s | %s | %s | %s) ›\n", Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)), Component.text(String.valueOf(bot.commandManager.commands.size())).color(convertColorString(bot.config.colors.integer)), Component.text("Public").color(convertColorString(bot.config.colors.help.Public)), Component.text("Trusted").color(convertColorString(bot.config.colors.help.trusted)), Component.text("Admin").color(convertColorString(bot.config.colors.help.admin)), Component.text("Owner").color(convertColorString(bot.config.colors.help.owner)));
 
-        Component helpLayout = TranslationsUtil.customTranslations(
-            "command.help.layout",
-            list
-        );
+        Component component = Component.empty().append(helpLayout).append(Component.join(JoinConfiguration.separator(Component.space()), getCommands(bot))).color(convertColorString(bot.config.colors.commands.tertiary));
 
-        Component component = Component.empty()
-            .append(helpLayout)
-            .append(Component.join(JoinConfiguration.separator(Component.space()), getCommands(bot)));
-
-        source.sendFeedback(component);
+        source.sendFeedback(bot, component);
     }
 }

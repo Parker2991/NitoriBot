@@ -34,7 +34,11 @@ public class UUIDUtil {
         return "[I;" + array[0] + "," + array[1] + "," + array[2] + "," + array[3] + "]";
     }
 
-    public static String selector (UUID uuid) {return "@p[nbt={UUID:" + snbt(uuid) + "}]";}
+    public static String selector (UUID uuid) {
+        return "@p[nbt={UUID:" + snbt(uuid) + "}]";
+    }
 
-    public static String exclusiveSelector (UUID uuid) {return "@a[nbt=!{UUID:" + snbt(uuid) + "}]";}
+    public static String exclusiveSelector (UUID uuid) {
+        return "@a[nbt=!{UUID:" + snbt(uuid) + "}]";
+    }
 }

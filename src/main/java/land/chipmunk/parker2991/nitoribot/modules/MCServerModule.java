@@ -20,38 +20,25 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MCServerModule {
+    public final SessionService sessionService = new SessionService();
+    public final MinecraftProtocol protocol = new MinecraftProtocol();
     private final Bot bot;
-
+    private final List<SkinPart> skinParts = new ArrayList<>();
     public ClientSession client;
 
-    public final SessionService sessionService = new SessionService();
+    public MCServerModule (Bot bot) {
+        this.bot = bot;
 
-    public final MinecraftProtocol protocol = new MinecraftProtocol();
-
-    private final List<SkinPart> skinParts = new ArrayList<>();
+    }
 
     public PingServerData pingServer (String[] host) {
         AtomicReference<PingServerData> serverData = new AtomicReference<>();
 
-        client = ClientNetworkSessionFactory.factory()
-            .setAddress("kaboom.pw", 25565)
+        client = ClientNetworkSessionFactory.factory().setAddress("kaboom.pw", 25565)
             //.setAddress(host[0], Integer.parseInt(host[1]))
-            .setProtocol(protocol)
-            .create();
+            .setProtocol(protocol).create();
 
-        client.send(
-            new ServerboundClientInformationPacket(
-                "en_us",
-                1,
-                ChatVisibility.FULL,
-                true,
-                skinParts,
-                HandPreference.RIGHT_HAND,
-                false,
-                true,
-                ParticleStatus.ALL
-            )
-        );
+        client.send(new ServerboundClientInformationPacket("en_us", 1, ChatVisibility.FULL, true, skinParts, HandPreference.RIGHT_HAND, false, true, ParticleStatus.ALL));
 
         client.setFlag(MinecraftConstants.SESSION_SERVICE_KEY, sessionService);
 
@@ -59,27 +46,14 @@ public class MCServerModule {
             assert info.getVersionInfo() != null;
             assert info.getPlayerInfo() != null;
 
-            serverData.set(new PingServerData(
-                info.getVersionInfo().getVersionName(),
-                info.getVersionInfo().getProtocolVersion(),
-                info.getPlayerInfo().getOnlinePlayers(),
-                info.getPlayerInfo().getMaxPlayers(),
-                info.getDescription()
-            ));
+            serverData.set(new PingServerData(info.getVersionInfo().getVersionName(), info.getVersionInfo().getProtocolVersion(), info.getPlayerInfo().getOnlinePlayers(), info.getPlayerInfo().getMaxPlayers(), info.getDescription()));
         });
 
         System.out.println(serverData);
 
-        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, (session, pingTime) ->
-            serverData.get().latency(pingTime)
-        );
+        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, (session, pingTime) -> serverData.get().latency(pingTime));
         bot.executor.submit(() -> client.connect());
 
         return serverData.get();
-    }
-
-    public MCServerModule (Bot bot) {
-        this.bot = bot;
-
     }
 }

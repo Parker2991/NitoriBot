@@ -12,12 +12,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ChatCommandHandlerModule extends Listener {
+public class ChatCommandHandlerModule implements Listener {
     private @NotNull final Bot bot;
     private @NotNull final Config config;
 
+    public ChatCommandHandlerModule (Bot bot) {
+        this.bot = bot;
+        this.config = bot.config;
+
+        bot.listenerManager.addListener(this);
+    }
+
     @Override
-    public void parsedMessage ( PlayerMessageData data) {
+    public void parsedMessage (PlayerMessageData data) {
         if (!data.chatType().equals("minecraft:chat")) return;
 
         List<String> prefixes = config.prefixes;
@@ -29,7 +36,7 @@ public class ChatCommandHandlerModule extends Listener {
 
             String command = plainMessage.substring(prefix.length());
 
-            CommandSource source = new CommandSource(bot, ParsedChatType.NORMAL, data.sender());
+            CommandSource source = new CommandSource(data.sender(), true, ParsedChatType.NORMAL);
 
             bot.commandManager.executeString(source, command);
 
@@ -45,16 +52,9 @@ public class ChatCommandHandlerModule extends Listener {
 
             String command = message.substring(prefix.length());
 
-            CommandSource source = new CommandSource(bot, ParsedChatType.COMMANDSPY, player);
+            CommandSource source = new CommandSource(player, true, ParsedChatType.COMMANDSPY);
 
             bot.commandManager.executeString(source, command);
         }
-    }
-
-    public ChatCommandHandlerModule (Bot bot) {
-        this.bot = bot;
-        this.config = bot.config;
-
-        bot.listenerManager.addListener(this);
     }
 }

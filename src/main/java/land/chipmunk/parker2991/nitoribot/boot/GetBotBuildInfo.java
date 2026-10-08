@@ -12,10 +12,7 @@ public class GetBotBuildInfo {
     private static final Gson GSON = new Gson();
 
     public BotBuildInfo getBuildInfo () {
-        Reader reader = new InputStreamReader(
-            Objects.requireNonNull(Main.class
-                .getResourceAsStream("/info.json"))
-        );
+        Reader reader = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/info.json")));
 
         return GSON.fromJson(reader, BotBuildInfo.class);
     }

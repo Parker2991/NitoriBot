@@ -7,20 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public record PlayerProfileData(
-    UUID uuid,
-    String entityUUID,
-    GameProfile profile,
-    boolean listed,
-    int latency,
-    GameMode gameMode,
-    Component displayName,
-    boolean showHat,
-    int listOrder,
-    PositionData position,
-    String dimension,
-    Integer entityId
-) {
+public record PlayerProfileData(UUID uuid, String entityUUID, GameProfile profile, boolean listed, int latency,
+                                GameMode gameMode, Component displayName, boolean showHat, int listOrder,
+                                PositionData position, String dimension, Integer entityId) {
     public void listed (boolean listed) {
     }
 
@@ -29,9 +18,9 @@ public record PlayerProfileData(
 
     public void latency (int latency) {
     }
-    
+
     public void position (PositionData position) {
-    } 
+    }
 
     public void displayName (@Nullable Component displayName) {
     }

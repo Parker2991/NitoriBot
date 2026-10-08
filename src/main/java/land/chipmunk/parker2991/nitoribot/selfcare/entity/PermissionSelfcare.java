@@ -7,10 +7,14 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.EntityEvent;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityEventPacket;
 
 
-public class PermissionSelfcare extends Listener {
+public class PermissionSelfcare implements Listener {
+    private final Bot bot;
     public int level;
 
-    private final Bot bot;
+    public PermissionSelfcare (Bot bot) {
+        this.bot = bot;
+        bot.listenerManager.addListener(this);
+    }
 
     @Override
     public void packetReceived (Packet packet) {
@@ -31,10 +35,5 @@ public class PermissionSelfcare extends Listener {
                 case EntityEvent.PLAYER_SET_OWNER -> level = 4;
             }
         }
-    }
-
-    public PermissionSelfcare (Bot bot) {
-        this.bot = bot;
-        bot.listenerManager.addListener(this);
     }
 }
