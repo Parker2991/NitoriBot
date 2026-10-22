@@ -1,4 +1,5 @@
 {
+  "about": "NitoriBot (formerly FridayNightFunkinBoyfriendBot or FNFBoyfriendBot) is a bot made for the servers kaboom.pw (and clones) and Savage Friends",
   "buildstring": {
     "botName": [
       {
@@ -25,7 +26,7 @@
         "color": "blue"
       }
     ],
-    "build": "5311",
+    "build": "5312",
     "versionReleaseDate": "N\\A",
     "initialBotRelease": "11/22/22"
   },
@@ -37,7 +38,7 @@
     },
     {
       "name": "chayapak",
-      "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads / v9.0.0 entity uuid / v9.0.0 command"
+      "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads / v9.0.0 entity uuid / v9.0.0 command / v9.0.0 tab complete / v9.0.0 vanished player support"
     },
     {
       "name": "_yfd",

@@ -10,5 +10,5 @@ build
 # Ignore the bin folder vscode keeps creating
 bin
 
-# Ignore the config
-config.yml
+# get a nbt parser somewhere else lmao
+src/main/kotlin

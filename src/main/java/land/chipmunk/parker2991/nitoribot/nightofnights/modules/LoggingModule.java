@@ -1,0 +1,39 @@
+package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
+
+import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
+import land.chipmunk.parker2991.nitoribot.nightofnights.logger.Logger;
+import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
+import net.kyori.adventure.text.Component;
+
+public class LoggingModule implements Listener {
+    private final Bot bot;
+
+    public LoggingModule (Bot bot) {
+        this.bot = bot;
+
+        bot.listenerManager.addListener(this);
+    }
+
+    @Override
+    public void playerChatReceived (Component message) {
+        handleMessages(message);
+    }
+
+    @Override
+    public void disguisedChatReceived (Component message) {
+        handleMessages(message);
+    }
+
+    @Override
+    public void systemChatReceived (Component message) {
+        handleMessages(message);
+    }
+
+    public void handleMessages (Component _message) {
+
+        String message = ComponentUtil.componentToAnsi(_message);
+        //if (host.equals("kaboom.pw")) return;
+        Logger.LOG(bot, message);
+    }
+}

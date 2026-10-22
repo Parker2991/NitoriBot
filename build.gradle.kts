@@ -22,19 +22,12 @@ repositories {
     maven("https://jitpack.io/")
     maven("https://repo.opencollab.dev/main/")
     maven("https://maven.maxhenkel.de/repository/public/")
+    maven("https://central.sonatype.com/repository/maven-snapshots")
     maven("https://code.chipmunk.land/api/packages/kaboomstandardsorganization/maven/")
 }
 
 dependencies {
-    implementation("org.geysermc.mcprotocollib:protocol:26.2-SNAPSHOT")
-    constraints {
-        implementation("io.netty:netty-codec-dns:4.2.16.Final") {
-            because("dos vulnerability!")
-        }
-        implementation("io.netty:netty-all:4.2.18.Final") {
-            because("vulnerability")
-        }
-    }
+    implementation("org.geysermc.mcprotocollib:protocol:26.3-SNAPSHOT")
     implementation("org.slf4j:slf4j-api:2.0.20")
     implementation("org.tinylog:slf4j-tinylog:2.8.1")
     implementation("org.tinylog:tinylog-impl:2.8.1")
@@ -46,6 +39,8 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:5.2.0")
     implementation("net.dv8tion:JDA:6.7.0")
     implementation("org.jline:jline:4.4.7")
+    implementation("com.github.oshi:oshi-core:7.7.1")
+    implementation("net.kyori:adventure-nbt:5.2.0")
 }
 
 tasks.jar {
@@ -55,7 +50,7 @@ tasks.jar {
     val dateTimeInfo = zoneDate.toLocalDateTime();
 
     manifest {
-        attributes["Main-Class"] = "land.chipmunk.parker2991.nitoribot.Main"
+        attributes["Main-Class"] = "land.chipmunk.parker2991.nitoribot.nightofnights.Main"
         attributes("Build-Time" to dateTimeFormatter.format(dateTimeInfo))
         attributes("Enable-Native-Access" to "ALL-UNNAMED")
     }

@@ -1,0 +1,45 @@
+package land.chipmunk.parker2991.nitoribot.nightofnights.entity;
+
+import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent;
+import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEventValue;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
+
+public class GamemodeSelfcare implements Listener {
+    public int gamemode = 1;
+
+    public GamemodeSelfcare (Bot bot) {
+        bot.listenerManager.addListener(this);
+    }
+
+    @Override
+    public void packetReceived (Packet packet) {
+        if (packet instanceof ClientboundGameEventPacket) checkGamemode((ClientboundGameEventPacket) packet);
+    }
+
+    private void checkGamemode (ClientboundGameEventPacket packet) {
+        GameEvent notification = packet.getNotification();
+        GameEventValue value = packet.getValue();
+
+        if (notification == GameEvent.CHANGE_GAME_MODE) {
+            switch (value) {
+                case GameMode.SURVIVAL:
+                    gamemode = 0;
+                    break;
+                case GameMode.CREATIVE:
+                    gamemode = 1;
+                    break;
+                case GameMode.ADVENTURE:
+                    gamemode = 2;
+                    break;
+                case GameMode.SPECTATOR:
+                    gamemode = 3;
+                    break;
+                default:
+            }
+        }
+    }
+}

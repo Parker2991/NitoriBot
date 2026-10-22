@@ -1,0 +1,46 @@
+package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
+
+import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
+import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.List;
+
+public class CommandSpyModule implements Listener {
+    private static final String SLASH = "/";
+    private final Bot bot;
+
+    public CommandSpyModule (Bot bot) {
+        this.bot = bot;
+
+        bot.listenerManager.addListener(this);
+    }
+
+    @Override
+    public void systemChatReceived (Component data) {
+        @Unmodifiable List<Component> children = data.children();
+
+        if (!(children.get(1) instanceof final TextComponent commandComponent)) return;
+
+        if (!(data instanceof final TextComponent userComponent)) return;
+
+        PlayerProfileData sender = null;
+
+        for (PlayerProfileData player : bot.players.list) {
+            String username = player.profile.getName();
+
+            if (username.equals(userComponent.content())) sender = player;
+        }
+
+        String command = commandComponent.content().substring(SLASH.length());
+
+        if ((commandComponent.content().contains(SLASH + command) && sender != null)) {
+            for (Listener listener : bot.listenerManager.listeners) {
+                listener.commandSpyReceived(sender, command);
+            }
+        }
+    }
+}
