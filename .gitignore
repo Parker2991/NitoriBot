@@ -12,3 +12,6 @@ bin
 
 # get a nbt parser somewhere else lmao
 src/main/kotlin
+
+# proxies
+proxies.txt
