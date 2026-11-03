@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PingServerData;
 import org.geysermc.mcprotocollib.auth.SessionService;
 import org.geysermc.mcprotocollib.network.ClientSession;
@@ -22,11 +22,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MCServerModule {
     public final SessionService sessionService = new SessionService();
     public final MinecraftProtocol protocol = new MinecraftProtocol();
-    private final Bot bot;
+    private final NitoriBot bot;
     private final List<SkinPart> skinParts = new ArrayList<>();
     public ClientSession client;
 
-    public MCServerModule (Bot bot) {
+    public MCServerModule (NitoriBot bot) {
         this.bot = bot;
 
     }

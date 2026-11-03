@@ -26,7 +26,7 @@
         "color": "blue"
       }
     ],
-    "build": "5312",
+    "build": "5313",
     "versionReleaseDate": "N\\A",
     "initialBotRelease": "11/22/22"
   },
@@ -71,6 +71,10 @@
     {
       "name": "Werkku",
       "reason": "v9.0.0 ComponentUtil functions / v9.0.0 command sending"
+    },
+    {
+      "name": "hcesaropz",
+      "reason": "v9.0.0 logger"
     }
   ]
 }

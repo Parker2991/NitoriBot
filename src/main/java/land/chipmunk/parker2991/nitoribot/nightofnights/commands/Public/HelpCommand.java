@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.commands.Public;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
@@ -38,7 +38,7 @@ public class HelpCommand implements CommandInfo {
         return List.of("<command>");
     }
 
-    public Component getCommands (Bot bot) {
+    public Component getCommands (NitoriBot bot) {
         List<Component> Public = new ArrayList<>();
         List<Component> Trusted = new ArrayList<>();
 
@@ -54,7 +54,7 @@ public class HelpCommand implements CommandInfo {
         return Component.empty().append(Public).append(Component.text("\n")).append(Trusted);
     }
 
-    private Component getUsages (Bot bot, List<String> usages) {
+    private Component getUsages (NitoriBot bot, List<String> usages) {
         Component component = null;
         if (usages == null) component = Component.empty().append(
             Component.text("N/A").color(
@@ -71,7 +71,7 @@ public class HelpCommand implements CommandInfo {
         return component;
     }
 
-    private Component getCommand (Bot bot, String[] command) {
+    private Component getCommand (NitoriBot bot, String[] command) {
         Component component = null;
 
         for (CommandInfo commands : bot.commandManager.commands) {
@@ -96,7 +96,7 @@ public class HelpCommand implements CommandInfo {
 
     @Override
     public void execute (CommandContext context) {
-        Bot bot = context.bot();
+        NitoriBot bot = context.bot();
         String[] args = context.args();
         CommandSource source = context.source();
 

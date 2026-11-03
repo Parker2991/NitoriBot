@@ -50,6 +50,6 @@ public class TestCommand implements CommandInfo {
 
         var source = context.source();
 
-        bot.world.getBlock(Vector3i.from(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+//        bot.world.getBlock(Vector3i.from(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2])));
     }
 }

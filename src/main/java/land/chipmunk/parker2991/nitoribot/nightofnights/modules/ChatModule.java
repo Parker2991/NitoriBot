@@ -1,6 +1,9 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.ChatAttestation;
+import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.MessagingEntrypointImpl;
+import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.util.SigningResult;
 import land.chipmunk.parker2991.nitoribot.nightofnights.chatparsers.KaboomChatParser;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatTranslationsData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
@@ -17,17 +20,15 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 
+
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ChatModule implements Listener {
     public final List<ParseChatData> chatParsers;
-    private final Bot bot;
+    private final NitoriBot bot;
 
-    public ChatModule (Bot bot) {
+    public ChatModule (NitoriBot bot) {
         this.bot = bot;
 
         this.chatParsers = List.of(new KaboomChatParser(bot));
@@ -37,9 +38,10 @@ public class ChatModule implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
+        MessagingEntrypointImpl messagingEntrypoint = new MessagingEntrypointImpl();
         switch (packet) {
             case ClientboundSystemChatPacket p -> systemChat(p);
-            case ClientboundPlayerChatPacket p -> playerChat(p);
+            case ClientboundPlayerChatPacket p -> playerChat(messagingEntrypoint, p);
             case ClientboundDisguisedChatPacket p -> disguisedChat(p);
             default -> {
             }
@@ -78,10 +80,18 @@ public class ChatModule implements Listener {
             message = Component.translatable(parseChatTypes, targetUsername, getMessage);
         }
 
+        UUID uuid = bot.players.getDisplayName(targetUsername).profile.getId();
+        String username = bot.players.getDisplayName(targetUsername).profile.getName();
+
+        /*SigningStatus result = ChatAttestation.getSigningStatus(
+            ComponentUtil.componentToString(message),
+            bot.players.getDisplayName(targetUsername).profile.getId(),
+
+        );*/
+
         for (Listener listener : bot.listenerManager.listeners) {
             listener.disguisedChatReceived(message);
         }
-
 
         parseMessage(
             ChatType.DISGUISED,
@@ -96,12 +106,21 @@ public class ChatModule implements Listener {
 
     }
 
-    public void playerChat (ClientboundPlayerChatPacket packet) {
+    public void playerChat (MessagingEntrypointImpl messagingEntrypoint, ClientboundPlayerChatPacket packet) {
         final Component unsignedContent = packet.getUnsignedContent();
         final Component content = Component.text(packet.getContent());
 
+        SigningResult result = ChatAttestation.getSigningStatus(
+            packet.getContent(),
+            packet.getSender(),
+            ComponentUtil.componentToString(packet.getName())
+        );
+
+        //bot.chat.tellraw("@a", Component.text(result.toString()));
+
         for (Listener listener : bot.listenerManager.listeners) {
             listener.playerChatReceived(unsignedContent);
+            listener.chatReceived(ChatType.PLAYER, result.status(), unsignedContent);
         }
 
         parseMessage(

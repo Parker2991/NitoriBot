@@ -28,19 +28,24 @@ repositories {
 
 dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:26.3-SNAPSHOT")
+    implementation("ch.qos.logback:logback-classic:1.6.6")
     implementation("org.slf4j:slf4j-api:2.0.20")
-    implementation("org.tinylog:slf4j-tinylog:2.8.1")
-    implementation("org.tinylog:tinylog-impl:2.8.1")
     implementation("org.yaml:snakeyaml:2.7")
     implementation("net.kyori:adventure-text-serializer-ansi:5.2.0")
     implementation("net.kyori:adventure-text-serializer-plain:5.2.0")
     implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
     implementation("net.kyori:adventure-text-serializer-gson:5.2.0")
     implementation("net.kyori:adventure-text-minimessage:5.2.0")
-    implementation("net.dv8tion:JDA:6.7.0")
     implementation("org.jline:jline:4.4.7")
     implementation("com.github.oshi:oshi-core:7.7.1")
     implementation("net.kyori:adventure-nbt:5.2.0")
+    implementation("org.bouncycastle:bcprov-jdk18on:1.84")
+    implementation("net.jodah:expiringmap:0.5.11")
+    implementation("org.apache.commons:commons-compress:1.28.0")
+    implementation("io.github.wasabithumb:jtoml-configurate:1.5.1")
+    implementation("com.github.luben:zstd-jni:1.5.6-9")
+    implementation("land.chipmunk.code.kaboomstandardsorganization.messaginglib:mcprotocollib:3.1.2")
+    implementation("com.google.guava:guava:33.6.0-jre")
 }
 
 tasks.jar {
@@ -65,6 +70,9 @@ tasks.jar {
 
     from(
         {
+            exclude("META-INF/*.SF")
+            exclude("META-INF/*.RSA")
+            exclude("META-INF/*.DSA")
             configurations.runtimeClasspath.get().filter {
                 it.name.endsWith("jar")
             }.map {

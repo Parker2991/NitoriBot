@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class TabCompleteModule implements Listener {
-    private final Bot bot;
+    private final NitoriBot bot;
 
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class TabCompleteModule implements Listener {
         transactions.get(packet.getTransactionId()).complete(packet);
     }
 
-    public TabCompleteModule (Bot bot) {
+    public TabCompleteModule (NitoriBot bot) {
         this.bot = bot;
         bot.listenerManager.addListener(this);
     }

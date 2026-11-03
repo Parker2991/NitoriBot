@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.chatparsers;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ParseChatData;
@@ -14,9 +14,9 @@ public class KaboomChatParser implements ParseChatData {
     private static final Component SEPERATOR_COLON = Component.text(":");
     private static final Component SEPERATOR_COLON_RACCOON = Component.text("§f:"); // https://github.com/raccoonserver/extras/commit/315f704075db2f00e3e1bfbf55f858469c22880f
     private static final Component SEPERATOR_SPACE = Component.space();
-    private final Bot bot;
+    private final NitoriBot bot;
 
-    public KaboomChatParser (Bot bot) {
+    public KaboomChatParser (NitoriBot bot) {
         this.bot = bot;
     }
 

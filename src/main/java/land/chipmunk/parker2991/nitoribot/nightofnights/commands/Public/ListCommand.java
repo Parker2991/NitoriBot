@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.commands.Public;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
@@ -39,7 +39,7 @@ public class ListCommand implements CommandInfo {
 
     @Override
     public void execute (CommandContext context) {
-        Bot bot = context.bot();
+        NitoriBot bot = context.bot();
         CommandSource source = context.source();
         Component component = null;
         Component playerComponent = null;

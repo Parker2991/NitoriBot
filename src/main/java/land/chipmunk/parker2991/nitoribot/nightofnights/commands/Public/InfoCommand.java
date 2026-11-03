@@ -131,7 +131,8 @@ public class InfoCommand implements CommandInfo {
                     component = Component.translatable(
                         "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
                         Component.text("Hostname").color(convertColorString(bot.config.colors.commands.primary)),
-                        Component.text(InetAddress.getLocalHost().getHostName()).color(convertColorString(bot.config.colors.commands.secondary)),
+                        Component.text("N/A").color(convertColorString(bot.config.colors.commands.secondary)),
+			//                        Component.text(InetAddress.getLocalHost().getHostName()).color(convertColorString(bot.config.colors.commands.secondary)),
                         Component.text("Username").color(convertColorString(bot.config.colors.commands.primary)),
                         Component.text(System.getProperty("user.name")).color(convertColorString(bot.config.colors.commands.secondary)),
                         Component.text("Directory").color(convertColorString(bot.config.colors.commands.primary)),

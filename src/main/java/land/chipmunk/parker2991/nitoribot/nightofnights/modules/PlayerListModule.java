@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import net.kyori.adventure.text.Component;
@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerListModule implements Listener {
-    private final Bot bot;
+    private final NitoriBot bot;
     public final List<PlayerProfileData> list = new ArrayList<>();
 
 
-    public PlayerListModule (Bot bot) {
+    public PlayerListModule (NitoriBot bot) {
         this.bot = bot;
         bot.listenerManager.addListener(this);
     }

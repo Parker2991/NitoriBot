@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.CommandCoreAreaData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
@@ -23,22 +23,27 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class CommandCoreModule implements Listener {
-    private final Bot bot;
+    private final NitoriBot bot;
     public Vector3i position;
     public Vector3i itemPosition;
     public final CommandCoreAreaData area;
     public Vector3i lastBlockPosition;
+    public List<Component> cmdBlockOutputs = new ArrayList<>();
     public Vector3i currentBlockRelative = Vector3i.from(
         0,
         0,
         0
     );
 
-    public CommandCoreModule (Bot bot) {
+    public CommandCoreModule (NitoriBot bot) {
         this.bot = bot;
         this.area = new CommandCoreAreaData(
             Vector3i.from(
@@ -127,7 +132,7 @@ public class CommandCoreModule implements Listener {
         bot.session.send(new ServerboundSetCreativeModeSlotPacket(
             (short) 36,
             new ItemStack(
-                482,
+                bot.registry.getBlockRegistry("minecraft:command_block").itemId,
                 64,
                 dataComponents
             )
@@ -147,7 +152,7 @@ public class CommandCoreModule implements Listener {
             0.5f,
             0.5f,
             0.5f,
-            true,
+            false,
             false,
             420
         ));
@@ -160,11 +165,11 @@ public class CommandCoreModule implements Listener {
             true
         );
 
-        Vector3i pos = Vector3i.from(
+        /*Vector3i pos = Vector3i.from(
             itemPosition.getX(),
             itemPosition.getY(),
             itemPosition.getZ()
-        );
+        );*/
         /*bot.world.getBlock(pos).thenApply((packet) -> {
             try {
                 @Nullable NbtMap nbt = packet.getNbt();
@@ -274,7 +279,11 @@ public class CommandCoreModule implements Listener {
         incrementCurrentBlock();
     }
 
-    public Component runTrackedWithTellraw (String tag, String selector, String command) {
+    public Component runTrackedWithTellraw (
+        String tag,
+        String selector,
+        String command
+    ) {
         commandBlock(
             currentBlock(),
             command,
@@ -305,8 +314,9 @@ public class CommandCoreModule implements Listener {
 
         return component;
     }
-    /*public void runTrackedWithPacket (String command) {
-        List<NbtMap> output = new ArrayList<>();
+
+    public Component runTrackedWithPacket (String command) {
+        // List<NbtMap> output = new ArrayList<>();
         commandBlock(
             currentBlock(),
             command,
@@ -315,34 +325,53 @@ public class CommandCoreModule implements Listener {
             true
         );
 
-        CompletableFuture.runAsync(
+        lastBlockPosition = currentBlock();
+
+        incrementCurrentBlock();
+        //AtomicReference<Component> output = new AtomicReference<>();
+
+        var runPacketAtDelay = CompletableFuture.supplyAsync(
             () -> {
-                bot.world.getBlock(currentBlock()).thenApplyAsync((packet) -> {
-                    try {
-
-                        if (packet.getTransactionId() == bot.world.transactionId) {
-                            NbtMap nbt = packet.getNbt();
-
-                            Object json = packet.getNbt().get("LastOutput");
-                            if (json != null) {
-                                JsonObject nbtParsed = NbtMapToJson.INSTANCE.convert((NbtMap) json);
-                                System.out.println(nbtParsed.toString());
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace(System.err);
-                    }
-                    return packet;
-                });
-
-                // System.out.println(cmdBlockOutput.join());
-                //  incrementCurrentBlock();
-                //return null;
+                CompletableFuture<Component> output = null;
+                try {
+                    output = bot.world.getBlock(lastBlockPosition);
+                } catch (Exception ignore) {}
+                return output;
             },
             CompletableFuture.delayedExecutor(
                 50,
                 TimeUnit.MILLISECONDS
             )
         );
-    }*/
+
+        //AtomicReference<Component> output = new AtomicReference<>();
+        var executor = bot.executor.submit(() -> {
+            Component output = null;
+            try {
+                cmdBlockOutputs.add(runPacketAtDelay.join().get());
+                System.out.println(cmdBlockOutputs.toString());
+
+                //System.out.println(runPacketAtDelay.join().get());
+                //output = runPacketAtDelay.join().get();
+            } catch (Exception e) {}
+            //System.out.println(output);
+            return output;
+        });
+
+        return null;
+
+       // System.out.println(output.toString());
+      //  System.out.println(output);
+        //runPacketAtDelay.join().join();
+        //return output.get();
+
+        /*return CompletableFuture.supplyAsync(
+            () -> (Component) bot.executor.submit(() -> bot.world.getBlock(currentBlock())),
+            CompletableFuture.delayedExecutor(
+                50,
+                TimeUnit.MILLISECONDS
+            )
+        );*/
+        // System.out.println(output.toString());
+    }
 }

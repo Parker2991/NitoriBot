@@ -1,0 +1,12 @@
+<configuration>
+    <appender name="STDOUT" class="land.chipmunk.parker2991.nitoribot.nightofnights.console.JlineAppender">
+        <encoder>
+            <pattern>
+                %blue([%d{yyyy-MM-dd HH:mm:ss a}]) %blue([%-5thread]) %blue([%highlight(%-5X{customLevel:-INFO}) %blue(])) %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

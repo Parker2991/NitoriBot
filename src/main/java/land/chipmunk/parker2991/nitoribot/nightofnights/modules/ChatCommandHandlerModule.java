@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.Config;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ParsedChatType;
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ChatCommandHandlerModule implements Listener {
-    private @NotNull final Bot bot;
+    private @NotNull final NitoriBot bot;
     private @NotNull final Config config;
 
-    public ChatCommandHandlerModule (Bot bot) {
+    public ChatCommandHandlerModule (NitoriBot bot) {
         this.bot = bot;
         this.config = bot.config;
 

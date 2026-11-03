@@ -1,25 +1,26 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandError;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.Public.*;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.trusted.ReconnectCommand;
-import land.chipmunk.parker2991.nitoribot.nightofnights.logger.Logger;
-import land.chipmunk.parker2991.nitoribot.nightofnights.util.ErrorToString;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
 
 public class CommandManagerModule {
     public final List<CommandInfo> commands = new ArrayList<>();
-    private final Bot bot;
+    private final NitoriBot bot;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandManagerModule.class);
 
-    public CommandManagerModule (Bot bot) throws IOException {
+    public CommandManagerModule (NitoriBot bot) throws IOException {
         this.bot = bot;
         registerCommand(new EchoCommand());
         registerCommand(new HelpCommand());
@@ -66,8 +67,7 @@ public class CommandManagerModule {
             source.sendFeedback(bot, error.message());
         } catch (Exception error) {
             source.sendFeedback(bot, Component.translatable("command.failed").color(NamedTextColor.DARK_RED));
-            String Error = ErrorToString.errorToString(error);
-            Logger.ERROR(bot, Error);
+            LOGGER.error("{}", CommandManagerModule.class, error);
         }
     }
 

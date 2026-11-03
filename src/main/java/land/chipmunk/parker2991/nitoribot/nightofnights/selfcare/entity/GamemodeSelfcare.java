@@ -1,6 +1,6 @@
-package land.chipmunk.parker2991.nitoribot.nightofnights.entity;
+package land.chipmunk.parker2991.nitoribot.nightofnights.selfcare.entity;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
@@ -11,7 +11,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.Clien
 public class GamemodeSelfcare implements Listener {
     public int gamemode = 1;
 
-    public GamemodeSelfcare (Bot bot) {
+    public GamemodeSelfcare (NitoriBot bot) {
         bot.listenerManager.addListener(this);
     }
 

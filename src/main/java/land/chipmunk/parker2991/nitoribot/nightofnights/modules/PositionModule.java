@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PositionModule implements Listener {
-    private final Bot bot;
+    private final NitoriBot bot;
 
     public ScheduledFuture<?> timer;
     public Vector3d positionData;
@@ -21,7 +21,7 @@ public class PositionModule implements Listener {
     private int x;
     private int z;
 
-    public PositionModule (Bot bot) {
+    public PositionModule (NitoriBot bot) {
         this.bot = bot;
 
         bot.listenerManager.addListener(this);

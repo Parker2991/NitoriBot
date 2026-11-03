@@ -1,9 +1,9 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
-import land.chipmunk.parker2991.nitoribot.nightofnights.entity.GamemodeSelfcare;
-import land.chipmunk.parker2991.nitoribot.nightofnights.entity.PermissionSelfcare;
+import land.chipmunk.parker2991.nitoribot.nightofnights.selfcare.entity.GamemodeSelfcare;
+import land.chipmunk.parker2991.nitoribot.nightofnights.selfcare.entity.PermissionSelfcare;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundDisconnectPacket;
@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class SelfcareModule implements Listener {
-    private final Bot bot;
+    private final NitoriBot bot;
     public ScheduledFuture<?> timer;
     public PermissionSelfcare permission;
 
@@ -22,7 +22,7 @@ public class SelfcareModule implements Listener {
 
     public int entityId;
 
-    public SelfcareModule (Bot bot) {
+    public SelfcareModule (NitoriBot bot) {
         this.bot = bot;
         bot.listenerManager.addListener(this);
         loadSelfcare();

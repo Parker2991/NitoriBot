@@ -2,7 +2,8 @@ package land.chipmunk.parker2991.nitoribot.nightofnights.boot;
 
 import land.chipmunk.parker2991.nitoribot.nightofnights.Config;
 import land.chipmunk.parker2991.nitoribot.nightofnights.Main;
-import land.chipmunk.parker2991.nitoribot.nightofnights.logger.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -17,7 +18,7 @@ public class LoadConfig {
     private final Constructor yamlConfig = new Constructor(Config.class, new LoaderOptions());
     private final Yaml yaml = new Yaml(yamlConfig);
     private final String homeDirectory = System.getProperty("user.home");
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadConfig.class);
     public Config loadConfig () throws IOException {
         Path configDirectory;
 
@@ -26,7 +27,7 @@ public class LoadConfig {
 
         final Path configPath = Path.of(String.valueOf(configDirectory), "config.yml");
         if (!Files.exists(configPath)) {
-            Logger.INFO(null, "config not found, creating config in " + configPath);
+            LOGGER.warn("config not found! creating it now");
 
             if (!Files.exists(configDirectory)) Files.createDirectory(configDirectory);
 

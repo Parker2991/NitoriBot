@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import net.kyori.adventure.text.Component;
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class CommandSpyModule implements Listener {
     private static final String SLASH = "/";
-    private final Bot bot;
+    private final NitoriBot bot;
 
-    public CommandSpyModule (Bot bot) {
+    public CommandSpyModule (NitoriBot bot) {
         this.bot = bot;
 
         bot.listenerManager.addListener(this);

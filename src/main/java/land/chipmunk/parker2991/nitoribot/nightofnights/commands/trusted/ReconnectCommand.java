@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.commands.trusted;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
@@ -34,7 +34,7 @@ public class ReconnectCommand implements CommandInfo {
 
     @Override
     public void execute (CommandContext context) {
-        Bot bot = context.bot();
+        NitoriBot bot = context.bot();
 
         bot.session.disconnect("Reconnect Command");
     }

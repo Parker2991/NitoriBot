@@ -1,6 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
-import land.chipmunk.parker2991.nitoribot.nightofnights.Bot;
+import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
@@ -11,7 +11,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.Clie
 public class TextDisplayModule implements Listener {
     private static final int TEXT_DISPLAY_ENTITY_ID = 32;
 
-    public TextDisplayModule (Bot bot) {
+    public TextDisplayModule (NitoriBot bot) {
         bot.listenerManager.addListener(this);
     }
 
