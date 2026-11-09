@@ -14,31 +14,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class LoadConfig {
-    private static final String XDG_CONFIG_HOME = System.getenv("XDG_CONFIG_HOME");
-    private final Constructor yamlConfig = new Constructor(Config.class, new LoaderOptions());
-    private final Yaml yaml = new Yaml(yamlConfig);
-    private final String homeDirectory = System.getProperty("user.home");
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadConfig.class);
     public Config loadConfig () throws IOException {
-        Path configDirectory;
-
-        if (XDG_CONFIG_HOME == null) configDirectory = Path.of(homeDirectory, ".config/NitoriBot");
-        else configDirectory = Path.of(XDG_CONFIG_HOME, "NitoriBot");
-
-        final Path configPath = Path.of(String.valueOf(configDirectory), "config.yml");
+        final Constructor yamlConfig = new Constructor(
+            Config.class,
+            new LoaderOptions()
+        );
+        final Yaml yaml = new Yaml(yamlConfig);
+        final Path configPath = Path.of("config.yaml");
         if (!Files.exists(configPath)) {
-            LOGGER.warn("config not found! creating it now");
+            LOGGER.info(
+                "config not found making config now"
+            );
 
-            if (!Files.exists(configDirectory)) Files.createDirectory(configDirectory);
-
-            InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yml");
-            if (defaultConfig != null) {
-                Files.copy(defaultConfig, configPath);
-            }
+            InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");
+            Files.copy(
+                defaultConfig,
+                configPath
+            );
         }
 
         InputStream configFile = Files.newInputStream(configPath);
 
         return yaml.load(configFile);
     }
+
 }

@@ -15,3 +15,9 @@ src/main/kotlin
 
 # proxies
 proxies.txt
+
+# ignore the config
+config.yaml
+
+# ignore chat attestation
+chatattestation

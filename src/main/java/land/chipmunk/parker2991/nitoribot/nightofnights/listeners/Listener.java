@@ -5,6 +5,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.enums.Si
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
@@ -22,7 +23,11 @@ public interface Listener {
     ) {
     }
 
-    default void chatReceived (ChatType chatType, SigningStatus signingStatus, Component message) {}
+    default void chatReceived (
+        ChatType chatType,
+        Component message
+    ) {
+    }
 
     default void packetReceived (Packet packet) {
     }
@@ -45,6 +50,11 @@ public interface Listener {
     default void commandSpyReceived (
         PlayerProfileData player,
         String command
+    ) {
+    }
+
+    default void discordMessageReceived (
+        MessageReceivedEvent event
     ) {
     }
 

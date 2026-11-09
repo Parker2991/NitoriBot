@@ -41,17 +41,19 @@ public class HelpCommand implements CommandInfo {
     public Component getCommands (NitoriBot bot) {
         List<Component> Public = new ArrayList<>();
         List<Component> Trusted = new ArrayList<>();
+        List<Component> Owner = new ArrayList<>();
 
         for (CommandInfo commands : bot.commandManager.commands) {
             switch (commands.getTrustLevel()) {
                 case CommandTrustLevels.PUBLIC -> Public.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.Public)));
                 case CommandTrustLevels.TRUSTED -> Trusted.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.trusted)));
+                case CommandTrustLevels.OWNER -> Owner.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.owner)));
                 default -> {
                 }
             }
         }
 
-        return Component.empty().append(Public).append(Component.text("\n")).append(Trusted);
+        return Component.empty().append(Public).append(Component.text("\n")).append(Trusted).append(Component.text("\n")).append(Owner);
     }
 
     private Component getUsages (NitoriBot bot, List<String> usages) {

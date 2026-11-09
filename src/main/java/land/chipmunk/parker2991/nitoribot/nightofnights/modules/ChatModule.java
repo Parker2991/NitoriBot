@@ -62,6 +62,7 @@ public class ChatModule implements Listener {
         final Component message = packet.getContent();
 
         for (Listener listener : bot.listenerManager.listeners) {
+            listener.chatReceived(ChatType.SYSTEM, message);
             listener.systemChatReceived(message);
         }
     }
@@ -90,13 +91,12 @@ public class ChatModule implements Listener {
         );*/
 
         for (Listener listener : bot.listenerManager.listeners) {
+            listener.chatReceived(ChatType.DISGUISED, message);
             listener.disguisedChatReceived(message);
         }
 
         parseMessage(
-            ChatType.DISGUISED,
-            message,
-            new PlayerMessageData(
+            ChatType.DISGUISED, message, new PlayerMessageData(
                 bot.players.getPlayerByUsername(ComponentUtil.componentToString(packet.getName())),
                 packet.getMessage(),
                 ChatType.DISGUISED,
@@ -110,25 +110,25 @@ public class ChatModule implements Listener {
         final Component unsignedContent = packet.getUnsignedContent();
         final Component content = Component.text(packet.getContent());
 
-        SigningResult result = ChatAttestation.getSigningStatus(
+        /*SigningResult result = ChatAttestation.getSigningStatus(
             packet.getContent(),
             packet.getSender(),
             ComponentUtil.componentToString(packet.getName())
-        );
+        );*/
 
         //bot.chat.tellraw("@a", Component.text(result.toString()));
 
         for (Listener listener : bot.listenerManager.listeners) {
+            listener.chatReceived(ChatType.PLAYER, unsignedContent);
             listener.playerChatReceived(unsignedContent);
-            listener.chatReceived(ChatType.PLAYER, result.status(), unsignedContent);
+            //listener.chatReceived(ChatType.PLAYER, result.status(), unsignedContent);
         }
 
         parseMessage(
-            ChatType.PLAYER,
-            unsignedContent,
-            new PlayerMessageData(
+            ChatType.PLAYER, unsignedContent, new PlayerMessageData(
                 bot.players.getPlayerUUID(packet.getSender()),
-                content, ChatType.PLAYER,
+                content,
+                ChatType.PLAYER,
                 Objects.requireNonNull(bot.players.getPlayerUUID(packet.getSender())).displayName
             )
         );
@@ -148,11 +148,14 @@ public class ChatModule implements Listener {
 
             for (Listener listener : bot.listenerManager.listeners) {
                 if (data.chatType() == ChatType.DISGUISED) {
-                    final PlayerMessageData playerMessageData = new PlayerMessageData(parsed.sender(), parsed.contents(), ChatType.DISGUISED, data.senderName());
+                    final PlayerMessageData playerMessageData = new PlayerMessageData(
+                        parsed.sender(),
+                        parsed.contents(),
+                        ChatType.DISGUISED,
+                        data.senderName()
+                    );
                     listener.parsedMessage(playerMessageData);
-                }
-
-                else listener.parsedMessage(data);
+                } else listener.parsedMessage(data);
             }
 
         } catch (Exception ignore) {

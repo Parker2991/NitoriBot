@@ -1,6 +1,7 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.data;
 
 
+import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.auth.GameProfile;
@@ -21,6 +22,8 @@ public class PlayerProfileData {
     public Vector3d position;
     public String dimension;
     public int entityId;
+    public CommandTrustLevels trustLevel = CommandTrustLevels.PUBLIC;
+    public boolean alreadyValidated = false;
 
     public PlayerProfileData (
         UUID uuid,

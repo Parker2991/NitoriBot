@@ -39,6 +39,7 @@ public @NullMarked class Client extends NitoriBot {
 
 
         this.modules = List.of(
+            this.discord = new DiscordModule(this),
             this.chat = new ChatModule(this),
             new SelfcareModule(this),
             this.position = new PositionModule(this),
@@ -53,38 +54,16 @@ public @NullMarked class Client extends NitoriBot {
             new CommandSpyModule(this),
             this.world = new WorldModule(this),
             this.tabComplete = new TabCompleteModule(this),
-            this.extrasMessaging = new ExtrasMessagingModule(this)
+            this.extrasMessaging = new ExtrasMessagingModule(this),
+            this.validation = new ValidationModule(this)
         );
 
         try {
-            connect();
+      //      connect();
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
     }
-
-    private void connect () throws IOException {
-        final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
-
-        if (options.useProxy) session = ClientNetworkSessionFactory.factory().setAddress(
-            options.host,
-            options.port
-        ).setProxy(new GetProxiesList().randomProxyIp()).setProtocol(protocol).create();
-
-        else session = ClientNetworkSessionFactory.factory().setAddress(
-            options.host,
-            options.port
-        ).setProtocol(protocol).create();
-        Injector.inject(
-            session,
-            this
-        );
-        chatAttestation.inject(session);
-        session.addListener(this);
-        session.connect(false);
-    }
-
-
 
     @Override
     public void disconnecting (DisconnectingEvent event) {

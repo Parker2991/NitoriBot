@@ -132,7 +132,8 @@ public class CommandCoreModule implements Listener {
         bot.session.send(new ServerboundSetCreativeModeSlotPacket(
             (short) 36,
             new ItemStack(
-                bot.registry.getBlockRegistry("minecraft:command_block").itemId,
+                529,
+               // bot.registry.getBlockRegistry("minecraft:command_block").itemId,
                 64,
                 dataComponents
             )

@@ -10,6 +10,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.data.buildstring.BotBuil
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.buildstring.RepoCommitInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.ListenerManager;
 import land.chipmunk.parker2991.nitoribot.nightofnights.modules.*;
+import net.dv8tion.jda.api.JDA;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
@@ -27,7 +28,7 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
     public final LoggerManager logger = new LoggerManager();
     public final ListenerManager listenerManager = new ListenerManager();
     public final ScheduledExecutorService executor = Main.executor;
-    public final ExecutorService executorService = Main.executorService;
+    //public final ExecutorService executorService = Main.executorService;
     public final ConcurrentMap<String, Future<?>> services = Main.services;
     public final BotBuildInfo botBuildInfo = Main.botBuildInfo;
     public final RepoCommitInfo repoCommitInfo = Main.repoCommitInfo;
@@ -39,6 +40,7 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
     public CommandCoreModule core;
     public PlayerListModule players;
     public RegistryModule registry;
+    public ValidationModule validation;
     public boolean loggedIn = false;
     public int entityId;
     public ClientNetworkSession session;
@@ -49,9 +51,10 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
     public TabCompleteModule tabComplete;
     public ExtrasMessagingModule extrasMessaging;
     public List<?> modules;
-    public final ChatAttestation chatAttestation = new ChatAttestation();
+    public DiscordModule discord;
+    //public final ChatAttestation chatAttestation = new ChatAttestation();
 
-    private void connect () throws IOException {
+    public void connect () throws IOException {
         final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
         if (options.useProxy) session = ClientNetworkSessionFactory.factory().setAddress(
@@ -67,7 +70,7 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
             session,
             this
         );
-        chatAttestation.inject(session);
+        ChatAttestation.inject(session);
         session.addListener(this);
         session.connect(false);
     }

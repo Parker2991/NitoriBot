@@ -29,7 +29,7 @@ public class RegistryModule implements Listener {
 
     public RegistryModule (NitoriBot bot) {
         bot.listenerManager.addListener(this);
-        parseBlockRegistries();
+        //parseBlockRegistries();
     }
 
     @Override

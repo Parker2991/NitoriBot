@@ -8,7 +8,27 @@ public class Config {
     public final Console console = new Console();
     public final Options[] bots = new Options[]{};
     public List<String> prefixes;
+    public final Keys keys = new Keys();
+    public final Discord discord = new Discord();
 
+    public static class DiscordRoles {
+        public String trusted;
+        public String admin;
+        public String owner;
+    }
+
+    public static class Discord {
+        public String token;
+        public String prefix;
+        public String invite;
+        public final DiscordRoles roles = new DiscordRoles();
+    }
+
+    public static class Keys {
+        public String trusted;
+        public String admin;
+        public String owner;
+    }
     public static class Core {
         public boolean itemRefill;
         public final Area area = new Area();
@@ -56,6 +76,7 @@ public class Config {
         public boolean useProxy;
         public String serverName;
         public String username;
+        public String discordChannelId;
         public int reconnectDelay;
         public int selfcareInterval;
         public String mode;

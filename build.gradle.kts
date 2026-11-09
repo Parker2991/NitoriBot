@@ -46,6 +46,7 @@ dependencies {
     implementation("com.github.luben:zstd-jni:1.5.6-9")
     implementation("land.chipmunk.code.kaboomstandardsorganization.messaginglib:mcprotocollib:3.1.2")
     implementation("com.google.guava:guava:33.6.0-jre")
+    implementation("net.dv8tion:JDA:6.7.0")
 }
 
 tasks.jar {

@@ -45,7 +45,7 @@ public class ChatAttestation {
 
     }
 
-    public MessagingEntrypointImpl inject (ClientSession clientNetworkSession) {
+    public static MessagingEntrypointImpl inject (ClientSession clientNetworkSession) {
         MessagingEntrypointImpl messagingEntrypointImpl = new MessagingEntrypointImpl();
         Injector.inject(clientNetworkSession, messagingEntrypointImpl);
         return messagingEntrypointImpl;

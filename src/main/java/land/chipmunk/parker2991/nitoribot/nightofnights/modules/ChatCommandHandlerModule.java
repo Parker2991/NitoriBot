@@ -2,7 +2,9 @@ package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.Config;
+import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandMessageSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.ParsedChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
@@ -34,10 +36,16 @@ public class ChatCommandHandlerModule implements Listener {
 
             String command = plainMessage.substring(prefix.length());
 
-            CommandSource source = new CommandSource(data.sender(), true, ParsedChatType.NORMAL);
+            CommandSource source = new CommandSource(
+                data.sender(),
+                null,
+                CommandMessageSource.INGAME,
+                data.chatType(),
+                ParsedChatType.NORMAL
+            );
+
 
             bot.commandManager.executeString(source, command);
-
         }
     }
 
@@ -50,7 +58,13 @@ public class ChatCommandHandlerModule implements Listener {
 
             String command = message.substring(prefix.length());
 
-            CommandSource source = new CommandSource(player, true, ParsedChatType.COMMANDSPY);
+            CommandSource source = new CommandSource(
+                player,
+                null,
+                CommandMessageSource.INGAME,
+                ChatType.SYSTEM,
+                ParsedChatType.COMMANDSPY
+            );
 
             bot.commandManager.executeString(source, command);
         }

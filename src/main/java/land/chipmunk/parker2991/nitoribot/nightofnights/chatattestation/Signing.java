@@ -55,10 +55,6 @@ public class Signing {
                 final String encodedKey = Base64.getEncoder()
                     .encodeToString(valid.key().bc().getEncoded());
 
-                LOGGER.info(
-                    "Encoded public key: {}",
-                    encodedKey
-                );
                 yield new SigningResult(
                     authenticated ? SigningStatus.VERIFIED : SigningStatus.VALID_UNVERIFIED,
                     encodedKey

@@ -45,7 +45,7 @@ public class SelfcareModule implements Listener {
 
     public void login (ClientboundLoginFinishedPacket packet) {
         if (bot.options.mode.equals("totalfreedom")) return;
-        timer = bot.executor.scheduleAtFixedRate(
+        timer = bot.executor.scheduleWithFixedDelay(
             () -> {
                 if (permission.level < 2 && bot.loggedIn) bot.chat.command("minecraft:op @s[type=player]");
                 else if (gamemode.gamemode != 1)

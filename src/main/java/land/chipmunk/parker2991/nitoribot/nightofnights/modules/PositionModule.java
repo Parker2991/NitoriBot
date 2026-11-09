@@ -68,10 +68,6 @@ public class PositionModule implements Listener {
                 packet.getYRot()
             )
         );
-        /*
-         ServerboundAcceptTeleportationPacket(int id, double x, double y, double z, float yRot, float xRot)
-         */
-        //bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         for (Listener listener : bot.listenerManager.listeners) {
             if (!Objects.equals(bot.options.mode, "kaboom")) return;
