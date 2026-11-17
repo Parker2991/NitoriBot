@@ -26,9 +26,14 @@ public class ChatAttestation {
         final byte[] pyl;
         final var wrapped = new SigningManager.WrappedByteArray(createHash(message.getBytes(StandardCharsets.UTF_8)));
         final ByteBuf payload;
-        payload = senderUuid == NIL_UUID
-            ? MessagingEntrypointImpl.RECENT_PAYLOADS.remove(wrapped)
-            : MessagingEntrypointImpl.ATTRIBUTED_PAYLOADS.getOrDefault(senderUuid, Collections.emptyMap()).remove(wrapped);
+        payload = senderUuid == NIL_UUID ?
+            MessagingEntrypointImpl.RECENT_PAYLOADS.remove(wrapped) :
+            MessagingEntrypointImpl.ATTRIBUTED_PAYLOADS
+                .getOrDefault(
+                    senderUuid,
+                    Collections.emptyMap()
+                )
+                .remove(wrapped);
 
         if (payload == null) {
             pyl = null;
@@ -37,17 +42,25 @@ public class ChatAttestation {
                 pyl = new byte[payload.readableBytes()];
                 payload.readBytes(pyl);
             } finally {
-                if (senderUuid != NIL_UUID) MessagingEntrypointImpl.RECENT_PAYLOADS.remove(wrapped);
+                if (senderUuid != NIL_UUID)
+                    MessagingEntrypointImpl.RECENT_PAYLOADS.remove(wrapped);
                 payload.release();
             }
         }
-        return Signing.getSigningStatus(senderNick, message, pyl);
+        return Signing.getSigningStatus(
+            senderNick,
+            message,
+            pyl
+        );
 
     }
 
     public static MessagingEntrypointImpl inject (ClientSession clientNetworkSession) {
         MessagingEntrypointImpl messagingEntrypointImpl = new MessagingEntrypointImpl();
-        Injector.inject(clientNetworkSession, messagingEntrypointImpl);
+        Injector.inject(
+            clientNetworkSession,
+            messagingEntrypointImpl
+        );
         return messagingEntrypointImpl;
     }
 }

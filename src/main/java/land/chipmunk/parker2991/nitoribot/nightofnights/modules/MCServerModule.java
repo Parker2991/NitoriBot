@@ -20,23 +20,30 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MCServerModule {
-    public final SessionService sessionService = new SessionService();
-    public final MinecraftProtocol protocol = new MinecraftProtocol();
+    //public final SessionService sessionService = new SessionService();
+    //public final MinecraftProtocol protocol = new MinecraftProtocol();
     private final NitoriBot bot;
     private final List<SkinPart> skinParts = new ArrayList<>();
-    public ClientSession client;
+    //public ClientSession client;
 
     public MCServerModule (NitoriBot bot) {
         this.bot = bot;
-
     }
 
-    public PingServerData pingServer (String[] host) {
-        AtomicReference<PingServerData> serverData = new AtomicReference<>();
+    public List<PingServerData> pingServer (String[] host) {
+        List<PingServerData> list = new ArrayList<>();
+        ClientSession client;
+        final SessionService sessionService = new SessionService();
+        final MinecraftProtocol protocol = new MinecraftProtocol();
 
-        client = ClientNetworkSessionFactory.factory().setAddress("kaboom.pw", 25565)
-            //.setAddress(host[0], Integer.parseInt(host[1]))
-            .setProtocol(protocol).create();
+        client = ClientNetworkSessionFactory
+            .factory()
+            .setAddress(
+                host[0],
+                Integer.parseInt(host[1])
+            )
+            .setProtocol(protocol)
+            .create();
 
         client.send(new ServerboundClientInformationPacket(
             "en_us",
@@ -50,31 +57,46 @@ public class MCServerModule {
             ParticleStatus.ALL
         ));
 
-        client.setFlag(MinecraftConstants.SESSION_SERVICE_KEY, sessionService);
+        client.setFlag(
+            MinecraftConstants.SESSION_SERVICE_KEY,
+            sessionService
+        );
 
         client.setFlag(
-            MinecraftConstants.SERVER_INFO_HANDLER_KEY, (Session session, ServerStatusInfo info) -> {
-                assert info.getVersionInfo() != null;
-                assert info.getPlayerInfo() != null;
+            MinecraftConstants.SERVER_INFO_HANDLER_KEY,
+            (Session session, ServerStatusInfo info) -> {
 
-                serverData.set(new PingServerData(
-                    info.getVersionInfo().getVersionName(),
-                    info.getVersionInfo().getProtocolVersion(),
-                    info.getPlayerInfo().getOnlinePlayers(),
-                    info.getPlayerInfo().getMaxPlayers(),
+                list.add(new PingServerData(
+                    info
+                        .getVersionInfo()
+                        .getVersionName(),
+                    info
+                        .getVersionInfo()
+                        .getProtocolVersion(),
+                    info
+                        .getPlayerInfo()
+                        .getOnlinePlayers(),
+                    info
+                        .getPlayerInfo()
+                        .getMaxPlayers(),
                     info.getDescription()
                 ));
             }
         );
 
-        System.out.println(serverData);
-
         client.setFlag(
             MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY,
-            (session, pingTime) -> serverData.get().latency(pingTime)
+            (session, pingTime) -> {
+            }
         );
-        bot.executor.submit(() -> client.connect());
 
-        return serverData.get();
+        client.connect();
+
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+        }
+
+        return list;
     }
 }

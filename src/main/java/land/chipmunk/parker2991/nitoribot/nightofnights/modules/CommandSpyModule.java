@@ -21,25 +21,38 @@ public class CommandSpyModule implements Listener {
 
     @Override
     public void systemChatReceived (Component data) {
-        @Unmodifiable List<Component> children = data.children();
+        @Unmodifiable
+        List<Component> children = data.children();
 
-        if (!(children.get(1) instanceof final TextComponent commandComponent)) return;
+        if (!(children.get(1) instanceof final TextComponent commandComponent))
+            return;
 
-        if (!(data instanceof final TextComponent userComponent)) return;
+        if (!(data instanceof final TextComponent userComponent))
+            return;
 
         PlayerProfileData sender = null;
 
         for (PlayerProfileData player : bot.players.list) {
             String username = player.profile.getName();
 
-            if (username.equals(userComponent.content())) sender = player;
+            if (username.equals(userComponent.content()))
+                sender = player;
         }
 
-        String command = commandComponent.content().substring(SLASH.length());
+        String command = commandComponent
+            .content()
+            .substring(SLASH.length());
 
-        if ((commandComponent.content().contains(SLASH + command) && sender != null)) {
+        if ((
+            commandComponent
+                .content()
+                .contains(SLASH + command) && sender != null
+        )) {
             for (Listener listener : bot.listenerManager.listeners) {
-                listener.commandSpyReceived(sender, command);
+                listener.commandSpyReceived(
+                    sender,
+                    command
+                );
             }
         }
     }

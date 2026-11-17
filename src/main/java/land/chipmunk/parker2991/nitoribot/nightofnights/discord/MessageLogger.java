@@ -15,10 +15,19 @@ public class MessageLogger extends ListenerAdapter {
 
     @Override
     public void onMessageReceived (MessageReceivedEvent event) {
-        if (event.getAuthor().getId().equals(client.getSelfUser().getId())) return;
+        if (event
+            .getAuthor()
+            .getId()
+            .equals(client
+                .getSelfUser()
+                .getId()))
+            return;
 
         for (NitoriBot bot : Main.Bots) {
-            if (event.getChannel().getId().equals(bot.options.discordChannelId)) {
+            if (event
+                .getChannel()
+                .getId()
+                .equals(bot.options.discordChannelId)) {
                 for (Listener listener : bot.listenerManager.listeners) {
                     listener.discordMessageReceived(event);
                 }
@@ -27,7 +36,7 @@ public class MessageLogger extends ListenerAdapter {
     }
 
     public MessageLogger (JDA client) {
-       this.client = client;
+        this.client = client;
     }
 }
 /*for (NitoriBot bot : Main.Bots) {

@@ -45,8 +45,9 @@ public class PlayerListModule implements Listener {
 
     public void systemChatReceived (ClientboundSystemChatPacket packet) {
         try {
-            if (!(packet.getContent() instanceof TextComponent component)) return;
-           // if (component.insertion().equals("nitoribot.player.ip")) {
+            if (!(packet.getContent() instanceof TextComponent component))
+                return;
+            // if (component.insertion().equals("nitoribot.player.ip")) {
 
             //}
         } catch (Exception ignore) {
@@ -59,8 +60,10 @@ public class PlayerListModule implements Listener {
         for (PlayerListEntryAction action : actions) {
             for (PlayerListEntry entry : packet.getEntries()) {
                 switch (action) {
-                    case PlayerListEntryAction.UPDATE_LIST_ORDER, PlayerListEntryAction.UPDATE_HAT,
-                         PlayerListEntryAction.INITIALIZE_CHAT, PlayerListEntryAction.ADD_PLAYER -> addPlayer(entry);
+                    case PlayerListEntryAction.UPDATE_LIST_ORDER,
+                         PlayerListEntryAction.UPDATE_HAT,
+                         PlayerListEntryAction.INITIALIZE_CHAT,
+                         PlayerListEntryAction.ADD_PLAYER -> addPlayer(entry);
                     case PlayerListEntryAction.UPDATE_LISTED -> updateListed(entry);
                     case PlayerListEntryAction.UPDATE_GAME_MODE -> updateGamemode(entry);
                     case PlayerListEntryAction.UPDATE_LATENCY -> updateLatency(entry);
@@ -96,8 +99,11 @@ public class PlayerListModule implements Listener {
             for (PlayerProfileData player : list) {
                 UUID playerUUID = player.profile.getId();
 
-                if (playerUUID == null) return playerInfo;
-                else if (player.profile.getId().equals(uuid)) {
+                if (playerUUID == null)
+                    return playerInfo;
+                else if (player.profile
+                    .getId()
+                    .equals(uuid)) {
                     playerInfo = player;
                 }
             }
@@ -118,7 +124,9 @@ public class PlayerListModule implements Listener {
 
     public final PlayerProfileData getPlayerByUsername (String username) {
         for (PlayerProfileData candidate : list) {
-            if (candidate.profile.getName().equals(username)) {
+            if (candidate.profile
+                .getName()
+                .equals(username)) {
                 return candidate;
             }
         }
@@ -129,7 +137,8 @@ public class PlayerListModule implements Listener {
     public void updateListed (PlayerListEntry player) {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
-        if (getPlayer == null) return;
+        if (getPlayer == null)
+            return;
 
         getPlayer.listed = player.isListed();
     }
@@ -138,21 +147,24 @@ public class PlayerListModule implements Listener {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        } else getPlayer.gameMode = player.getGameMode();
+        } else
+            getPlayer.gameMode = player.getGameMode();
     }
 
     public void updateLatency (PlayerListEntry player) {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        } else getPlayer.latency = player.getLatency();
+        } else
+            getPlayer.latency = player.getLatency();
     }
 
     public void updateDisplayName (PlayerListEntry player) {
         PlayerProfileData getPlayer = getPlayerUUID(player.getProfileId());
 
         if (getPlayer == null) {
-        } else getPlayer.displayName = player.getDisplayName();
+        } else
+            getPlayer.displayName = player.getDisplayName();
     }
 
     private void getPlayerIP (UUID uuid) {
@@ -183,7 +195,8 @@ public class PlayerListModule implements Listener {
     public void addPlayer (PlayerListEntry player) {
         PlayerProfileData findDuplicatePlayer = getPlayerUUID(player.getProfileId());
 
-        if (findDuplicatePlayer != null) list.remove(findDuplicatePlayer);
+        if (findDuplicatePlayer != null)
+            list.remove(findDuplicatePlayer);
         PlayerProfileData formatPlayerData = new PlayerProfileData(
             player.getProfileId(),
             null,
@@ -206,21 +219,24 @@ public class PlayerListModule implements Listener {
         try {
             for (UUID uuid : packet.getProfileIds()) {
                 PlayerProfileData target = getPlayerUUID(uuid);
-                bot.tabComplete.completion("scoreboard players add ").thenApply((suggestion) -> {
-                    final String[] matches = suggestion.getMatches();
-                    final Component[] tooltips = suggestion.getTooltips();
-                    final String username = target.profile.getName();
+                bot.tabComplete
+                    .completion("scoreboard players add ")
+                    .thenApply((suggestion) -> {
+                        final String[] matches = suggestion.getMatches();
+                        final Component[] tooltips = suggestion.getTooltips();
+                        final String username = target.profile.getName();
 
-                    for (int i = 0; i < matches.length; i++) {
-                        if (tooltips[i] != null || !matches[i].equals(username)) continue;
-                        target.listed = false;
+                        for (int i = 0; i < matches.length; i++) {
+                            if (tooltips[i] != null || !matches[i].equals(username))
+                                continue;
+                            target.listed = false;
+                            return suggestion;
+                        }
+
+                        list.remove(target);
+
                         return suggestion;
-                    }
-
-                    list.remove(target);
-
-                    return suggestion;
-                });
+                    });
             }
         } catch (Exception e) {
             e.printStackTrace(System.err);

@@ -35,15 +35,18 @@ public class KillCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) throws CommandError {
+    public Component execute (CommandContext context) throws CommandError {
         NitoriBot bot = context.bot();
         CommandSource source = context.source();
 
         source.sendFeedback(
             bot,
-            Component.text("Killing Bot Process").color(convertColorString(bot.config.colors.commands.primary))
+            Component
+                .text("Killing Bot Process")
+                .color(convertColorString(bot.config.colors.commands.primary))
         );
 
         System.exit(1);
+        return null;
     }
 }

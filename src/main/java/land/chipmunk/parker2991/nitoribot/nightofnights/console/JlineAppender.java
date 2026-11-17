@@ -37,7 +37,10 @@ public class JlineAppender extends AppenderBase<ILoggingEvent> {
     @Override
     public void append (ILoggingEvent event) {
         PatternLayoutEncoder enc = encoder;
-        String message = new String(enc.encode(event), StandardCharsets.UTF_8).stripTrailing();
+        String message = new String(
+            enc.encode(event),
+            StandardCharsets.UTF_8
+        ).stripTrailing();
 
         if (reader != null) {
             reader.printAbove(message);

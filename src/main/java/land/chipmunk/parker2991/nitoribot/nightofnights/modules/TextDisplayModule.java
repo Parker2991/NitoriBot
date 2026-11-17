@@ -17,7 +17,8 @@ public class TextDisplayModule implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundSetEntityDataPacket) getTextDisplay((ClientboundSetEntityDataPacket) packet);
+        if (packet instanceof ClientboundSetEntityDataPacket)
+            getTextDisplay((ClientboundSetEntityDataPacket) packet);
     }
 
     private void getTextDisplay (ClientboundSetEntityDataPacket packet) {

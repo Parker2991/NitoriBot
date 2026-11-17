@@ -36,6 +36,7 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:5.2.0")
     implementation("net.kyori:adventure-text-serializer-gson:5.2.0")
     implementation("net.kyori:adventure-text-minimessage:5.2.0")
+    implementation("net.lenni0451:LambdaEvents:2.4.2")
     implementation("org.jline:jline:4.4.7")
     implementation("com.github.oshi:oshi-core:7.7.1")
     implementation("net.kyori:adventure-nbt:5.2.0")

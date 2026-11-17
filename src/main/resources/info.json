@@ -26,9 +26,9 @@
         "color": "blue"
       }
     ],
-    "build": "5314",
+    "build": "5315",
     "versionReleaseDate": "N\\A",
-    "initialBotRelease": "11/22/22"
+    "initialBotRelease": "November 22, 2022"
   },
   "owner": "Parker2991",
   "contributors": [
@@ -38,7 +38,7 @@
     },
     {
       "name": "chayapak",
-      "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads / v9.0.0 entity uuid / v9.0.0 command / v9.0.0 tab complete / v9.0.0 vanished player support"
+      "reason": "v4.0.0-rewrite / listeners for v9.0.0 / v9.0.0 threads / v9.0.0 entity uuid / v9.0.0 command / v9.0.0 tab complete / v9.0.0 vanished player support / v9.0.0 chunk parser"
     },
     {
       "name": "_yfd",
@@ -74,7 +74,7 @@
     },
     {
       "name": "hcesaropz",
-      "reason": "v9.0.0 logger"
+      "reason": "v9.0.0 logger / v9.0.0 chunk parsing"
     }
   ]
 }

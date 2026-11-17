@@ -4,6 +4,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -19,7 +20,10 @@ public class EchoCommand implements CommandInfo {
 
     @Override
     public List<String> getAliases () {
-        return List.of("echo", "say");
+        return List.of(
+            "echo",
+            "say"
+        );
     }
 
     @Override
@@ -33,13 +37,18 @@ public class EchoCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
-        String args = String.join(" ", context.args());
+        String args = String.join(
+            " ",
+            context.args()
+        );
         if (args.startsWith("/")) {
             bot.chat.command(args.substring("/".length()));
         } else {
             bot.chat.message(args);
         }
+
+        return null;
     }
 }

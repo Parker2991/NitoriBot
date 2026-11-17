@@ -15,6 +15,7 @@ import java.nio.file.Path;
 
 public class LoadConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadConfig.class);
+
     public Config loadConfig () throws IOException {
         final Constructor yamlConfig = new Constructor(
             Config.class,
@@ -23,11 +24,11 @@ public class LoadConfig {
         final Yaml yaml = new Yaml(yamlConfig);
         final Path configPath = Path.of("config.yaml");
         if (!Files.exists(configPath)) {
-            LOGGER.info(
-                "config not found making config now"
-            );
+            LOGGER.info("config not found making config now");
 
-            InputStream defaultConfig = Main.class.getClassLoader().getResourceAsStream("default_config.yaml");
+            InputStream defaultConfig = Main.class
+                .getClassLoader()
+                .getResourceAsStream("default_config.yaml");
             Files.copy(
                 defaultConfig,
                 configPath

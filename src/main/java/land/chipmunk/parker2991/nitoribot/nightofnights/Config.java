@@ -29,6 +29,7 @@ public class Config {
         public String admin;
         public String owner;
     }
+
     public static class Core {
         public boolean itemRefill;
         public final Area area = new Area();
@@ -75,10 +76,12 @@ public class Config {
         public int port;
         public boolean useProxy;
         public String serverName;
+        public boolean isPrivate;
         public String username;
         public String discordChannelId;
         public int reconnectDelay;
         public int selfcareInterval;
         public String mode;
+        public boolean useMiniMessage;
     }
 }

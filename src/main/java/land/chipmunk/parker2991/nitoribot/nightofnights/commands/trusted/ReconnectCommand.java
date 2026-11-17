@@ -4,6 +4,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -19,7 +20,10 @@ public class ReconnectCommand implements CommandInfo {
 
     @Override
     public List<String> getAliases () {
-        return List.of("end");
+        return List.of(
+            "reconnect",
+            "end"
+        );
     }
 
     @Override
@@ -33,9 +37,11 @@ public class ReconnectCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
 
         bot.session.disconnect("Reconnect Command");
+
+        return null;
     }
 }

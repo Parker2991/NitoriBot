@@ -11,6 +11,12 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.data.buildstring.RepoCom
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.ListenerManager;
 import land.chipmunk.parker2991.nitoribot.nightofnights.modules.*;
 import net.dv8tion.jda.api.JDA;
+import net.lenni0451.lambdaevents.AHandler;
+import net.lenni0451.lambdaevents.EventHandler;
+import net.lenni0451.lambdaevents.IGenerator;
+import net.lenni0451.lambdaevents.LambdaManager;
+import net.lenni0451.lambdaevents.generator.LambdaMetaFactoryGenerator;
+import net.lenni0451.lambdaevents.generator.ReflectionGenerator;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
@@ -18,6 +24,7 @@ import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
@@ -52,20 +59,32 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
     public ExtrasMessagingModule extrasMessaging;
     public List<?> modules;
     public DiscordModule discord;
+
     //public final ChatAttestation chatAttestation = new ChatAttestation();
 
     public void connect () throws IOException {
         final MinecraftProtocol protocol = new MinecraftProtocol(options.username);
 
-        if (options.useProxy) session = ClientNetworkSessionFactory.factory().setAddress(
-            options.host,
-            options.port
-        ).setProxy(new GetProxiesList().randomProxyIp()).setProtocol(protocol).create();
+        if (options.useProxy)
+            session = ClientNetworkSessionFactory
+                .factory()
+                .setAddress(
+                    options.host,
+                    options.port
+                )
+                .setProxy(new GetProxiesList().randomProxyIp())
+                .setProtocol(protocol)
+                .create();
 
-        else session = ClientNetworkSessionFactory.factory().setAddress(
-            options.host,
-            options.port
-        ).setProtocol(protocol).create();
+        else
+            session = ClientNetworkSessionFactory
+                .factory()
+                .setAddress(
+                    options.host,
+                    options.port
+                )
+                .setProtocol(protocol)
+                .create();
         Injector.inject(
             session,
             this

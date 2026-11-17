@@ -4,6 +4,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.Main;
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandMessageSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -28,18 +29,35 @@ public class DiscordModule extends ListenerAdapter implements Listener {
     private final List<String> discordQueue = new ArrayList<>();
     public JDA client = Main.discordClient;
 
-    @Override
-    public void systemChatReceived (Component message) {
-        sendComponent(message);
+    private Component chatTypes (
+        ChatType chatType,
+        Component component
+    ) {
+        return switch (chatType) {
+            case ChatType.PLAYER -> Component.translatable(
+                "[P] %s",
+                component
+            );
+            case ChatType.DISGUISED -> Component.translatable(
+                "[D] %s",
+                component
+            );
+            case ChatType.SYSTEM -> Component.translatable(
+                "[S] %s",
+                component
+            );
+        };
     }
 
     @Override
-    public void playerChatReceived (Component message) {
-        sendComponent(message);
-    }
-
-    @Override
-    public void disguisedChatReceived (Component message) {
+    public void chatMessageReceived (
+        ChatType chatType,
+        Component component
+    ) {
+        final Component message = chatTypes(
+            chatType,
+            component
+        );
         sendComponent(message);
     }
 
@@ -49,14 +67,33 @@ public class DiscordModule extends ListenerAdapter implements Listener {
 
     @Override
     public void discordMessageReceived (MessageReceivedEvent event) {
-        if (!event.getChannel().getId().equals(bot.options.discordChannelId)) return;
+        if (!event
+            .getChannel()
+            .getId()
+            .equals(bot.options.discordChannelId))
+            return;
 
-        if (event.getMessage().getContentRaw().startsWith(bot.config.discord.prefix)) {
+        if (event
+            .getMessage()
+            .getContentRaw()
+            .startsWith(bot.config.discord.prefix)) {
 
-            final String command = event.getMessage().getContentRaw().substring(bot.config.discord.prefix.length());
-            final CommandSource source = new CommandSource(null, event, CommandMessageSource.DISCORD, null, null);
+            final String command = event
+                .getMessage()
+                .getContentRaw()
+                .substring(bot.config.discord.prefix.length());
+            final CommandSource source = new CommandSource(
+                null,
+                event,
+                CommandMessageSource.DISCORD,
+                null,
+                null
+            );
 
-            bot.commandManager.executeString(source, command);
+            bot.commandManager.executeString(
+                source,
+                command
+            );
             return;
         }
         /*
@@ -67,19 +104,38 @@ public class DiscordModule extends ListenerAdapter implements Listener {
     ParsedChatType parsedChatType
          */
 
-        Component component = Component.translatable(
-            "[%s] %s \u203a %s",
-            Component.translatable(
-                "%s%s %s",
-                Component.text("Nitori").color(NamedTextColor.BLUE),
-                Component.text("Bot").color(NamedTextColor.GREEN),
-                Component.text("Discord").color(NamedTextColor.DARK_BLUE)
-            ),
-            Component.text(event.getAuthor().getName()).color(NamedTextColor.GRAY),
-            Component.text(event.getMessage().getContentRaw()).color(NamedTextColor.GRAY)
-        ).color(NamedTextColor.AQUA);
+        Component component = Component
+            .translatable(
+                "[%s] %s \u203a %s",
+                Component.translatable(
+                    "%s%s %s",
+                    Component
+                        .text("Nitori")
+                        .color(NamedTextColor.BLUE),
+                    Component
+                        .text("Bot")
+                        .color(NamedTextColor.GREEN),
+                    Component
+                        .text("Discord")
+                        .color(NamedTextColor.DARK_BLUE)
+                ),
+                Component
+                    .text(event
+                        .getAuthor()
+                        .getName())
+                    .color(NamedTextColor.GRAY),
+                Component
+                    .text(event
+                        .getMessage()
+                        .getContentRaw())
+                    .color(NamedTextColor.GRAY)
+            )
+            .color(NamedTextColor.AQUA);
 
-        bot.chat.tellraw("@a", component);
+        bot.chat.tellraw(
+            "@a",
+            component
+        );
     }
 
     @Override
@@ -91,22 +147,36 @@ public class DiscordModule extends ListenerAdapter implements Listener {
                 new TimerTask() {
                     @Override
                     public void run () {
-                        if (discordQueue.isEmpty()) return;
+                        if (discordQueue.isEmpty())
+                            return;
                         try {
-                            final String message = String.join("\n", discordQueue);
+                            final String message = String.join(
+                                "\n",
+                                discordQueue
+                            );
 
-                            client.getTextChannelById(bot.options.discordChannelId)
+                            client
+                                .getTextChannelById(bot.options.discordChannelId)
                                 .sendMessage("```ansi\n" + message.substring(
                                     0,
-                                    Math.min(message.length(), 1984)
+                                    Math.min(
+                                        message.length(),
+                                        1984
+                                    )
                                 ) + "\n```")
                                 .queue();
                         } catch (Exception e) {
-                            LOGGER.error("{}", DiscordModule.class, e);
+                            LOGGER.error(
+                                "{}",
+                                DiscordModule.class,
+                                e
+                            );
                         }
                         discordQueue.clear();
                     }
-                }, 2000, 2000
+                },
+                2000,
+                2000
             );
         }
     }
@@ -119,7 +189,11 @@ public class DiscordModule extends ListenerAdapter implements Listener {
         try {
             sendDiscordMessage(message);
         } catch (Exception e) {
-            LOGGER.error("{}", DiscordModule.class, e);
+            LOGGER.error(
+                "{}",
+                DiscordModule.class,
+                e
+            );
         }
     }
 

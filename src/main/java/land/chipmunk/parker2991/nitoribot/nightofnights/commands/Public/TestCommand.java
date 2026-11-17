@@ -4,6 +4,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -44,12 +45,14 @@ public class TestCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         var bot = context.bot();
         String[] args = context.args();
 
         var source = context.source();
 
-//        bot.world.getBlock(Vector3i.from(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+        return null;
+
+        //        bot.world.getBlock(Vector3i.from(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2])));
     }
 }

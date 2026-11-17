@@ -11,26 +11,42 @@ public class LoggerManager {
     public String convertComponentToAnsi (Component component) {
         return ComponentUtil.componentToAnsi(component);
     }
+
     private String getLoggerType (LoggerType logType) {
         return switch (logType) {
-            case LoggerType.COMMAND -> convertComponentToAnsi(Component.text("COMMAND").color(NamedTextColor.YELLOW));
-            case LoggerType.LOG -> convertComponentToAnsi(Component.text("LOG").color(NamedTextColor.GOLD));
-            case LoggerType.RECONNECT -> convertComponentToAnsi(Component.text("RECONNECT").color(NamedTextColor.AQUA));
+            case LoggerType.COMMAND -> convertComponentToAnsi(Component
+                .text("COMMAND")
+                .color(NamedTextColor.YELLOW));
+            case LoggerType.LOG -> convertComponentToAnsi(Component
+                .text("LOG")
+                .color(NamedTextColor.GOLD));
+            case LoggerType.RECONNECT -> convertComponentToAnsi(Component
+                .text("RECONNECT")
+                .color(NamedTextColor.AQUA));
         };
     }
 
     public void log (String message) {
-        MDC.putCloseable("customLevel", getLoggerType(LoggerType.LOG));
+        MDC.putCloseable(
+            "customLevel",
+            getLoggerType(LoggerType.LOG)
+        );
         LOGGER.info(message);
     }
 
     public void command (String message) {
-        MDC.putCloseable("customLevel", getLoggerType(LoggerType.COMMAND));
+        MDC.putCloseable(
+            "customLevel",
+            getLoggerType(LoggerType.COMMAND)
+        );
         LOGGER.info(message);
     }
 
     public void reconnect (String message) {
-        MDC.putCloseable("customLevel", getLoggerType(LoggerType.RECONNECT));
+        MDC.putCloseable(
+            "customLevel",
+            getLoggerType(LoggerType.RECONNECT)
+        );
         LOGGER.info(message);
     }
 }

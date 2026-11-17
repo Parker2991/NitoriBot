@@ -4,8 +4,8 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.Config;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandMessageSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
-import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
-import land.chipmunk.parker2991.nitoribot.nightofnights.data.ParsedChatType;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ChatType;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ParsedChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
@@ -32,7 +32,8 @@ public class ChatCommandHandlerModule implements Listener {
         for (String prefix : prefixes) {
             String plainMessage = ComponentUtil.componentToString(data.contents());
 
-            if (!plainMessage.startsWith(prefix)) return;
+            if (!plainMessage.startsWith(prefix))
+                return;
 
             String command = plainMessage.substring(prefix.length());
 
@@ -45,16 +46,23 @@ public class ChatCommandHandlerModule implements Listener {
             );
 
 
-            bot.commandManager.executeString(source, command);
+            bot.commandManager.executeString(
+                source,
+                command
+            );
         }
     }
 
     @Override
-    public void commandSpyReceived (PlayerProfileData player, String message) {
+    public void commandSpyReceived (
+        PlayerProfileData player,
+        String message
+    ) {
         List<String> prefixes = config.prefixes;
 
         for (String prefix : prefixes) {
-            if (!message.startsWith(prefix)) return;
+            if (!message.startsWith(prefix))
+                return;
 
             String command = message.substring(prefix.length());
 
@@ -66,7 +74,10 @@ public class ChatCommandHandlerModule implements Listener {
                 ParsedChatType.COMMANDSPY
             );
 
-            bot.commandManager.executeString(source, command);
+            bot.commandManager.executeString(
+                source,
+                command
+            );
         }
     }
 }

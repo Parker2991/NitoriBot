@@ -1,17 +1,17 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
-import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.ChatAttestation;
 import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.MessagingEntrypointImpl;
-import land.chipmunk.parker2991.nitoribot.nightofnights.chatattestation.util.SigningResult;
 import land.chipmunk.parker2991.nitoribot.nightofnights.chatparsers.KaboomChatParser;
-import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatTranslationsData;
-import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ChatTranslationsData;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ParseChatData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
@@ -41,7 +41,10 @@ public class ChatModule implements Listener {
         MessagingEntrypointImpl messagingEntrypoint = new MessagingEntrypointImpl();
         switch (packet) {
             case ClientboundSystemChatPacket p -> systemChat(p);
-            case ClientboundPlayerChatPacket p -> playerChat(messagingEntrypoint, p);
+            case ClientboundPlayerChatPacket p -> playerChat(
+                messagingEntrypoint,
+                p
+            );
             case ClientboundDisguisedChatPacket p -> disguisedChat(p);
             default -> {
             }
@@ -61,9 +64,24 @@ public class ChatModule implements Listener {
     public void systemChat (ClientboundSystemChatPacket packet) {
         final Component message = packet.getContent();
 
+        if (message instanceof final TranslatableComponent translatableComponent) {
+            final String key = translatableComponent.key();
+
+            if (
+                key.equals("advMode.setCommand.success")
+                    ||
+                    key.equals("multiplayer.message_not_delivered")
+                    ||
+                    key.equals("advMode.notAllowed")
+            ) return;
+        }
+
         for (Listener listener : bot.listenerManager.listeners) {
-            listener.chatReceived(ChatType.SYSTEM, message);
             listener.systemChatReceived(message);
+            listener.chatMessageReceived(
+                ChatType.SYSTEM,
+                message
+            );
         }
     }
 
@@ -73,16 +91,21 @@ public class ChatModule implements Listener {
 
         Component message;
 
-        final String parseChatTypes = parseChatTypes(packet.getChatType().id());
+        final String parseChatTypes = parseChatTypes(packet
+            .getChatType()
+            .id());
 
-        if (packet.getChatType().id() == 4) {
+        if (packet
+            .getChatType()
+            .id() == 4) {
             message = getMessage;
         } else {
-            message = Component.translatable(parseChatTypes, targetUsername, getMessage);
+            message = Component.translatable(
+                parseChatTypes,
+                targetUsername,
+                getMessage
+            );
         }
-
-        UUID uuid = bot.players.getDisplayName(targetUsername).profile.getId();
-        String username = bot.players.getDisplayName(targetUsername).profile.getName();
 
         /*SigningStatus result = ChatAttestation.getSigningStatus(
             ComponentUtil.componentToString(message),
@@ -91,12 +114,16 @@ public class ChatModule implements Listener {
         );*/
 
         for (Listener listener : bot.listenerManager.listeners) {
-            listener.chatReceived(ChatType.DISGUISED, message);
-            listener.disguisedChatReceived(message);
+            listener.chatMessageReceived(
+                ChatType.DISGUISED,
+                message
+            );
         }
 
         parseMessage(
-            ChatType.DISGUISED, message, new PlayerMessageData(
+            ChatType.DISGUISED,
+            message,
+            new PlayerMessageData(
                 bot.players.getPlayerByUsername(ComponentUtil.componentToString(packet.getName())),
                 packet.getMessage(),
                 ChatType.DISGUISED,
@@ -106,7 +133,10 @@ public class ChatModule implements Listener {
 
     }
 
-    public void playerChat (MessagingEntrypointImpl messagingEntrypoint, ClientboundPlayerChatPacket packet) {
+    public void playerChat (
+        MessagingEntrypointImpl messagingEntrypoint,
+        ClientboundPlayerChatPacket packet
+    ) {
         final Component unsignedContent = packet.getUnsignedContent();
         final Component content = Component.text(packet.getContent());
 
@@ -119,13 +149,16 @@ public class ChatModule implements Listener {
         //bot.chat.tellraw("@a", Component.text(result.toString()));
 
         for (Listener listener : bot.listenerManager.listeners) {
-            listener.chatReceived(ChatType.PLAYER, unsignedContent);
-            listener.playerChatReceived(unsignedContent);
-            //listener.chatReceived(ChatType.PLAYER, result.status(), unsignedContent);
+            listener.chatMessageReceived(
+                ChatType.PLAYER,
+                unsignedContent
+            );
         }
 
         parseMessage(
-            ChatType.PLAYER, unsignedContent, new PlayerMessageData(
+            ChatType.PLAYER,
+            unsignedContent,
+            new PlayerMessageData(
                 bot.players.getPlayerUUID(packet.getSender()),
                 content,
                 ChatType.PLAYER,
@@ -134,17 +167,25 @@ public class ChatModule implements Listener {
         );
     }
 
-    public void parseMessage (ChatType chatType, Component message, PlayerMessageData data) {
+    public void parseMessage (
+        ChatType chatType,
+        Component message,
+        PlayerMessageData data
+    ) {
         try {
             PlayerMessageData parsed = null;
 
             for (ParseChatData parser : chatParsers) {
-                parsed = parser.parse(chatType, message);
-                if (parsed != null) break;
+                parsed = parser.parse(
+                    chatType,
+                    message
+                );
+                if (parsed != null)
+                    break;
             }
 
-
-            if (parsed == null) return;
+            if (parsed == null)
+                return;
 
             for (Listener listener : bot.listenerManager.listeners) {
                 if (data.chatType() == ChatType.DISGUISED) {
@@ -155,7 +196,8 @@ public class ChatModule implements Listener {
                         data.senderName()
                     );
                     listener.parsedMessage(playerMessageData);
-                } else listener.parsedMessage(data);
+                } else
+                    listener.parsedMessage(data);
             }
 
         } catch (Exception ignore) {
@@ -163,7 +205,17 @@ public class ChatModule implements Listener {
     }
 
     public void message (String message) {
-        bot.session.send(new ServerboundChatPacket(message, Instant.now().toEpochMilli(), 0, null, 0, new BitSet(), 0));
+        bot.session.send(new ServerboundChatPacket(
+            message,
+            Instant
+                .now()
+                .toEpochMilli(),
+            0,
+            null,
+            0,
+            new BitSet(),
+            0
+        ));
     }
 
     public void command (String command) {
@@ -171,18 +223,44 @@ public class ChatModule implements Listener {
     }
 
     public void send (String message) {
-        if (message.startsWith("/")) bot.chat.command(message.substring(1));
+        if (message.startsWith("/"))
+            bot.chat.command(message.substring(1));
 
-        else bot.chat.message(message);
+        else
+            bot.chat.message(message);
     }
 
-    public void tellraw (String selector, Component message) {
-        bot.core.run(String.format(
+    public void tellraw (
+        String selector,
+        Component message
+    ) {
+        if (bot.options.useMiniMessage) {
+            final String minimessage = MiniMessage
+                .miniMessage()
+                .serialize(message);
+            bot.core.run("bcmm " + minimessage);
+        } else {
+            bot.core.run(String.format(
+                "%s %s %s",
+                "minecraft:tellraw",
+                selector,
+                GsonComponentSerializer
+                    .gson()
+                    .serialize(message)
+                    .trim()
+            ));
+        }
+       // final String minimessage = MiniMessage.miniMessage().serialize(message);
+        //bot.core.run("bcmm " + minimessage);
+        /*bot.core.run(String.format(
             "%s %s %s",
             "minecraft:tellraw",
             selector,
-            GsonComponentSerializer.gson().serialize(message).trim()
-        ));
+            GsonComponentSerializer
+                .gson()
+                .serialize(message)
+                .trim()
+        ));*/
     }
 
 }

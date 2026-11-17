@@ -1,4 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.data.world;
 
-public record DimensionData(String dimension, int maxHeight, int minHeight) {
+public class DimensionData {
+    public int min_y;
+    public int height;
 }

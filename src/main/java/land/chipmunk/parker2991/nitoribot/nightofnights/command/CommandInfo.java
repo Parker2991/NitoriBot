@@ -1,5 +1,7 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.command;
 
+import net.kyori.adventure.text.Component;
+
 import java.util.List;
 
 public interface CommandInfo {
@@ -11,5 +13,5 @@ public interface CommandInfo {
 
     List<String> getUsages ();
 
-    void execute (CommandContext context) throws CommandError;
+    Component execute (CommandContext context) throws CommandError;
 }

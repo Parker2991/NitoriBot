@@ -29,7 +29,8 @@ public class PositionModule implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundPlayerPositionPacket) packetReceived((ClientboundPlayerPositionPacket) packet);
+        if (packet instanceof ClientboundPlayerPositionPacket)
+            packetReceived((ClientboundPlayerPositionPacket) packet);
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
@@ -40,37 +41,56 @@ public class PositionModule implements Listener {
         z = (int) Math.round(getPosition.getZ());
 
         positionData = Vector3d.from(packet.getPosition());
-       // positionData = new PositionData( packet.getPosition());
+        // positionData = new PositionData( packet.getPosition());
 
         if (bot.options.mode.equals("totalfreedom")) {
-            if (i < 5) timer = bot.executor.scheduleAtFixedRate(
-                () -> {
-                    System.out.println(i);
-                    x += 1;
-                    z += 1;
+            if (i < 5)
+                timer = bot.executor.scheduleAtFixedRate(
+                    () -> {
+                        System.out.println(i);
+                        x += 1;
+                        z += 1;
 
-                    bot.session.send(new ServerboundMovePlayerPosPacket(false, false, x, y, z));
-                    System.out.println("moved");
-                    System.out.println(x);
-                    i++;
-                    if (i > 5) timer.cancel(true);
-                }, 5000, 5000, TimeUnit.MILLISECONDS
-            );
+                        bot.session.send(new ServerboundMovePlayerPosPacket(
+                            false,
+                            false,
+                            x,
+                            y,
+                            z
+                        ));
+                        System.out.println("moved");
+                        System.out.println(x);
+                        i++;
+                        if (i > 5)
+                            timer.cancel(true);
+                    },
+                    5000,
+                    5000,
+                    TimeUnit.MILLISECONDS
+                );
         }
 
-        bot.session.send(
-            new ServerboundAcceptTeleportationPacket(
-                packet.getId(),
-                packet.getPosition().getX(),
-                packet.getPosition().getY(),
-                packet.getPosition().getZ(),
-                packet.getXRot(),
-                packet.getYRot()
-            )
-        );
+        bot.session.send(new ServerboundAcceptTeleportationPacket(
+            packet.getId(),
+            packet
+                .getPosition()
+                .getX(),
+            packet
+                .getPosition()
+                .getY(),
+            packet
+                .getPosition()
+                .getZ(),
+            packet.getXRot(),
+            packet.getYRot()
+        ));
 
         for (Listener listener : bot.listenerManager.listeners) {
-            if (!Objects.equals(bot.options.mode, "kaboom")) return;
+            if (!Objects.equals(
+                bot.options.mode,
+                "kaboom"
+            ))
+                return;
             listener.botMoved();
         }
     }

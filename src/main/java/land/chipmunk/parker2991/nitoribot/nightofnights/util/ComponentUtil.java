@@ -32,10 +32,15 @@ public final class ComponentUtil {
     private static final int MAX_DEPTH = 512; //translate depth limit
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder() // 1.21.5+ gson serializer
         .build();
-    private static final ANSIComponentSerializer ANSI_COMPONENT_SERIALIZER = ANSIComponentSerializer.builder().flattener(
-        getFlattener(true)).colorLevel(ColorLevel.TRUE_COLOR).build();
-    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer.builder().flattener(
-        getFlattener(false)).build();
+    private static final ANSIComponentSerializer ANSI_COMPONENT_SERIALIZER = ANSIComponentSerializer
+        .builder()
+        .flattener(getFlattener(true))
+        .colorLevel(ColorLevel.TRUE_COLOR)
+        .build();
+    private static final PlainTextComponentSerializer PLAIN_TEXT_COMPONENT_SERIALIZER = PlainTextComponentSerializer
+        .builder()
+        .flattener(getFlattener(false))
+        .build();
 
     public static NamedTextColor convertColorString (String color) {
         return NamedTextColor.NAMES.value(color);
@@ -44,29 +49,56 @@ public final class ComponentUtil {
     public static Map<String, String> loadJsonStringMap (String name) {
         Map<String, String> map = new HashMap<>();
 
-        var is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
-        if (is == null) throw new IllegalArgumentException("File not found: " + name);
+        var is = ClassLoader
+            .getSystemClassLoader()
+            .getResourceAsStream(name);
+        if (is == null)
+            throw new IllegalArgumentException("File not found: " + name);
         var reader = new BufferedReader(new InputStreamReader(is));
-        var json = JsonParser.parseReader(reader).getAsJsonObject();
+        var json = JsonParser
+            .parseReader(reader)
+            .getAsJsonObject();
 
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getAsString());
+            map.put(
+                entry.getKey(),
+                entry
+                    .getValue()
+                    .getAsString()
+            );
         }
 
         return map;
     }
 
     private static ComponentFlattener getFlattener (boolean parseSectionSigns) {
-        return ComponentFlattener.builder().mapper(
+        return ComponentFlattener
+            .builder()
+            .mapper(
                 TextComponent.class,
-                component -> mapText(component, parseSectionSigns)
-            ).mapper(ObjectComponent.class, ComponentUtil::mapObject).complexMapper(
+                component -> mapText(
+                    component,
+                    parseSectionSigns
+                )
+            )
+            .mapper(
+                ObjectComponent.class,
+                ComponentUtil::mapObject
+            )
+            .complexMapper(
                 KeybindComponent.class,
                 ComponentUtil::mapKeybind
-            ).mapper(SelectorComponent.class, SelectorComponent::pattern).complexMapper(
+            )
+            .mapper(
+                SelectorComponent.class,
+                SelectorComponent::pattern
+            )
+            .complexMapper(
                 TranslatableComponent.class,
                 ComponentUtil::mapTranslatable
-            ).unknownMapper(_ -> "").nestingLimit(MAX_DEPTH) //max depth for nested mapper calls
+            )
+            .unknownMapper(_ -> "")
+            .nestingLimit(MAX_DEPTH) //max depth for nested mapper calls
             .build();
     }
 
@@ -75,10 +107,18 @@ public final class ComponentUtil {
         var key = component.key();
         var fallback = component.fallback();
 
-        return LANGUAGE.getOrDefault(key, fallback == null ? key : fallback);
+        return LANGUAGE.getOrDefault(
+            key,
+            fallback == null ?
+                key :
+                fallback
+        );
     }
 
-    private static String guardedStringify (ComponentEncoder<Component, String> serializer, Component message) {
+    private static String guardedStringify (
+        ComponentEncoder<Component, String> serializer,
+        Component message
+    ) {
         try {
             return serializer.serialize(message);
         } catch (Exception e) {
@@ -110,38 +150,58 @@ public final class ComponentUtil {
      * Convert Component to a string
      */
     public static String componentToString (Component component) {
-        return guardedStringify(PLAIN_TEXT_COMPONENT_SERIALIZER, component);
+        return guardedStringify(
+            PLAIN_TEXT_COMPONENT_SERIALIZER,
+            component
+        );
     }
 
     /**
      * Convert Component to an ANSI string
      */
     public static String componentToAnsi (Component component) {
-        return guardedStringify(ANSI_COMPONENT_SERIALIZER, component);
+        return guardedStringify(
+            ANSI_COMPONENT_SERIALIZER,
+            component
+        );
     }
 
     private static String mapObject (ObjectComponent objectComponent) {
         var content = objectComponent.contents();
         return switch (content) {
             case SpriteObjectContents c -> "<Sprite:" + c.sprite() + ">";
-            case PlayerHeadObjectContents c ->
-                "<PlayerHead:" + componentToString(Component.translatable("block.minecraft.player_head.named").arguments(
-                    Component.text((c.name() != null) ? Objects.requireNonNull(c.name()) : "Unknown"))) + ">";
+            case PlayerHeadObjectContents c -> "<PlayerHead:" + componentToString(Component
+                .translatable("block.minecraft.player_head.named")
+                .arguments(Component.text((c.name() != null) ?
+                    Objects.requireNonNull(c.name()) :
+                    "Unknown"))) + ">";
         };
     }
 
-    private static String mapText (TextComponent component, boolean parseSectionSigns) {
+    private static String mapText (
+        TextComponent component,
+        boolean parseSectionSigns
+    ) {
         var content = component.content();
 
         //if no section sign is found, return the original content
         return component.content();
     }
 
-    private static void mapKeybind (KeybindComponent component, Consumer<Component> consumer) {
-        consumer.accept(Component.translatable(KEYBINDINGS.getOrDefault(component.keybind(), component.keybind())));
+    private static void mapKeybind (
+        KeybindComponent component,
+        Consumer<Component> consumer
+    ) {
+        consumer.accept(Component.translatable(KEYBINDINGS.getOrDefault(
+            component.keybind(),
+            component.keybind()
+        )));
     }
 
-    private static void mapTranslatable (TranslatableComponent component, Consumer<Component> consumer) {
+    private static void mapTranslatable (
+        TranslatableComponent component,
+        Consumer<Component> consumer
+    ) {
         var format = getOrReturnFallback(component);
         var matcher = ARG_PATTERN.matcher(format);
         List<Component> result = new ArrayList<>();
@@ -156,23 +216,38 @@ public final class ComponentUtil {
 
                 //add text before the match
                 if (start > lastIndex) {
-                    var formatSegment = format.substring(lastIndex, start);
+                    var formatSegment = format.substring(
+                        lastIndex,
+                        start
+                    );
                     //ensure that theres no % in the formatSegment (if there is, we have a problem with escaping)
-                    if (formatSegment.indexOf('%') != -1) throw new IllegalArgumentException();
+                    if (formatSegment.indexOf('%') != -1)
+                        throw new IllegalArgumentException();
                     result.add(Component.text(formatSegment));
                 }
 
-                var full = format.substring(start, end);
+                var full = format.substring(
+                    start,
+                    end
+                );
 
                 //handle the escaped percentage sign '%%'
                 if (full.equals("%%")) {
                     result.add(Component.text("%"));
-                } else if (Objects.equals(matcher.group(2), "s")) {
+                } else if (Objects.equals(
+                    matcher.group(2),
+                    "s"
+                )) {
                     //handle placeholders like %s
                     var idxStr = matcher.group(1);
-                    var idx = (idxStr == null) ? i++ : (Integer.parseInt(idxStr) - 1);
+                    var idx = (idxStr == null) ?
+                        i++ :
+                        (Integer.parseInt(idxStr) - 1);
 
-                    if (idx < 0 || idx > component.arguments().size()) throw new IllegalArgumentException();
+                    if (idx < 0 || idx > component
+                        .arguments()
+                        .size())
+                        throw new IllegalArgumentException();
 
                     var currentTotalDepth = TOTAL_DEPTH.get();
                     if (currentTotalDepth > MAX_DEPTH) {
@@ -183,7 +258,10 @@ public final class ComponentUtil {
                     }
                     TOTAL_DEPTH.set(currentTotalDepth + 1);
 
-                    result.add(component.arguments().get(idx).asComponent());
+                    result.add(component
+                        .arguments()
+                        .get(idx)
+                        .asComponent());
                 } else {
                     //if there are other invalid patterns throw an exception
                     throw new IllegalArgumentException("Unsupported placeholder format: $full");
@@ -206,7 +284,10 @@ public final class ComponentUtil {
         }
 
         //join all parts and pass to the consumer
-        consumer.accept(Component.join(JoinConfiguration.noSeparators(), result));
+        consumer.accept(Component.join(
+            JoinConfiguration.noSeparators(),
+            result
+        ));
     }
 }
 

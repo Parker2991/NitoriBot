@@ -12,11 +12,18 @@ public class UUIDUtil {
 
     public static int[] intArray (UUID uuid) {
         final ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
-        buffer.putLong(0, uuid.getMostSignificantBits());
-        buffer.putLong(8, uuid.getLeastSignificantBits());
+        buffer.putLong(
+            0,
+            uuid.getMostSignificantBits()
+        );
+        buffer.putLong(
+            8,
+            uuid.getLeastSignificantBits()
+        );
 
         final int[] intArray = new int[4];
-        for (int i = 0; i < intArray.length; i++) intArray[i] = buffer.getInt();
+        for (int i = 0; i < intArray.length; i++)
+            intArray[i] = buffer.getInt();
 
         return intArray;
     }
@@ -24,7 +31,10 @@ public class UUIDUtil {
     public static NbtMap tag (UUID uuid) {
         final NbtMapBuilder builder = NbtMap.builder();
 
-        builder.putIntArray("", intArray(uuid));
+        builder.putIntArray(
+            "",
+            intArray(uuid)
+        );
 
         return builder.build();
     }

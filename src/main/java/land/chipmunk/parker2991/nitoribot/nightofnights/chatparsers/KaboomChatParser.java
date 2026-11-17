@@ -1,7 +1,7 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights.chatparsers;
 
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
-import land.chipmunk.parker2991.nitoribot.nightofnights.data.ChatType;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ChatType;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.ParseChatData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
@@ -21,35 +21,76 @@ public class KaboomChatParser implements ParseChatData {
     }
 
     @Override
-    public PlayerMessageData parse (ChatType chatType, Component message) {
-        if (message instanceof TextComponent) return parse(chatType, (TextComponent) message);
+    public PlayerMessageData parse (
+        ChatType chatType,
+        Component message
+    ) {
+        if (message instanceof TextComponent)
+            return parse(
+                chatType,
+                (TextComponent) message
+            );
         return null;
     }
 
-    public PlayerMessageData parse (ChatType chatType, TextComponent message) {
+    public PlayerMessageData parse (
+        ChatType chatType,
+        TextComponent message
+    ) {
         List<Component> children = message.children();
 
-        if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3) return null;
+        if (!message
+            .content()
+            .isEmpty() || !message
+            .style()
+            .isEmpty() || children.size() < 3)
+            return null;
 
         final Component prefix = children.getFirst();
         Component displayName = Component.empty();
         Component contents = Component.empty();
 
-        if (isSeperatorAt(children, 1)) { // Missing/blank display name
-            if (children.size() > 3) contents = children.get(3);
-        } else if (isSeperatorAt(children, 2)) {
+        if (isSeperatorAt(
+            children,
+            1
+        )) { // Missing/blank display name
+            if (children.size() > 3)
+                contents = children.get(3);
+        } else if (isSeperatorAt(
+            children,
+            2
+        )) {
             displayName = children.get(1);
-            if (children.size() > 4) contents = children.get(4);
+            if (children.size() > 4)
+                contents = children.get(4);
         } else {
             return null;
         }
 
-        PlayerProfileData sender = bot.players.getDisplayName(Component.empty().append(prefix).append(displayName));
-        return new PlayerMessageData(sender, contents, chatType, displayName);
+        PlayerProfileData sender = bot.players.getDisplayName(Component
+            .empty()
+            .append(prefix)
+            .append(displayName));
+        return new PlayerMessageData(
+            sender,
+            contents,
+            chatType,
+            displayName
+        );
     }
 
-    private boolean isSeperatorAt (List<Component> children, int start) {
-        return (children.get(start).equals(SEPERATOR_COLON) || children.get(start).equals(SEPERATOR_COLON_RACCOON)) && children.get(
-            start + 1).equals(SEPERATOR_SPACE);
+    private boolean isSeperatorAt (
+        List<Component> children,
+        int start
+    ) {
+        return (
+            children
+                .get(start)
+                .equals(SEPERATOR_COLON) || children
+                .get(start)
+                .equals(SEPERATOR_COLON_RACCOON)
+        ) && children
+            .get(start + 1)
+            .equals(SEPERATOR_SPACE);
     }
 }

@@ -24,7 +24,11 @@ public class ListCommand implements CommandInfo {
 
     @Override
     public List<String> getAliases () {
-        return List.of("list", "pl", "playerlist");
+        return List.of(
+            "list",
+            "pl",
+            "playerlist"
+        );
     }
 
     @Override
@@ -38,40 +42,49 @@ public class ListCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
         CommandSource source = context.source();
         Component component = null;
         Component playerComponent = null;
         List<Component> playersComponent = new ArrayList<>();
 
-        playerComponent = Component.translatable(
-            "%s: (%s)\n",
-            Component.text("Players").color(convertColorString(bot.config.colors.commands.primary)),
-            Component.text(bot.players.list.size()).color(convertColorString(bot.config.colors.integer))
-        ).color(convertColorString(bot.config.colors.commands.tertiary));
+        playerComponent = Component
+            .translatable(
+                "%s: (%s)\n",
+                Component
+                    .text("Players")
+                    .color(convertColorString(bot.config.colors.commands.primary)),
+                Component
+                    .text(bot.players.list.size())
+                    .color(convertColorString(bot.config.colors.integer))
+            )
+            .color(convertColorString(bot.config.colors.commands.tertiary));
 
 
         for (PlayerProfileData player : bot.players.list) {
             //TranslatableComponent displayName = (TranslatableComponent) player.displayName();
-            playersComponent.add(
-                Component.translatable(
+            playersComponent.add(Component
+                .translatable(
                     "%s › %s",
                     player.displayName.color(NamedTextColor.WHITE),
-                    Component.text(player.uuid.toString()).color(convertColorString(bot.config.colors.commands.secondary))
-                ).color(convertColorString(bot.config.colors.commands.tertiary))
-            );
+                    Component
+                        .text(player.uuid.toString())
+                        .color(convertColorString(bot.config.colors.commands.secondary))
+                )
+                .color(convertColorString(bot.config.colors.commands.tertiary)));
         }
 
-        component = Component.empty().append(
-            playerComponent
-        ).append(
-            Component.join(
+        component = Component
+            .empty()
+            .append(playerComponent)
+            .append(Component.join(
                 JoinConfiguration.newlines(),
                 playersComponent
-            )
-        );
+            ));
 
-        source.sendFeedback(bot, Component.empty().append(component));
+        return Component
+            .empty()
+            .append(component);
     }
 }

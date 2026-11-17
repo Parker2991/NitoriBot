@@ -25,7 +25,14 @@ public class HelpCommand implements CommandInfo {
 
     @Override
     public List<String> getAliases () {
-        return List.of("help", "hell", "?", "heko", "cmds", "commands");
+        return List.of(
+            "help",
+            "hell",
+            "?",
+            "heko",
+            "cmds",
+            "commands"
+        );
     }
 
     @Override
@@ -45,83 +52,159 @@ public class HelpCommand implements CommandInfo {
 
         for (CommandInfo commands : bot.commandManager.commands) {
             switch (commands.getTrustLevel()) {
-                case CommandTrustLevels.PUBLIC -> Public.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.Public)));
-                case CommandTrustLevels.TRUSTED -> Trusted.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.trusted)));
-                case CommandTrustLevels.OWNER -> Owner.add(Component.text(commands.getAliases().getFirst() + " ").color(convertColorString(bot.config.colors.help.owner)));
+                case CommandTrustLevels.PUBLIC -> Public.add(Component
+                    .text(commands
+                        .getAliases()
+                        .getFirst() + " ")
+                    .color(convertColorString(bot.config.colors.help.Public)));
+                case CommandTrustLevels.TRUSTED -> Trusted.add(Component
+                    .text(commands
+                        .getAliases()
+                        .getFirst() + " ")
+                    .color(convertColorString(bot.config.colors.help.trusted)));
+                case CommandTrustLevels.OWNER -> Owner.add(Component
+                    .text(commands
+                        .getAliases()
+                        .getFirst() + " ")
+                    .color(convertColorString(bot.config.colors.help.owner)));
                 default -> {
                 }
             }
         }
 
-        return Component.empty().append(Public).append(Component.text("\n")).append(Trusted).append(Component.text("\n")).append(Owner);
+        return Component
+            .empty()
+            .append(Public)
+            .append(Component.text("\n"))
+            .append(Trusted)
+            .append(Component.text("\n"))
+            .append(Owner);
     }
 
-    private Component getUsages (NitoriBot bot, List<String> usages) {
+    private Component getUsages (
+        NitoriBot bot,
+        List<String> usages
+    ) {
         Component component = null;
-        if (usages == null) component = Component.empty().append(
-            Component.text("N/A").color(
-                convertColorString(bot.config.colors.commands.secondary)
-            )
-        );
+        if (usages == null)
+            component = Component
+                .empty()
+                .append(Component
+                    .text("N/A")
+                    .color(convertColorString(bot.config.colors.commands.secondary)));
 
-        else component = Component.empty().append(
-            Component.text(usages.toString()).color(
-                convertColorString(bot.config.colors.commands.secondary)
-            )
-        );
+        else
+            component = Component
+                .empty()
+                .append(Component
+                    .text(usages.toString())
+                    .color(convertColorString(bot.config.colors.commands.secondary)))
+                .color(convertColorString(bot.config.colors.commands.tertiary));
 
         return component;
     }
 
-    private Component getCommand (NitoriBot bot, String[] command) {
+    private Component getCommand (
+        NitoriBot bot,
+        String[] command
+    ) {
         Component component = null;
 
         for (CommandInfo commands : bot.commandManager.commands) {
             for (String aliases : commands.getAliases()) {
-                if (aliases.equals(command[0])) component = Component.translatable(
-                    "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
-                    Component.text("Command").color(convertColorString(bot.config.colors.commands.primary)),
-                    Component.text(commands.getAliases().getFirst()).color(convertColorString(bot.config.colors.commands.secondary)),
-                    Component.text("Aliases").color(convertColorString(bot.config.colors.commands.primary)),
-                    Component.text(commands.getAliases().toString()).color(convertColorString(bot.config.colors.commands.secondary)),
-                    Component.text("Description").color(convertColorString(bot.config.colors.commands.primary)),
-                    Component.text(commands.getDescription()).color(convertColorString(bot.config.colors.commands.secondary)),
-                    Component.text("Trust Level").color(convertColorString(bot.config.colors.commands.primary)),
-                    Component.text(commands.getTrustLevel().toString()).color(convertColorString(bot.config.colors.commands.secondary)),
-                    Component.text("Usages").color(convertColorString(bot.config.colors.commands.primary)),
-                    getUsages(bot, commands.getUsages())
-                ).color(convertColorString(bot.config.colors.commands.tertiary));
+                if (aliases.equals(command[0]))
+                    component = Component
+                        .translatable(
+                            "%s: %s\n%s: %s\n%s: %s\n%s: %s\n%s: %s",
+                            Component
+                                .text("Command")
+                                .color(convertColorString(bot.config.colors.commands.primary)),
+                            Component
+                                .text(commands
+                                    .getAliases()
+                                    .getFirst())
+                                .color(convertColorString(bot.config.colors.commands.secondary)),
+                            Component
+                                .text("Aliases")
+                                .color(convertColorString(bot.config.colors.commands.primary)),
+                            Component
+                                .text(commands
+                                    .getAliases()
+                                    .toString())
+                                .color(convertColorString(bot.config.colors.commands.secondary)),
+                            Component
+                                .text("Description")
+                                .color(convertColorString(bot.config.colors.commands.primary)),
+                            Component
+                                .text(commands.getDescription())
+                                .color(convertColorString(bot.config.colors.commands.secondary)),
+                            Component
+                                .text("Trust Level")
+                                .color(convertColorString(bot.config.colors.commands.primary)),
+                            Component
+                                .text(commands
+                                    .getTrustLevel()
+                                    .toString())
+                                .color(convertColorString(bot.config.colors.commands.secondary)),
+                            Component
+                                .text("Usages")
+                                .color(convertColorString(bot.config.colors.commands.primary)),
+                            getUsages(
+                                bot,
+                                commands.getUsages()
+                            )
+                        )
+                        .color(convertColorString(bot.config.colors.commands.tertiary));
             }
         }
         return component;
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
         String[] args = context.args();
         CommandSource source = context.source();
 
         if (args.length != 0) {
-            source.sendFeedback(bot, getCommand(bot, args));
-            return;
+            //  source.sendFeedback(bot, getCommand(bot, args));
+            return getCommand(
+                bot,
+                args
+            );
         }
 
         Component helpLayout = Component.translatable(
             "%s: (%s) (%s | %s | %s | %s) ›\n",
-            Component.text("Commands").color(convertColorString(bot.config.colors.commands.primary)),
-            Component.text(String.valueOf(bot.commandManager.commands.size())).color(convertColorString(bot.config.colors.integer)),
-            Component.text("Public").color(convertColorString(bot.config.colors.help.Public)),
-            Component.text("Trusted").color(convertColorString(bot.config.colors.help.trusted)),
-            Component.text("Admin").color(convertColorString(bot.config.colors.help.admin)),
-            Component.text("Owner").color(convertColorString(bot.config.colors.help.owner))
+            Component
+                .text("Commands")
+                .color(convertColorString(bot.config.colors.commands.primary)),
+            Component
+                .text(String.valueOf(bot.commandManager.commands.size()))
+                .color(convertColorString(bot.config.colors.integer)),
+            Component
+                .text("Public")
+                .color(convertColorString(bot.config.colors.help.Public)),
+            Component
+                .text("Trusted")
+                .color(convertColorString(bot.config.colors.help.trusted)),
+            Component
+                .text("Admin")
+                .color(convertColorString(bot.config.colors.help.admin)),
+            Component
+                .text("Owner")
+                .color(convertColorString(bot.config.colors.help.owner))
         );
 
-        Component component = Component.empty().append(helpLayout).append(Component.join(
-            JoinConfiguration.separator(Component.space()),
-            getCommands(bot)
-        )).color(convertColorString(bot.config.colors.commands.tertiary));
+        Component component = Component
+            .empty()
+            .append(helpLayout)
+            .append(Component.join(
+                JoinConfiguration.separator(Component.space()),
+                getCommands(bot)
+            ))
+            .color(convertColorString(bot.config.colors.commands.tertiary));
 
-        source.sendFeedback(bot, component);
+        return component;
     }
 }

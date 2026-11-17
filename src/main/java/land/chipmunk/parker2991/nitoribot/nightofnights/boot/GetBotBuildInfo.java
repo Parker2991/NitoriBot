@@ -14,6 +14,9 @@ public class GetBotBuildInfo {
     public BotBuildInfo getBuildInfo () {
         Reader reader = new InputStreamReader(Objects.requireNonNull(Main.class.getResourceAsStream("/info.json")));
 
-        return GSON.fromJson(reader, BotBuildInfo.class);
+        return GSON.fromJson(
+            reader,
+            BotBuildInfo.class
+        );
     }
 }

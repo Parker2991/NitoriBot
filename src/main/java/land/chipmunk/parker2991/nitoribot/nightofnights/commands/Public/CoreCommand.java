@@ -5,9 +5,11 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandContext;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandInfo;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandSource;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.CommandTrustLevels;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CoreCommand implements CommandInfo {
     @Override
@@ -35,7 +37,7 @@ public class CoreCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
         CommandSource source = context.source();
         String message = String.join(
@@ -43,41 +45,42 @@ public class CoreCommand implements CommandInfo {
             context.args()
         );
 
-        Component output = bot.core.runTrackedWithPacket(message);
 
-        try {
-            System.out.println(output);
-            source.sendFeedback(
-                bot,
-                output
-            );
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
-
-        /*if (message.contains("@username") || message.contains("@uuid")) {
+        if (message.contains("@username") || message.contains("@uuid")) {
             for (PlayerProfileData player : bot.players.list) {
-                Component output = bot.core.runTrackedWithTellraw(
-                    "nitoribot.command_block.output",
-                    "@a",
-                    message.replaceAll(
-                        "\\s+@username",
-                        " " + player.profile.getName()
-                    ).replaceAll(
-                        "\\s+@uuid",
-                        " " + player.profile.getIdAsString()
-                    )
-                );
-                source.sendFeedback(bot, output);
+
+                bot.core
+                    .runTrackedWithPacket(message
+                        .replaceAll(
+                            "\\s+@username",
+                            " " + player.profile.getName()
+                        )
+                        .replaceAll(
+                            "\\s+@uuid",
+                            " " + player.profile.getIdAsString()
+                        ))
+                    .thenAccept(reply -> {
+                        if (reply == null)
+                            return;
+                        source.sendFeedback(
+                            bot,
+                            reply
+                        );
+                    });
             }
         } else {
+            bot.core
+                .runTrackedWithPacket(message)
+                .thenAccept(reply -> {
+                    if (reply == null)
+                        return;
+                    source.sendFeedback(
+                        bot,
+                        reply
+                    );
+                });
+        }
 
-            //bot.core.runTrackedWithTellraw("nitoribot.command_block.output", "@a", message);
-            //source.sendFeedback(bot, output);
-        }*/
-        /*CompletableFuture.runAsync(() -> {
-            source.sendFeedback(bot, bot.core.output);
-            bot.core.output = null;
-        }, CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS));*/
-    }//if (args.includes("$username") || args.includes("$uuid")) {
+        return null;
+    }
 }

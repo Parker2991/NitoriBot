@@ -16,27 +16,33 @@ public class TabCompleteModule implements Listener {
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new HashMap<>();
 
     public CompletableFuture<ClientboundCommandSuggestionsPacket> completion (String args) {
-        int transationId = 10;
-        bot.session.send(
-            new ServerboundCommandSuggestionPacket(
-                transationId,
-                args
-            )
-        );
+        int transactionId = 10;
+        bot.session.send(new ServerboundCommandSuggestionPacket(
+            transactionId,
+            args
+        ));
 
         final CompletableFuture<ClientboundCommandSuggestionsPacket> future = new CompletableFuture<>();
-        transactions.put(transationId, future);
+        transactions.put(
+            transactionId,
+            future
+        );
+
+        transactionId++;
 
         return future;
     }
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundCommandSuggestionsPacket) commandSuggestionsReceived((ClientboundCommandSuggestionsPacket) packet);
+        if (packet instanceof ClientboundCommandSuggestionsPacket)
+            commandSuggestionsReceived((ClientboundCommandSuggestionsPacket) packet);
     }
 
     private void commandSuggestionsReceived (ClientboundCommandSuggestionsPacket packet) {
-        transactions.get(packet.getTransactionId()).complete(packet);
+        transactions
+            .get(packet.getTransactionId())
+            .complete(packet);
     }
 
     public TabCompleteModule (NitoriBot bot) {

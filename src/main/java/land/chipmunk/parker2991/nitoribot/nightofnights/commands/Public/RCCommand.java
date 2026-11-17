@@ -22,7 +22,10 @@ public class RCCommand implements CommandInfo {
 
     @Override
     public List<String> getAliases () {
-        return List.of("rc", "refillcore");
+        return List.of(
+            "rc",
+            "refillcore"
+        );
     }
 
     @Override
@@ -36,15 +39,14 @@ public class RCCommand implements CommandInfo {
     }
 
     @Override
-    public void execute (CommandContext context) {
+    public Component execute (CommandContext context) {
         NitoriBot bot = context.bot();
         CommandSource source = context.source();
 
         bot.core.move();
 
-        source.sendFeedback(
-            bot,
-            Component.text("Refilling core").color(convertColorString(bot.config.colors.commands.primary))
-        );
+        return Component
+            .text("Refilling core")
+            .color(convertColorString(bot.config.colors.commands.primary));
     }
 }

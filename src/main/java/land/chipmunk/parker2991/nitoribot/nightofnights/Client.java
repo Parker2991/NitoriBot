@@ -7,6 +7,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.modules.*;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.lenni0451.lambdaevents.EventHandler;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectingEvent;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public @NullMarked class Client extends NitoriBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(NitoriBot.class);
@@ -36,8 +38,6 @@ public @NullMarked class Client extends NitoriBot {
         this.options = options;
         this.bots = bots;
         this.config = config;
-
-
         this.modules = List.of(
             this.discord = new DiscordModule(this),
             this.chat = new ChatModule(this),
@@ -57,16 +57,12 @@ public @NullMarked class Client extends NitoriBot {
             this.extrasMessaging = new ExtrasMessagingModule(this),
             this.validation = new ValidationModule(this)
         );
-
-        try {
-      //      connect();
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
     }
 
     @Override
-    public void disconnecting (DisconnectingEvent event) {
+    public void disconnecting (
+        DisconnectingEvent event
+    ) {
         Component component = event.getReason();
         session.disconnect(component);
     }
@@ -82,7 +78,9 @@ public @NullMarked class Client extends NitoriBot {
     }
 
     @Override
-    public void packetError (PacketErrorEvent error) {
+    public void packetError (
+        PacketErrorEvent error
+    ) {
         error.setSuppress(true);
     }
 
@@ -92,39 +90,60 @@ public @NullMarked class Client extends NitoriBot {
         Packet packet
     ) {
         try {
-            if (packet instanceof ClientboundLoginPacket) this.session.send(ServerboundPlayerLoadedPacket.INSTANCE);
+            if (packet instanceof ClientboundLoginPacket)
+                this.session.send(ServerboundPlayerLoadedPacket.INSTANCE);
 
             for (Listener listener : listenerManager.listeners) {
                 listener.packetReceived(packet);
             }
 
-            if (packet instanceof ClientboundLoginFinishedPacket) getProfile((ClientboundLoginFinishedPacket) packet);
-            else if (packet instanceof ClientboundLoginPacket) getEntityId((ClientboundLoginPacket) packet);
+            switch (packet) {
+                case ClientboundLoginFinishedPacket p -> getProfile(p);
+                case ClientboundLoginPacket p -> getEntityId(p);
+                default -> {
+                }
+            }
         } catch (Exception _) {
         }
     }
 
-    private void getProfile (ClientboundLoginFinishedPacket packet) {
+
+    private void getProfile (
+        ClientboundLoginFinishedPacket packet
+    ) {
         profile = packet.getProfile();
 
         loggedIn = true;
     }
 
-    private void getEntityId (ClientboundLoginPacket packet) {
+    private void getEntityId (
+        ClientboundLoginPacket packet
+    ) {
         entityId = packet.getEntityId();
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (
+        DisconnectedEvent event
+    ) {
         loggedIn = false;
 
-        Component host = Component.text(String.format(
-            "[%s:%s] ",
-            options.host,
-            options.port
-        )).color(NamedTextColor.BLUE);
-        Component reason = Component.empty().append(host).append(event.getReason());
-        if (services.get("reconnect") != null) services.get("reconnect").cancel(true);
+        Component host = Component
+            .text(String.format(
+                "[%s:%s] ",
+                options.host,
+                options.port
+            ))
+            .color(NamedTextColor.BLUE);
+        Component reason = Component
+            .empty()
+            .append(host)
+            .append(event.getReason());
+
+        if (services.get("reconnect") != null)
+            services
+                .get("reconnect")
+                .cancel(true);
 
         logger.reconnect(ComponentUtil.componentToAnsi(reason));
 

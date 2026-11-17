@@ -2,8 +2,12 @@ package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.CommandCoreAreaData;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.blocks.BlockRegistries;
+import land.chipmunk.parker2991.nitoribot.nightofnights.data.world.ChunkPosData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
+import land.chipmunk.parker2991.nitoribot.nightofnights.util.ChunkColumn;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
+import land.chipmunk.parker2991.nitoribot.nightofnights.util.SleepUtil;
 import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3d;
@@ -16,8 +20,11 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.Hand;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerAction;
 import org.geysermc.mcprotocollib.protocol.data.game.item.ItemStack;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.*;
+import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockChangeEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockEntityType;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.CommandBlockMode;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
@@ -28,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class CommandCoreModule implements Listener {
@@ -36,7 +44,7 @@ public class CommandCoreModule implements Listener {
     public Vector3i itemPosition;
     public final CommandCoreAreaData area;
     public Vector3i lastBlockPosition;
-    public List<Component> cmdBlockOutputs = new ArrayList<>();
+    public List<Vector3i> commandBlocks = new ArrayList<>();
     public Vector3i currentBlockRelative = Vector3i.from(
         0,
         0,
@@ -63,12 +71,60 @@ public class CommandCoreModule implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
+        switch (packet) {
+            case ClientboundSectionBlocksUpdatePacket p -> multiBlockChange(p);
+            case ClientboundBlockUpdatePacket p -> blockChange(p);
+            default -> {}
+        }
+    }
 
+    private void blockChange (ClientboundBlockUpdatePacket packet) {
+        BlockChangeEntry entry = packet.getEntry();
+        Vector3i pos = entry.getPosition();
+
+        for (Vector3i blocks : commandBlocks) {
+            if (pos.equals(blocks)) {
+                run(
+                    String.format(
+                        "minecraft:setblock %s %s %s command_block",
+                        blocks.getX(),
+                        blocks.getY(),
+                        blocks.getZ()
+                    )
+                );
+            }
+        }
+    }
+
+    private void multiBlockChange (ClientboundSectionBlocksUpdatePacket packet) {
+        BlockChangeEntry[] entries = packet.getEntries();
+        int chunkX = packet.getChunkX();
+        int chunkY = packet.getChunkY();
+        int chunkZ = packet.getChunkZ();
+
+        for (BlockChangeEntry entry : entries) {
+            BlockRegistries block = bot.registry.getBlockByStateId(entry.getBlock());
+
+            if (block.block.equals("minecraft:command_block")) {
+                if (commandBlocks.size() < 256) {
+                    commandBlocks.add(entry.getPosition());
+                }
+            }
+            //System.out.println(entry.toString());
+
+            for (Vector3i pos : commandBlocks) {
+                if (pos.equals(entry.getPosition()) && !block.block.equals("minecraft:command_block")) {
+                    move();
+                }
+                //if (commandBlocks.size() < 256 && pos.equals(entry.getPosition())) move();
+            }
+        }
     }
 
 
     @Override
     public void botMoved () {
+        commandBlocks.clear();
         move();
     }
 
@@ -86,8 +142,10 @@ public class CommandCoreModule implements Listener {
             Math.floor(botPos.getZ())
         );
 
-        if (bot.config.core.itemRefill) itemRefill();
-        else chatRefill();
+        if (bot.config.core.itemRefill)
+            itemRefill();
+        else
+            chatRefill();
     }
 
     public void chatRefill () {
@@ -105,26 +163,36 @@ public class CommandCoreModule implements Listener {
 
         map.put(
             DataComponentTypes.BLOCK_ENTITY_DATA,
-            DataComponentTypes.BLOCK_ENTITY_DATA.getDataComponentFactory().create(
-                DataComponentTypes.BLOCK_ENTITY_DATA,
-                TypedEntityData.<BlockEntityType>builder().type(BlockEntityType.COMMAND_BLOCK).tag(blockEntityTag).build()
-            )
+            DataComponentTypes.BLOCK_ENTITY_DATA
+                .getDataComponentFactory()
+                .create(
+                    DataComponentTypes.BLOCK_ENTITY_DATA,
+                    TypedEntityData
+                        .<BlockEntityType>builder()
+                        .type(BlockEntityType.COMMAND_BLOCK)
+                        .tag(blockEntityTag)
+                        .build()
+                )
         );
 
         map.put(
             DataComponentTypes.ITEM_NAME,
-            DataComponentTypes.ITEM_NAME.getDataComponentFactory().create(
-                DataComponentTypes.ITEM_NAME,
-                ComponentUtil.componentFromJSON(bot.config.core.coreName)
-            )
+            DataComponentTypes.ITEM_NAME
+                .getDataComponentFactory()
+                .create(
+                    DataComponentTypes.ITEM_NAME,
+                    ComponentUtil.componentFromJSON(bot.config.core.coreName)
+                )
         );
 
         map.put(
             DataComponentTypes.CUSTOM_NAME,
-            DataComponentTypes.CUSTOM_NAME.getDataComponentFactory().create(
-                DataComponentTypes.CUSTOM_NAME,
-                ComponentUtil.componentFromJSON(bot.config.core.coreName)
-            )
+            DataComponentTypes.CUSTOM_NAME
+                .getDataComponentFactory()
+                .create(
+                    DataComponentTypes.CUSTOM_NAME,
+                    ComponentUtil.componentFromJSON(bot.config.core.coreName)
+                )
         );
 
         final DataComponents dataComponents = new DataComponents(map);
@@ -132,8 +200,7 @@ public class CommandCoreModule implements Listener {
         bot.session.send(new ServerboundSetCreativeModeSlotPacket(
             (short) 36,
             new ItemStack(
-                529,
-               // bot.registry.getBlockRegistry("minecraft:command_block").itemId,
+                bot.registry.getBlockRegistry("minecraft:command_block").itemId,
                 64,
                 dataComponents
             )
@@ -166,20 +233,11 @@ public class CommandCoreModule implements Listener {
             true
         );
 
-        /*Vector3i pos = Vector3i.from(
-            itemPosition.getX(),
-            itemPosition.getY(),
-            itemPosition.getZ()
-        );*/
-        /*bot.world.getBlock(pos).thenApply((packet) -> {
-            try {
-                @Nullable NbtMap nbt = packet.getNbt();
-                if (nbt == null) bot.core.chatRefill();
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
-            return packet;
-        });*/
+        /*bot.executor.schedule(() -> {
+            bot.world.getBlock(itemPosition).thenAccept(reply -> {
+                if (reply == null) chatRefill();
+            });
+        }, 100, TimeUnit.MILLISECONDS);*/
     }
 
     private String getCommand () {
@@ -187,7 +245,7 @@ public class CommandCoreModule implements Listener {
         Vector3i areaEnd = area.end();
 
         return String.format(
-            "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} destroy",
+            "minecraft:fill %s %s %s %s %s %s command_block{CustomName:%s} strict",
             position.getX() + areaStart.getX(),
             position.getY() + areaStart.getY(),
             position.getZ() + areaStart.getZ(),
@@ -199,7 +257,8 @@ public class CommandCoreModule implements Listener {
     }
 
     public Vector3i currentBlock () {
-        if (position == null) return null;
+        if (position == null)
+            return null;
         return Vector3i.from(
             currentBlockRelative.getX() + position.getX(),
             currentBlockRelative.getY() + position.getY(),
@@ -214,9 +273,15 @@ public class CommandCoreModule implements Listener {
             0
         );
 
-        if (currentBlockRelative.getX() > area.end().getX()) {
+        if (currentBlockRelative.getX() > area
+            .end()
+            .getX()) {
             currentBlockRelative = currentBlockRelative.add(
-                area.start().getX() - area.end().getX(),
+                area
+                    .start()
+                    .getX() - area
+                    .end()
+                    .getX(),
                 0,
                 0
             );
@@ -227,11 +292,17 @@ public class CommandCoreModule implements Listener {
             );
         }
 
-        if (currentBlockRelative.getZ() > area.end().getZ()) {
+        if (currentBlockRelative.getZ() > area
+            .end()
+            .getZ()) {
             currentBlockRelative = currentBlockRelative.add(
                 0,
                 0,
-                area.start().getZ() - area.end().getZ()
+                area
+                    .start()
+                    .getZ() - area
+                    .end()
+                    .getZ()
             );
             currentBlockRelative = currentBlockRelative.add(
                 0,
@@ -240,11 +311,25 @@ public class CommandCoreModule implements Listener {
             );
         }
 
-        if (currentBlockRelative.getX() > area.end().getX()) {
+        if (currentBlockRelative.getX() > area
+            .end()
+            .getX()) {
             currentBlockRelative = currentBlockRelative.add(
-                area.start().getX() - area.end().getX(),
-                area.start().getY() - area.end().getY(),
-                area.start().getZ() - area.end().getZ()
+                area
+                    .start()
+                    .getX() - area
+                    .end()
+                    .getX(),
+                area
+                    .start()
+                    .getY() - area
+                    .end()
+                    .getY(),
+                area
+                    .start()
+                    .getZ() - area
+                    .end()
+                    .getZ()
             );
         }
     }
@@ -257,7 +342,8 @@ public class CommandCoreModule implements Listener {
         boolean automatic
 
     ) {
-        if (command.length() > 32767 || position == null) return;
+        if (command.length() > 32767 || position == null)
+            return;
         bot.session.send(new ServerboundSetCommandBlockPacket(
             pos,
             command,
@@ -299,80 +385,46 @@ public class CommandCoreModule implements Listener {
             currentBlock().getZ()
         );
 
-        Component nbtComponent = Component.blockNBT(
-            "LastOutput.extra",
-            true,
-            BlockNBTComponent.WorldPos.worldPos(
-                BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getX()),
-                BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getY()),
-                BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getZ())
+        Component nbtComponent = Component
+            .blockNBT(
+                "LastOutput.extra",
+                true,
+                BlockNBTComponent.WorldPos.worldPos(
+                    BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getX()),
+                    BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getY()),
+                    BlockNBTComponent.WorldPos.Coordinate.absolute(lastBlockPosition.getZ())
+                )
             )
-        ).insertion(tag);
+            .insertion(tag);
 
-        Component component = Component.empty().append(nbtComponent).append(Component.text().insertion(selector));
+        Component component = Component
+            .empty()
+            .append(nbtComponent)
+            .append(Component
+                .text()
+                .insertion(selector));
 
         incrementCurrentBlock();
 
         return component;
     }
 
-    public Component runTrackedWithPacket (String command) {
-        // List<NbtMap> output = new ArrayList<>();
+    public CompletableFuture<Component> runTrackedWithPacket (String command) {
+        Vector3i location = currentBlock();
         commandBlock(
-            currentBlock(),
+            location,
             command,
             true,
             false,
             true
         );
 
-        lastBlockPosition = currentBlock();
-
         incrementCurrentBlock();
-        //AtomicReference<Component> output = new AtomicReference<>();
 
-        var runPacketAtDelay = CompletableFuture.supplyAsync(
-            () -> {
-                CompletableFuture<Component> output = null;
-                try {
-                    output = bot.world.getBlock(lastBlockPosition);
-                } catch (Exception ignore) {}
-                return output;
-            },
-            CompletableFuture.delayedExecutor(
-                50,
-                TimeUnit.MILLISECONDS
-            )
-        );
+        try {
+            Thread.sleep(100);
+        } catch (Exception ignore) {}
 
-        //AtomicReference<Component> output = new AtomicReference<>();
-        var executor = bot.executor.submit(() -> {
-            Component output = null;
-            try {
-                cmdBlockOutputs.add(runPacketAtDelay.join().get());
-                System.out.println(cmdBlockOutputs.toString());
-
-                //System.out.println(runPacketAtDelay.join().get());
-                //output = runPacketAtDelay.join().get();
-            } catch (Exception e) {}
-            //System.out.println(output);
-            return output;
-        });
-
-        return null;
-
-       // System.out.println(output.toString());
-      //  System.out.println(output);
-        //runPacketAtDelay.join().join();
-        //return output.get();
-
-        /*return CompletableFuture.supplyAsync(
-            () -> (Component) bot.executor.submit(() -> bot.world.getBlock(currentBlock())),
-            CompletableFuture.delayedExecutor(
-                50,
-                TimeUnit.MILLISECONDS
-            )
-        );*/
-        // System.out.println(output.toString());
+        return bot.world.getBlock(location);
     }
 }

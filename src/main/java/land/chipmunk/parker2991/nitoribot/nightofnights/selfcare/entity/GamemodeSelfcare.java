@@ -17,7 +17,8 @@ public class GamemodeSelfcare implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundGameEventPacket) checkGamemode((ClientboundGameEventPacket) packet);
+        if (packet instanceof ClientboundGameEventPacket)
+            checkGamemode((ClientboundGameEventPacket) packet);
     }
 
     private void checkGamemode (ClientboundGameEventPacket packet) {

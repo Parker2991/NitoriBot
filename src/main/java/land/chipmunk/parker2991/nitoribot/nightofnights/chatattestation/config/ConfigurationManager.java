@@ -18,7 +18,8 @@ public final class ConfigurationManager {
 
     private ConfigurationManager () {
         try {
-            this.loader = TomlConfigurationLoader.builder()
+            this.loader = TomlConfigurationLoader
+                .builder()
                 .defaultOptions(opts -> opts.shouldCopyDefaults(true))
                 .headerMode(HeaderMode.PRESERVE)
                 .path(storageDir.resolve("chatattestation" + ".toml"))
@@ -28,16 +29,25 @@ public final class ConfigurationManager {
             this.config = Objects.requireNonNull(this.node.get(Configuration.class));
             save();
         } catch (Exception e) {
-            throw new IllegalStateException("Configuration error", e);
+            throw new IllegalStateException(
+                "Configuration error",
+                e
+            );
         }
     }
 
     public void save () {
         try {
-            this.node.set(Configuration.class, this.config);
+            this.node.set(
+                Configuration.class,
+                this.config
+            );
             this.loader.save(this.node);
         } catch (ConfigurateException e) {
-            throw new IllegalStateException("Failed to save config", e);
+            throw new IllegalStateException(
+                "Failed to save config",
+                e
+            );
         }
     }
 }

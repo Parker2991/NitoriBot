@@ -24,10 +24,17 @@ public class ValidationModule {
             key
         );
 
-        return Hashing.sha256()
-            .hashString(value, StandardCharsets.UTF_8)
+        return Hashing
+            .sha256()
+            .hashString(
+                value,
+                StandardCharsets.UTF_8
+            )
             .toString()
-            .substring(0, 16);
+            .substring(
+                0,
+                16
+            );
     }
 
     public ValidationModule (NitoriBot bot) {
@@ -35,13 +42,17 @@ public class ValidationModule {
 
         Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run () {
-                trustedHash = generateHash(bot.config.keys.trusted);
-                adminHash = generateHash(bot.config.keys.admin);
-                ownerHash = generateHash(bot.config.keys.owner);
-            }
-        }, 0, 100);
+        timer.scheduleAtFixedRate(
+            new TimerTask() {
+                @Override
+                public void run () {
+                    trustedHash = generateHash(bot.config.keys.trusted);
+                    adminHash = generateHash(bot.config.keys.admin);
+                    ownerHash = generateHash(bot.config.keys.owner);
+                }
+            },
+            0,
+            100
+        );
     }
 }

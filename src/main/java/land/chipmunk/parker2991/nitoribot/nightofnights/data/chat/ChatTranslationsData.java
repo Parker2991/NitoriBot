@@ -1,4 +1,4 @@
-package land.chipmunk.parker2991.nitoribot.nightofnights.data;
+package land.chipmunk.parker2991.nitoribot.nightofnights.data.chat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ public class ChatTranslationsData {
         public String translation_key;
         public List<String> parameters = new ArrayList<>();
     }
+
     public static class Chat {
         public String translation_key;
         public List<String> parameters = new ArrayList<>();

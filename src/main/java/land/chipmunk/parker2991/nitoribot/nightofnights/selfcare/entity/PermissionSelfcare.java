@@ -9,7 +9,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.Clie
 
 public class PermissionSelfcare implements Listener {
     private final NitoriBot bot;
-    public int level;
+    public int permLevel;
 
     public PermissionSelfcare (NitoriBot bot) {
         this.bot = bot;
@@ -18,22 +18,16 @@ public class PermissionSelfcare implements Listener {
 
     @Override
     public void packetReceived (Packet packet) {
-        if (packet instanceof ClientboundEntityEventPacket) getPermissionLevel((ClientboundEntityEventPacket) packet);
+        if (packet instanceof ClientboundEntityEventPacket)
+            getPermissionLevel((ClientboundEntityEventPacket) packet);
     }
 
     private void getPermissionLevel (ClientboundEntityEventPacket packet) {
-        int permEntityId = packet.getEntityId();
         final int botEntityId = bot.entityId;
         EntityEvent event = packet.getEvent();
+        if (packet.getEntityId() != botEntityId || event.ordinal() < 24 || event.ordinal() > 28)
+            return;
 
-        if (permEntityId == botEntityId) {
-            switch (event) {
-                case EntityEvent.PLAYER_SET_NO_PERMISSIONS -> level = 0;
-                case EntityEvent.PLAYER_SET_MODERATOR -> level = 1;
-                case EntityEvent.PLAYER_SET_GAMEMASTER -> level = 2;
-                case EntityEvent.PLAYER_SET_ADMIN -> level = 3;
-                case EntityEvent.PLAYER_SET_OWNER -> level = 4;
-            }
-        }
+        permLevel = event.ordinal() - 24;
     }
 }

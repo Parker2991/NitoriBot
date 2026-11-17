@@ -14,20 +14,26 @@ public class CreateConsole implements Completer {
 
     @Override
     public void complete (
-        LineReader reader, ParsedLine line, List<Candidate> candidates
+        LineReader reader,
+        ParsedLine line,
+        List<Candidate> candidates
     ) {
 
     }
 
     private void handleLine (String line) {
         for (NitoriBot bot : servers) {
-            if (line.equals(bot.config.console.prefix + "kill")) System.exit(0);
+            if (line.equals(bot.config.console.prefix + "kill"))
+                System.exit(0);
             bot.chat.send(line);
         }
     }
 
     public CreateConsole () {
-        this.reader = LineReaderBuilder.builder().completer(this).build();
+        this.reader = LineReaderBuilder
+            .builder()
+            .completer(this)
+            .build();
         //this.terminal = TerminalBuilder.builder().build();
 
         //this.jLineAppender = new JlineAppender();
