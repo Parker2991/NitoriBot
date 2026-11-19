@@ -1,7 +1,18 @@
 prefixes:
   - "!"
 
+discord:
+  token: "<discord token>"
+  enabled: false
+  prefix: "!"
+  invite: "https://discord.gg/GCKtG4erux"
+  roles:
+    trusted: "trusted"
+    admin: "admin"
+    owner: "NitoriBot Owner"
+
 core:
+  itemRefill: true
   area:
     start:
       x: 0
@@ -12,6 +23,12 @@ core:
       y: 0
       z: 15
   coreName: "[{text:\"Nitori\",color:\"blue\"},{text:\"Bot \",color:\"green\"},{text:\"Core\"}]"
+
+keys:
+  trusted: "<key>"
+  admin: "<key>"
+  owner: "<key>"
+
 
 colors:
   integer: "gold"
@@ -32,7 +49,11 @@ console:
 bots:
   - host: "localhost"
     port: 25565
-    serverName: "localhost"
+    useProxy: false
+    isPrivate: false
+    serverName: "kaboom"
     username: "NitoriBotJava"
+    discordChannelId: "<discord channel id>"
     reconnectDelay: 6000
     selfcareInterval: 1000
+    mode: "kaboom"

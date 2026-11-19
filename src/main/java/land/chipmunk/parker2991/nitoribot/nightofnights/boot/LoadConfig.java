@@ -22,13 +22,13 @@ public class LoadConfig {
             new LoaderOptions()
         );
         final Yaml yaml = new Yaml(yamlConfig);
-        final Path configPath = Path.of("config.yaml");
+        final Path configPath = Path.of("config.yml");
         if (!Files.exists(configPath)) {
             LOGGER.info("config not found making config now");
 
             InputStream defaultConfig = Main.class
                 .getClassLoader()
-                .getResourceAsStream("default_config.yaml");
+                .getResourceAsStream("default_config.yml");
             Files.copy(
                 defaultConfig,
                 configPath

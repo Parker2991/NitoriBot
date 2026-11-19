@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import static land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil.componentToAnsi;
 
@@ -96,13 +97,6 @@ public class DiscordModule extends ListenerAdapter implements Listener {
             );
             return;
         }
-        /*
-          PlayerProfileData sender,
-    MessageReceivedEvent discordEvent,
-    CommandMessageSource source,
-    ChatType chatType,
-    ParsedChatType parsedChatType
-         */
 
         Component component = Component
             .translatable(
@@ -141,42 +135,40 @@ public class DiscordModule extends ListenerAdapter implements Listener {
     @Override
     public void packetReceived (Packet packet) {
         if (packet instanceof final ClientboundLoginFinishedPacket p) {
-            Timer timer = new Timer();
+            if (!bot.config.discord.enabled) return;
+            bot.scheduler.scheduleAtFixedRate(
+                () -> {
 
-            timer.scheduleAtFixedRate(
-                new TimerTask() {
-                    @Override
-                    public void run () {
-                        if (discordQueue.isEmpty())
-                            return;
-                        try {
-                            final String message = String.join(
-                                "\n",
-                                discordQueue
-                            );
+                    if (discordQueue.isEmpty())
+                        return;
+                    try {
+                        final String message = String.join(
+                            "\n",
+                            discordQueue
+                        );
 
-                            client
-                                .getTextChannelById(bot.options.discordChannelId)
-                                .sendMessage("```ansi\n" + message.substring(
-                                    0,
-                                    Math.min(
-                                        message.length(),
-                                        1984
-                                    )
-                                ) + "\n```")
-                                .queue();
-                        } catch (Exception e) {
-                            LOGGER.error(
-                                "{}",
-                                DiscordModule.class,
-                                e
-                            );
-                        }
-                        discordQueue.clear();
+                        client
+                            .getTextChannelById(bot.options.discordChannelId)
+                            .sendMessage("```ansi\n" + message.substring(
+                                0,
+                                Math.min(
+                                    message.length(),
+                                    1984
+                                )
+                            ) + "\n```")
+                            .queue();
+                    } catch (Exception e) {
+                        LOGGER.error(
+                            "{}",
+                            DiscordModule.class,
+                            e
+                        );
                     }
+                    discordQueue.clear();
                 },
+                0,
                 2000,
-                2000
+                TimeUnit.MILLISECONDS
             );
         }
     }

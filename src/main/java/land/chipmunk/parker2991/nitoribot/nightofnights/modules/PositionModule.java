@@ -45,7 +45,7 @@ public class PositionModule implements Listener {
 
         if (bot.options.mode.equals("totalfreedom")) {
             if (i < 5)
-                timer = bot.executor.scheduleAtFixedRate(
+                timer = bot.scheduler.scheduleAtFixedRate(
                     () -> {
                         System.out.println(i);
                         x += 1;

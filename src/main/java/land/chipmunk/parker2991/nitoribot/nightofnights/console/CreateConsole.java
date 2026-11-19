@@ -11,7 +11,6 @@ public class CreateConsole implements Completer {
     public LineReader reader;
     public final String server = "all";
 
-
     @Override
     public void complete (
         LineReader reader,
@@ -34,9 +33,6 @@ public class CreateConsole implements Completer {
             .builder()
             .completer(this)
             .build();
-        //this.terminal = TerminalBuilder.builder().build();
-
-        //this.jLineAppender = new JlineAppender();
 
         JlineAppender.setLineReader(reader);
 

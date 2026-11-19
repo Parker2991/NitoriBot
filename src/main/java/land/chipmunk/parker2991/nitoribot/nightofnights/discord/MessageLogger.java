@@ -39,25 +39,3 @@ public class MessageLogger extends ListenerAdapter {
         this.client = client;
     }
 }
-/*for (NitoriBot bot : Main.Bots) {
-            if (!event.getChannel().getId().equals(bot.options.discordChannelId)) return;
-
-            if (event.getAuthor().getId().equals(client.getSelfUser().getId())) return;
-
-            Component component = Component.translatable(
-                "[%s] %s \u203a %s",
-                Component.translatable(
-                    "%s%s %s",
-                    Component.text("Nitori").color(NamedTextColor.BLUE),
-                    Component.text("Bot").color(NamedTextColor.GREEN),
-                    Component.text("Discord").color(NamedTextColor.DARK_BLUE)
-                ),
-                Component.text(event.getAuthor().getName()).color(NamedTextColor.GRAY),
-                Component.text(event.getMessage().getContentRaw()).color(NamedTextColor.GRAY)
-            ).color(NamedTextColor.AQUA);
-
-            bot.chat.tellraw(
-                "@a",
-                component
-            );
-        }*/

@@ -10,14 +10,11 @@ build
 # Ignore the bin folder vscode keeps creating
 bin
 
-# get a nbt parser somewhere else lmao
-src/main/kotlin
-
 # proxies
 proxies.txt
 
 # ignore the config
-config.yaml
+config.yml
 
 # ignore chat attestation
 chatattestation

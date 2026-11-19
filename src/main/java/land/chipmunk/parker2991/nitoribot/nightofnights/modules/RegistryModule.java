@@ -31,7 +31,7 @@ public class RegistryModule implements Listener {
     public final List<ChatTranslationsData> chatTypes = new ArrayList<>();
     public final Map<String, DimensionData> dimensions = new HashMap<>();
     private static final Gson GSON = new Gson();
-    public final List<BlockRegistries> blocks = Main.blocks;
+    public final List<BlockRegistries> blocks = new ArrayList<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistryModule.class);
 
     public RegistryModule (NitoriBot bot) {

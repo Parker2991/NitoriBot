@@ -26,18 +26,18 @@ public class PlayerProfileData {
     public boolean alreadyValidated = false;
 
     public PlayerProfileData (
-        UUID uuid,
-        String entityUUID,
-        GameProfile profile,
-        boolean listed,
-        int latency,
-        GameMode gameMode,
-        Component displayName,
-        boolean showHat,
-        int listOrder,
-        Vector3d position,
-        String dimension,
-        int entityId
+        final UUID uuid,
+        final String entityUUID,
+        final GameProfile profile,
+        final boolean listed,
+        final int latency,
+        final GameMode gameMode,
+        final Component displayName,
+        final boolean showHat,
+        final int listOrder,
+        final Vector3d position,
+        final String dimension,
+        final int entityId
     ) {
         this.uuid = uuid;
         this.entityUUID = entityUUID;

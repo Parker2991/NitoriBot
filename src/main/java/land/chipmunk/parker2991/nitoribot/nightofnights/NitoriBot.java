@@ -1,5 +1,6 @@
 package land.chipmunk.parker2991.nitoribot.nightofnights;
 
+import jdk.jshell.JShell;
 import land.chipmunk.code.kaboomstandardsorganization.messaginglib.mcprotocollib.Injector;
 import land.chipmunk.code.kaboomstandardsorganization.messaginglib.mcprotocollib.MCProtocolLibMessagingEntrypoint;
 import land.chipmunk.code.kaboomstandardsorganization.messaginglib.mcprotocollib.MCProtocolLibMessenger;
@@ -20,12 +21,15 @@ import net.lenni0451.lambdaevents.generator.ReflectionGenerator;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.event.session.SessionAdapter;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
+import org.geysermc.mcprotocollib.network.netty.DefaultPacketHandlerExecutor;
 import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -34,9 +38,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingEntrypoint {
     public final LoggerManager logger = new LoggerManager();
     public final ListenerManager listenerManager = new ListenerManager();
-    public final ScheduledExecutorService executor = Main.executor;
-    //public final ExecutorService executorService = Main.executorService;
-    public final ConcurrentMap<String, Future<?>> services = Main.services;
+    public final ScheduledExecutorService scheduler = Main.scheduler;
     public final BotBuildInfo botBuildInfo = Main.botBuildInfo;
     public final RepoCommitInfo repoCommitInfo = Main.repoCommitInfo;
     public Config config;
@@ -59,7 +61,34 @@ public class NitoriBot extends SessionAdapter implements MCProtocolLibMessagingE
     public ExtrasMessagingModule extrasMessaging;
     public List<?> modules;
     public DiscordModule discord;
+    public final Map<Object, JShell> evalStorage = new HashMap<>();
 
+    public void addServer (String host, int port, String discordChannelId, String username, boolean useProxy) {
+        // this function is here for shits and giggles
+        Config.Options botOptions = new Config.Options();
+        botOptions.host = host;
+        botOptions.port = port;
+        botOptions.username = username;
+        botOptions.discordChannelId = discordChannelId;
+        botOptions.isPrivate = false;
+        botOptions.reconnectDelay = 6000;
+        botOptions.serverName = "test";
+        botOptions.useProxy = useProxy;
+        botOptions.useMiniMessage = false;
+
+        try {
+            NitoriBot client = new Client(
+                botOptions,
+                bots,
+                config
+            );
+
+           // Main.Bots.add(client);
+
+            client.connect();
+        } catch (Exception ignore) {}
+
+    }
     //public final ChatAttestation chatAttestation = new ChatAttestation();
 
     public void connect () throws IOException {

@@ -3,7 +3,9 @@ package land.chipmunk.parker2991.nitoribot.nightofnights.modules;
 import land.chipmunk.parker2991.nitoribot.nightofnights.NitoriBot;
 import land.chipmunk.parker2991.nitoribot.nightofnights.command.*;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.Public.*;
+import land.chipmunk.parker2991.nitoribot.nightofnights.commands.admin.NetcmdCommand;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.owner.KillCommand;
+import land.chipmunk.parker2991.nitoribot.nightofnights.commands.owner.ServerEvalCommand;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.trusted.ReconnectCommand;
 import land.chipmunk.parker2991.nitoribot.nightofnights.commands.trusted.ValidateCommand;
 
@@ -42,6 +44,8 @@ public class CommandManagerModule {
         registerCommand(new KillCommand());
         registerCommand(new NetmsgCommand());
         registerCommand(new RTPCommand());
+        registerCommand(new ServerEvalCommand());
+        registerCommand(new NetcmdCommand());
     }
 
     public void registerCommand (CommandInfo command) {
@@ -95,11 +99,12 @@ public class CommandManagerModule {
         return trustLevel;
     }
 
-    public void execute (
+    public Component execute (
         CommandSource source,
         String commandName,
         String[] args
     ) {
+        Component commandOutput = null;
         try {
             CommandInfo command = getCommand(commandName.toLowerCase());
 
@@ -186,14 +191,7 @@ public class CommandManagerModule {
                     )
                     .color(NamedTextColor.RED));
 
-            final Component execute = command.execute(context);
-            if (execute == null)
-                return;
-            else
-                source.sendFeedback(
-                    bot,
-                    execute
-                );
+            commandOutput = command.execute(context);
         } catch (CommandError error) {
             source.sendFeedback(
                 bot,
@@ -212,9 +210,11 @@ public class CommandManagerModule {
                 error
             );
         }
+
+        return commandOutput;
     }
 
-    public void executeString (
+    public Component executeString (
         CommandSource source,
         String command
     ) {
@@ -226,7 +226,7 @@ public class CommandManagerModule {
             splitArguments.length
         );
 
-        this.execute(
+        return this.execute(
             source,
             commandName,
             args

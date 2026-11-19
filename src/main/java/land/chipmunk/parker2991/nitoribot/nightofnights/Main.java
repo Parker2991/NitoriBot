@@ -27,18 +27,10 @@ import java.util.Map;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 public class Main {
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(Runtime
-        .getRuntime()
-        .availableProcessors());
     private static final Gson GSON = new Gson();
-    // public static final ExecutorService virtualThreads = Executors.newVirtualThreadPerTaskExecutor();
-
-    public static final ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Runtime
-        .getRuntime()
-        .availableProcessors());
-    public static final ConcurrentMap<String, Future<?>> services = new ConcurrentHashMap<>();
+    public static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    public static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public static final List<NitoriBot> Bots = new ArrayList<>();
     public static RepoCommitInfo repoCommitInfo = null;
     public static BotBuildInfo botBuildInfo = null;
@@ -49,7 +41,7 @@ public class Main {
 
     public static JDA discordClient;
 
-    private void parseBlockRegistries () {
+    static {
         final List<BlockRegistries> registries = new ArrayList<>();
         final List<BlockRegistries> blockRegistries = new ArrayList<>();
         final Reader blockRegistryReader = new InputStreamReader(Main.class.getResourceAsStream("/blocks" + ".json"));
@@ -90,7 +82,6 @@ public class Main {
             Map.class
         );
 
-
         for (Map.Entry<?, ?> entry : blockEntrySet.entrySet()) {
             String key = entry
                 .getKey()
@@ -128,6 +119,7 @@ public class Main {
             }
         }
     }
+
     void main () {
         try {
             botBuildInfo = new GetBotBuildInfo().getBuildInfo();
@@ -139,22 +131,18 @@ public class Main {
             console = new CreateConsole();
             repoCommitInfo = new GetRepoInfo().getRepoInfo();
 
-            executor.setKeepAliveTime(
-                500,
-                TimeUnit.MILLISECONDS
-            );
-            executor.allowCoreThreadTimeOut(true);
+            if (config.discord.enabled) {
+                JDABuilder builder = JDABuilder.createDefault(config.discord.token);
+                builder.enableIntents(
+                    GatewayIntent.MESSAGE_CONTENT,
+                    GatewayIntent.DIRECT_MESSAGES,
+                    GatewayIntent.GUILD_MEMBERS
+                );
 
-            JDABuilder builder = JDABuilder.createDefault(config.discord.token);
-            builder.enableIntents(
-                GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.DIRECT_MESSAGES,
-                GatewayIntent.GUILD_MEMBERS
-            );
-
-            discordClient = builder.build();
-            discordClient.addEventListener(new MessageLogger(discordClient));
-            discordClient.awaitReady();
+                discordClient = builder.build();
+                discordClient.addEventListener(new MessageLogger(discordClient));
+                discordClient.awaitReady();
+            }
 
             for (Config.Options options : bots) {
                 final NitoriBot bot = new Client(
@@ -163,8 +151,6 @@ public class Main {
                     config
                 );
                 Bots.add(bot);
-            }
-            for (NitoriBot bot : Bots) {
                 bot.connect();
             }
         } catch (Exception e) {

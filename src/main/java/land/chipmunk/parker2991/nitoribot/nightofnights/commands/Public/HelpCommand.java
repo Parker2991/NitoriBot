@@ -48,6 +48,7 @@ public class HelpCommand implements CommandInfo {
     public Component getCommands (NitoriBot bot) {
         List<Component> Public = new ArrayList<>();
         List<Component> Trusted = new ArrayList<>();
+        List<Component> Admin = new ArrayList<>();
         List<Component> Owner = new ArrayList<>();
 
         for (CommandInfo commands : bot.commandManager.commands) {
@@ -62,6 +63,9 @@ public class HelpCommand implements CommandInfo {
                         .getAliases()
                         .getFirst() + " ")
                     .color(convertColorString(bot.config.colors.help.trusted)));
+                case CommandTrustLevels.ADMIN -> Admin.add(Component.text(commands
+                    .getAliases()
+                    .getFirst() + " ").color(convertColorString(bot.config.colors.help.admin)));
                 case CommandTrustLevels.OWNER -> Owner.add(Component
                     .text(commands
                         .getAliases()

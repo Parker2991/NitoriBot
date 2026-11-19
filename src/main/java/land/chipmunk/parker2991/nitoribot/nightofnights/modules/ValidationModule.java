@@ -8,6 +8,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.Serv
 import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ValidationModule {
@@ -40,19 +41,10 @@ public class ValidationModule {
     public ValidationModule (NitoriBot bot) {
         this.bot = bot;
 
-        Timer timer = new Timer();
-
-        timer.scheduleAtFixedRate(
-            new TimerTask() {
-                @Override
-                public void run () {
-                    trustedHash = generateHash(bot.config.keys.trusted);
-                    adminHash = generateHash(bot.config.keys.admin);
-                    ownerHash = generateHash(bot.config.keys.owner);
-                }
-            },
-            0,
-            100
-        );
+        bot.scheduler.scheduleAtFixedRate(() -> {
+            trustedHash = generateHash(bot.config.keys.trusted);
+            adminHash = generateHash(bot.config.keys.admin);
+            ownerHash = generateHash(bot.config.keys.owner);
+        }, 0, 100, TimeUnit.MILLISECONDS);
     }
 }

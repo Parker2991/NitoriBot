@@ -10,6 +10,7 @@ import land.chipmunk.parker2991.nitoribot.nightofnights.data.PlayerProfileData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.data.chat.PlayerMessageData;
 import land.chipmunk.parker2991.nitoribot.nightofnights.listeners.Listener;
 import land.chipmunk.parker2991.nitoribot.nightofnights.util.ComponentUtil;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,10 +47,13 @@ public class ChatCommandHandlerModule implements Listener {
             );
 
 
-            bot.commandManager.executeString(
+            final Component cmdOutput = bot.commandManager.executeString(
                 source,
                 command
             );
+
+            if (cmdOutput == null) return;
+            else source.sendFeedback(bot, cmdOutput);
         }
     }
 
@@ -74,10 +78,13 @@ public class ChatCommandHandlerModule implements Listener {
                 ParsedChatType.COMMANDSPY
             );
 
-            bot.commandManager.executeString(
+            final Component cmdOutput = bot.commandManager.executeString(
                 source,
                 command
             );
+
+            if (cmdOutput == null) return;
+            else source.sendFeedback(bot, cmdOutput);
         }
     }
 }

@@ -24,11 +24,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public @NullMarked class Client extends NitoriBot {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NitoriBot.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
     public Client (
         Config.Options options,
@@ -63,8 +65,6 @@ public @NullMarked class Client extends NitoriBot {
     public void disconnecting (
         DisconnectingEvent event
     ) {
-        Component component = event.getReason();
-        session.disconnect(component);
     }
 
     @Override
@@ -126,6 +126,7 @@ public @NullMarked class Client extends NitoriBot {
     public void disconnected (
         DisconnectedEvent event
     ) {
+        listenerManager.clearListener();
         loggedIn = false;
 
         Component host = Component
@@ -140,30 +141,22 @@ public @NullMarked class Client extends NitoriBot {
             .append(host)
             .append(event.getReason());
 
-        if (services.get("reconnect") != null)
-            services
-                .get("reconnect")
-                .cancel(true);
-
         logger.reconnect(ComponentUtil.componentToAnsi(reason));
 
-        services.put(
-            "reconnect",
-            executor.schedule(
-                () -> {
-                    try {
-                        connect();
-                    } catch (IOException e) {
-                        LOGGER.error(
-                            "{}",
-                            NitoriBot.class,
-                            e
-                        );
-                    }
-                },
-                options.reconnectDelay,
-                TimeUnit.MILLISECONDS
-            )
+        scheduler.schedule(
+            () -> {
+                try {
+                    connect();
+                } catch (Exception e) {
+                    LOGGER.error(
+                        "{}",
+                        NitoriBot.class,
+                        e
+                    );
+                }
+            },
+            options.reconnectDelay,
+            TimeUnit.MILLISECONDS
         );
     }
 }

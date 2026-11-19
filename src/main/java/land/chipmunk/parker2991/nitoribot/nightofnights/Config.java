@@ -19,6 +19,7 @@ public class Config {
 
     public static class Discord {
         public String token;
+        public boolean enabled;
         public String prefix;
         public String invite;
         public final DiscordRoles roles = new DiscordRoles();
